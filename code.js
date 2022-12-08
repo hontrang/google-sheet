@@ -1,5 +1,6 @@
 // Khai bao bien toan cuc /////
 let SHEET_THAM_CHIEU = "tham chiếu";
+let SHEET_BANG_THONG_TIN = "bảng thông tin";
 let SHEET_TIN_TUC = "tin tức";
 let SHEET_DU_LIEU = "dữ liệu";
 let SHEET_CHI_TIET_MA = "chi tiết mã";
@@ -290,11 +291,11 @@ function layGiaTriTheoCot(activeSheet, rowIndex, columnIndex) {
 
 function layTinTuc() {
   var sheet = SpreadsheetApp.getActive().getSheetByName(SHEET_TIN_TUC);
-  var sheetDuLieu = SpreadsheetApp.getActive().getSheetByName(SHEET_DU_LIEU);
-  var duLieuCot = sheetDuLieu.getRange("T:T").getValues();
-  var numberOfValues = duLieuCot.filter(String).length;
-  // lay du lieu cot T:T
-  var listTenMa = sheetDuLieu.getRange(1, 20, numberOfValues).getValues();
+  var sheetBangThongTin = SpreadsheetApp.getActive().getSheetByName(SHEET_BANG_THONG_TIN);
+  // lay du lieu cot J sheet bảng thông tin
+  var listTenMa = sheetBangThongTin.getRange("J:J").getValues();
+  var listTenMa = listTenMa.filter(String);
+  
   listTenMa.reverse().pop();
   // lay dữ liệu ô F1
   listTenMa.forEach(tenMa => {
