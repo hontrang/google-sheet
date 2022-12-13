@@ -321,9 +321,10 @@ function layTinTuc() {
 }
 
 function layGia4NgayGanNhat() {
+  // let danhSachMa = ["STB"];
   let danhSachMa = layGiaTriTheoCot(SHEET_THAM_CHIEU, 6, 1);
   var HEADER2 = "Giá ngày T";
-  var headers = [HEADER_MA, HEADER2, "ngày T-1", "ngày T-2", "ngày T-3"];
+  var headers = [HEADER_MA, "ngày T-5", "ngày T-4", "ngày T-3", "ngày T-2", "ngày T-1", HEADER2];
   var sheet = SpreadsheetApp.getActive().getSheetByName(SHEET_DU_LIEU);
   var fromDate = sheet.getRange("AA11").getValue();
   var toDate = sheet.getRange("AB11").getValue();
@@ -348,12 +349,15 @@ function layGia4NgayGanNhat() {
     mangPhu = object.data.tradingViewData;
     var len = object.data.tradingViewData.length;
       mang_du_lieu_chinh.push(new Array(tenMa,
-        mangPhu[len-1].close,
-        mangPhu[len-2].close,
+        mangPhu[len-6].close,
+        mangPhu[len-5].close,
+        mangPhu[len-4].close,
         mangPhu[len-3].close,
-        mangPhu[len-4].close));
+        mangPhu[len-2].close,
+        mangPhu[len-1].close,
+        ));
     } catch (e) {
-      mang_du_lieu_chinh.push(new Array("NA",0,0,0,0));
+      mang_du_lieu_chinh.push(new Array("NA",0,0,0,0,0));
     }
   }
 
@@ -365,6 +369,9 @@ function layGia4NgayGanNhat() {
   sheet.getRange(1, 29, sheet.getLastRow(), mang_du_lieu_chinh[0].length).clearContent();
 
   range.setValues(mang_du_lieu_chinh);
+
+  // in thời điểm lấy dữ liệu hoàn tất
+  SpreadsheetApp.getActive().getSheetByName(SHEET_THAM_CHIEU).getRange("P2").setValue(new Date());
   return;
 }
 
