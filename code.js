@@ -18,6 +18,7 @@ let url;
 let range;
 let tenMa;
 
+
 let OPTIONS = {
   method: 'GET',
   headers: {
@@ -122,6 +123,7 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
 
   // gán dữ liệu cho ô H1
   sheet.getRange(1, 8, 1, 1).setValue(object.data.tradingViewData[0].symbol);
+  logTime(SHEET_CHI_TIET_MA, "J2");
 }
 
 function layThongTinPB() {
@@ -362,7 +364,7 @@ function layGiaTuanGanNhat() {
   range.setValues(mang_du_lieu_chinh);
 
   // in thời điểm lấy dữ liệu hoàn tất
-  SpreadsheetApp.getActive().getSheetByName(SHEET_THAM_CHIEU).getRange("P2").setValue(new Date());
+  logTime(SHEET_THAM_CHIEU, "P2");
 }
 
 function ganDuLieuVaoCot(cotThamChieu, cotDoiDuLieu) {
