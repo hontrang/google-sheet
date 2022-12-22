@@ -1,4 +1,4 @@
-// Khai bao bien toan cuc /////
+//// Khai bao bien toan cuc /////
 let SHEET_THAM_CHIEU = "tham chiếu";
 let SHEET_BANG_THONG_TIN = "bảng thông tin";
 let SHEET_TIN_TUC = "tin tức";
@@ -29,16 +29,13 @@ let OPTIONS = {
 
 function hamThucThi() {
   getDataHose();
-  laySuKienChungKhoan();
-  layGiaVaKhoiLuongTheoMaChungKhoan();
-  ganDuLieuVaoCot("A", "D")
 }
 
 function getDataHose() {
   url = "https://wgateway-iboard.ssi.com.vn/graphql/";
   const data = JSON.stringify({
     query: 'query stockRealtimesByGroup($group: String) {  stockRealtimesByGroup(group: $group) {    stockSymbol     matchedPrice }}',
-    letiables: '{  "group": "HOSE"}'
+    variables: '{  "group": "HOSE"}'
   });
   let HEADER_CURRENT_PRICE = "giá hiện tại";
   let options = {
@@ -127,7 +124,7 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
 }
 
 function layThongTinPB() {
-  let danhSachMa = layGiaTriTheoCot(SHEET_THAM_CHIEU, 6, 1);
+  let danhSachMa = layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
 
   let HEADER2 = "P/B";
   let headers = [HEADER_MA, HEADER2];
@@ -161,7 +158,7 @@ function layThongTinPB() {
 }
 
 function layThongTinPE() {
-  let danhSachMa = layGiaTriTheoCot(SHEET_THAM_CHIEU, 6, 1);
+  let danhSachMa = layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
   let HEADER2 = "P/E";
   let headers = [HEADER_MA, HEADER2];
   let sheet = SpreadsheetApp.getActive().getSheetByName(SHEET_DU_LIEU);
@@ -194,7 +191,7 @@ function layThongTinPE() {
 }
 
 function layThongTinRoomNuocNgoai() {
-  let danhSachMa = layGiaTriTheoCot(SHEET_THAM_CHIEU, 6, 1);
+  let danhSachMa = layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
   let HEADER2 = "Sở hữu tối đa room nước ngoài";
   let HEADER3 = "Room nước ngoài còn lại";
   let headers = [HEADER_MA, HEADER2, HEADER3];
@@ -229,7 +226,7 @@ function layThongTinRoomNuocNgoai() {
 }
 
 function layThongTinKhoiLuongTrungBinh10Ngay() {
-  let danhSachMa = layGiaTriTheoCot(SHEET_THAM_CHIEU, 6, 1);
+  let danhSachMa = layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
   let headers = [HEADER_MA, HEADER_KHOI_LUONG];
   let sheet = SpreadsheetApp.getActive().getSheetByName(SHEET_DU_LIEU);
 
@@ -290,7 +287,7 @@ function layTinTuc() {
   // lay du lieu cot J sheet bảng thông tin
   let listTenMa = sheetBangThongTin.getRange("J:J").getValues();
   listTenMa = listTenMa.filter(String);
-  
+
   listTenMa.reverse().pop();
   // lay dữ liệu ô F1
   listTenMa.forEach(tenMa => {
@@ -316,7 +313,7 @@ function layTinTuc() {
 
 function layGiaTuanGanNhat() {
   // let danhSachMa = ["STB"];
-  let danhSachMa = layGiaTriTheoCot(SHEET_THAM_CHIEU, 6, 1);
+  let danhSachMa = layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
   let headers = [HEADER_MA, "ngày T-5", "ngày T-4", "ngày T-3", "ngày T-2", "ngày T-1", "Giá ngày T"];
   let sheet = SpreadsheetApp.getActive().getSheetByName(SHEET_DU_LIEU);
   let fromDate = sheet.getRange("AA11").getValue();
@@ -339,18 +336,18 @@ function layGiaTuanGanNhat() {
     response = UrlFetchApp.fetch(url, options);
     object = JSON.parse(response.getContentText());
     try {
-    mangPhu = object.data.tradingViewData;
-    let len = object.data.tradingViewData.length;
+      mangPhu = object.data.tradingViewData;
+      let len = object.data.tradingViewData.length;
       mang_du_lieu_chinh.push(new Array(tenMa,
-        mangPhu[len-6].close,
-        mangPhu[len-5].close,
-        mangPhu[len-4].close,
-        mangPhu[len-3].close,
-        mangPhu[len-2].close,
-        mangPhu[len-1].close,
-        ));
+        mangPhu[len - 6].close,
+        mangPhu[len - 5].close,
+        mangPhu[len - 4].close,
+        mangPhu[len - 3].close,
+        mangPhu[len - 2].close,
+        mangPhu[len - 1].close,
+      ));
     } catch (e) {
-      mang_du_lieu_chinh.push(new Array("NA",0,0,0,0,0));
+      mang_du_lieu_chinh.push(new Array("NA", 0, 0, 0, 0, 0));
     }
   }
 
@@ -366,6 +363,59 @@ function layGiaTuanGanNhat() {
   // in thời điểm lấy dữ liệu hoàn tất
   logTime(SHEET_THAM_CHIEU, "P2");
 }
+
+function getDate(number) {
+  let date = new Date(number);
+  return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+}
+
+function layGiaThamChieu() {
+  let danhSachMa = layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
+  let sheet = SpreadsheetApp.getActive().getSheetByName(SHEET_THAM_CHIEU);
+  let fromDate = getDate(Date.parse(sheet.getRange("K1").getValue()))
+  let toDate = getDate(Date.parse(fromDate) + 86400000);
+  url = "https://msh-data.cafef.vn/graphql";
+  while (danhSachMa.length > 0) {
+    tenMa = danhSachMa.shift();
+    Logger.log(tenMa + " " + danhSachMa.length);
+    let query = 'query { tradingViewData(symbol: \"' + tenMa + '\", from: \"' + fromDate + '\",to: \"' + toDate + '\") { symbol close } }';
+    let options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      "payload": JSON.stringify({
+        query
+      })
+    }
+    response = UrlFetchApp.fetch(url, options);
+    object = JSON.parse(response.getContentText());
+    try {
+      mangPhu = object.data.tradingViewData;
+      mang_du_lieu_chinh.push(new Array(mangPhu[0].symbol,
+        mangPhu[0].close * 1000));
+    } catch (e) {
+      mang_du_lieu_chinh.push(new Array("NA", 0));
+    }
+  }
+
+  range = sheet.getRange(6, 1, mang_du_lieu_chinh.length, mang_du_lieu_chinh[0].length);
+  // xoá trắng range
+  sheet.getRange(6, 1, sheet.getLastRow(), mang_du_lieu_chinh[0].length).clearContent();
+
+  range.setValues(mang_du_lieu_chinh);
+
+  // in thời điểm lấy dữ liệu hoàn tất
+  logTime(SHEET_THAM_CHIEU, "K2");
+}
+
+// function onEdit(e){
+//   const rg = e.range;
+//   if(rg.getA1Notation() === "K1" && rg.getSheet().getName() === SHEET_THAM_CHIEU){
+//     layGiaThamChieu();
+//   }
+// }
 
 function ganDuLieuVaoCot(cotThamChieu, cotDoiDuLieu) {
   let sheetDuLieu = SpreadsheetApp.getActive().getSheetByName(SHEET_DU_LIEU);
