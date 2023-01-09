@@ -1,32 +1,3 @@
-//// Khai bao bien toan cuc /////
-let SHEET_THAM_CHIEU = "tham chiếu";
-let SHEET_BANG_THONG_TIN = "bảng thông tin";
-let SHEET_TIN_TUC = "tin tức";
-let SHEET_DU_LIEU = "dữ liệu";
-let SHEET_CHI_TIET_MA = "chi tiết mã";
-let KICH_THUOC_MANG_PHU = 10;
-let HEADER_MA = "Tên mã";
-let HEADER_KHOI_LUONG = "Khối lượng"
-let HEADER_CODE = "Tên sự kiện";
-let HEADER_DATE = "Thời gian diễn ra sự kiện";
-let HEADER_LINK = "Link sự kiện";
-let mangPhu = new Array();
-let mang_du_lieu_chinh = new Array();
-let response;
-let object;
-let url;
-let range;
-let tenMa;
-
-
-let OPTIONS = {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  }
-}
-
 function hamThucThi() {
   getDataHose();
 }
@@ -37,7 +8,6 @@ function getDataHose() {
     query: 'query stockRealtimesByGroup($group: String) {  stockRealtimesByGroup(group: $group) {    stockSymbol     matchedPrice }}',
     variables: '{  "group": "HOSE"}'
   });
-  let HEADER_CURRENT_PRICE = "giá hiện tại";
   let options = {
     "headers": {
       "Content-Type": "application/json; charset=utf-8"
@@ -50,14 +20,10 @@ function getDataHose() {
   let sheet = SpreadsheetApp.getActive().getSheetByName(SHEET_DU_LIEU);
   mang_du_lieu_chinh = object.data.stockRealtimesByGroup.map(({ stockSymbol, matchedPrice }) => [stockSymbol, matchedPrice]);
 
-  // chèn header vào dữ liệu
-  let headers = [HEADER_MA, HEADER_CURRENT_PRICE];
-  mang_du_lieu_chinh.unshift(headers);
-
   // xoá trắng range
-  sheet.getRange(1, 1, sheet.getLastRow(), mang_du_lieu_chinh[0].length).clearContent();
+  sheet.getRange(2, 1, sheet.getLastRow(), mang_du_lieu_chinh[0].length).clearContent();
 
-  sheet.getRange(1, 1, mang_du_lieu_chinh.length, mang_du_lieu_chinh[0].length).setValues(mang_du_lieu_chinh);
+  sheet.getRange(2, 1, mang_du_lieu_chinh.length, mang_du_lieu_chinh[0].length).setValues(mang_du_lieu_chinh);
 }
 
 function laySuKienChungKhoan() {
@@ -68,22 +34,16 @@ function laySuKienChungKhoan() {
   response = UrlFetchApp.fetch(url, OPTIONS);
   object = JSON.parse(response.getContentText());
   mang_du_lieu_chinh = object.data.map(({ newsTitle, newsUrl, newsDate }) => [newsTitle, newsUrl, newsDate]);
-  let headers = [HEADER_CODE, HEADER_LINK, HEADER_DATE];
-
-  // chèn header vào dữ liệu
-  mang_du_lieu_chinh.unshift(headers);
 
   // xoá trắng range I3:K14
-  sheet.getRange(3, 9, 11, 3).clearContent();
-  range = sheet.getRange(3, 9, mang_du_lieu_chinh.length, mang_du_lieu_chinh[0].length);
+  sheet.getRange(4, 9, 11, 3).clearContent();
+  range = sheet.getRange(4, 9, mang_du_lieu_chinh.length, mang_du_lieu_chinh[0].length);
 
   range.setValues(mang_du_lieu_chinh);
 }
 
 function layGiaVaKhoiLuongTheoMaChungKhoan() {
   url = "https://msh-data.cafef.vn/graphql";
-  let HEADER_TIME = "Thời điểm";
-  let HEADER_CLOSED_PRICE = "Giá đóng cửa";
   let sheet = SpreadsheetApp.getActive().getSheetByName(SHEET_CHI_TIET_MA);
   // lấy dữ liệu ô F1
   let tenMa = sheet.getRange(1, 6).getValue();
@@ -105,16 +65,13 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
   }
   response = UrlFetchApp.fetch(url, options);
   object = JSON.parse(response.getContentText());
-  mang_du_lieu_chinh = object.data.tradingViewData.map(({ time, open, close, volume }) => [new Date(time * 1000), close, volume]);
-  let headers = [HEADER_TIME, HEADER_CLOSED_PRICE, HEADER_KHOI_LUONG];
+  mang_du_lieu_chinh = object.data.tradingViewData.map(({ time, close, volume }) => [new Date(time * 1000), close, volume]);
   mang_du_lieu_chinh = mang_du_lieu_chinh.reverse();
-  // chèn header vào dữ liệu
-  mang_du_lieu_chinh.unshift(headers);
 
-  range = sheet.getRange(1, 1, mang_du_lieu_chinh.length, mang_du_lieu_chinh[0].length);
+  range = sheet.getRange(2, 1, mang_du_lieu_chinh.length, mang_du_lieu_chinh[0].length);
 
   // xoá trắng range
-  sheet.getRange(1, 1, sheet.getLastRow(), mang_du_lieu_chinh[0].length).clearContent();
+  sheet.getRange(2, 1, sheet.getLastRow(), mang_du_lieu_chinh[0].length).clearContent();
 
   range.setValues(mang_du_lieu_chinh);
 
@@ -257,21 +214,6 @@ function layThongTinKhoiLuongTrungBinh10Ngay() {
   range.setValues(mang_du_lieu_chinh);
 }
 
-// function layDanhSachMa(){
-//   url = "https://msh-data.cafef.vn/graphql/";
-//   let query = "{ HOSE { stocks(take: 3000) { items { symbol currentPrice } } } }";
-//   let options = {"headers": {
-//                             "Content-Type": "application/json"
-//                           },
-//                 "payload": JSON.stringify({query}),
-//                 "method": "POST"
-//               }
-//   let response = UrlFetchApp.fetch(url, options);
-//   let object = JSON.parse(response.getContentText());
-//   let values = object.data.HOSE.stocks.items.map(({symbol}) => [symbol]);
-//   return values;
-// }
-
 function layGiaTriTheoCot(activeSheet, rowIndex, columnIndex) {
   let sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
   range = sheet.getRange(rowIndex, columnIndex, sheet.getLastRow() - rowIndex + 1);
@@ -291,22 +233,22 @@ function layTinTuc() {
   listTenMa.reverse().pop();
   // lay dữ liệu ô F1
   listTenMa.forEach(tenMa => {
-    url = "https://finfo-api.vndirect.com.vn/v4/news?q=tagCodes:" + tenMa + "~newsGroup:disclosure,rights_disclosure~locale:VN&sort=newsDate:desc~newsTime:desc&size=10";
-    response = UrlFetchApp.fetch(url, OPTIONS);
-    object = JSON.parse(response.getContentText());
-    let values1 = object.data.map(({ newsTitle, newsUrl, newsDate }) => [tenMa, newsTitle, newsUrl, newsDate]);
-    Array.prototype.push.apply(mang_du_lieu_chinh, values1);
-  })
-
-  let headers = [HEADER_MA, HEADER_CODE, HEADER_LINK, HEADER_DATE];
-
-  // chèn header vào dữ liệu
-  mang_du_lieu_chinh.unshift(headers);
+    url = "https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=" + tenMa + "&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2";
+    const content = UrlFetchApp.fetch(url).getContentText();
+    $ = Cheerio.load(content);
+    $("a").each(function() {
+      var title = $( this ).attr("title");
+      var url ="https://s.cafef.vn" + $( this ).attr("href");
+      var time = $( this ).siblings("span").text();
+      console.log(title, url, time);
+      mang_du_lieu_chinh.push( new Array(tenMa, title,url, time));
+    });
+  });
 
   // xoá trắng range from A1
   sheet.clearContents();
 
-  range = sheet.getRange(1, 1, mang_du_lieu_chinh.length, mang_du_lieu_chinh[0].length);
+  range = sheet.getRange(2, 1, mang_du_lieu_chinh.length, mang_du_lieu_chinh[0].length);
 
   range.setValues(mang_du_lieu_chinh);
 }
@@ -364,11 +306,6 @@ function layGiaTuanGanNhat() {
   logTime(SHEET_THAM_CHIEU, "P2");
 }
 
-function getDate(number) {
-  let date = new Date(number);
-  return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-}
-
 function layGiaThamChieu() {
   let danhSachMa = layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
   let sheet = SpreadsheetApp.getActive().getSheetByName(SHEET_THAM_CHIEU);
@@ -408,18 +345,4 @@ function layGiaThamChieu() {
 
   // in thời điểm lấy dữ liệu hoàn tất
   logTime(SHEET_THAM_CHIEU, "K2");
-}
-
-// function onEdit(e){
-//   const rg = e.range;
-//   if(rg.getA1Notation() === "K1" && rg.getSheet().getName() === SHEET_THAM_CHIEU){
-//     layGiaThamChieu();
-//   }
-// }
-
-function ganDuLieuVaoCot(cotThamChieu, cotDoiDuLieu) {
-  let sheetDuLieu = SpreadsheetApp.getActive().getSheetByName(SHEET_DU_LIEU);
-  sheetDuLieu.getRange(cotDoiDuLieu + ":" + cotDoiDuLieu).clearContent();
-  let data = sheetDuLieu.getRange(cotThamChieu + "2").getValue();
-  Logger.log(data);
 }
