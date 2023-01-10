@@ -6,7 +6,7 @@ let SHEET_DU_LIEU = "dữ liệu";
 let SHEET_CHI_TIET_MA = "chi tiết mã";
 let KICH_THUOC_MANG_PHU = 10;
 let HEADER_MA = "Tên mã";
-let HEADER_KHOI_LUONG = "Khối lượng"
+let HEADER_KHOI_LUONG = "Khối lượng";
 let HEADER_CODE = "Tên sự kiện";
 let HEADER_DATE = "Thời gian diễn ra sự kiện";
 let HEADER_LINK = "Link sự kiện";
@@ -18,22 +18,21 @@ let url;
 let range;
 let tenMa;
 
-
 let OPTIONS = {
-  method: 'GET',
+  method: "GET",
   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  }
-}
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+};
 
 let OPTIONS_HTML = {
-  method: 'GET',
+  method: "GET",
   headers: {
-    'Content-Type': 'text/html',
-    'Accept': 'text/html',
-  }
-}
+    "Content-Type": "text/html",
+    Accept: "text/html",
+  },
+};
 
 function hamThucThi() {
   getDataHose();
