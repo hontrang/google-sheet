@@ -1,10 +1,15 @@
 function logTime(sheet, cell) {
-  SpreadsheetApp.getActive().getSheetByName(sheet).getRange(cell).setValue(new Date());
+  SpreadsheetApp.getActive()
+    .getSheetByName(sheet)
+    .getRange(cell)
+    .setValue(new Date());
 }
 
 function getDate(number) {
   let date = new Date(number);
-  return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+  return (
+    date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+  );
 }
 
 function ganDuLieuVaoCot(cotThamChieu, cotDoiDuLieu) {
@@ -14,7 +19,7 @@ function ganDuLieuVaoCot(cotThamChieu, cotDoiDuLieu) {
   Logger.log(data);
 }
 
-function ghiDuLieuVaoDay(data ,sheetName, row, column, width, height){
+function ghiDuLieuVaoDay(data, sheetName, row, column, width, height) {
   let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
   // xoá trắng range
   sheet.getRange(row, column, width, height).clearContent();
@@ -22,7 +27,7 @@ function ghiDuLieuVaoDay(data ,sheetName, row, column, width, height){
   sheet.getRange(row, column, width, height).setValues(data);
 }
 
-function ghiDuLieuVaoO(data ,sheetName, row, column, width, height){
+function ghiDuLieuVaoO(data, sheetName, row, column, width, height) {
   let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
   // xoá trắng range
   sheet.getRange(row, column, width, height).clearContent();
@@ -30,7 +35,7 @@ function ghiDuLieuVaoO(data ,sheetName, row, column, width, height){
   sheet.getRange(row, column, width, height).setValue(data);
 }
 
-function layDuLieuTrongO(sheetName, row, column){
+function layDuLieuTrongO(sheetName, row, column) {
   let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
   return sheet.getRange(row, column).getValue();
 }
