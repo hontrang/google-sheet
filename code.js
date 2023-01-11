@@ -144,6 +144,38 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
   logTime(SHEET_CHI_TIET_MA, "J2");
 }
 
+function layThongTinCoDong() {
+  url = "https://finfo-iboard.ssi.com.vn/graphql";
+  let tenMa = layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
+
+  const data = JSON.stringify({
+    query:
+      "query shareholders($symbol: String!, $size: Int, $offset: Int, $order: String, $orderBy: String, $type: String, $language: String) { shareholders( symbol: $symbol size: $size offset: $offset order: $order orderBy: $orderBy type: $type language: $language ) }",
+    variables: '{ "symbol": \"'+ tenMa +'\", "size": 10, "offset": 1 }',
+  });
+  let options = {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+    },
+    payload: data,
+    method: "POST",
+  };
+  response = UrlFetchApp.fetch(url, options);
+  object = JSON.parse(response.getContentText());
+  mang_du_lieu_chinh = object.data.shareholders.dataList.map(
+    ({ name, percentage, publicdate, ownershiptypecode }) => [name, percentage * 100 + "%" , publicdate, ownershiptypecode]
+  );
+
+  ghiDuLieuVaoDay(
+    mang_du_lieu_chinh,
+    SHEET_CHI_TIET_MA,
+    20,
+    9,
+    mang_du_lieu_chinh.length,
+    mang_du_lieu_chinh[0].length
+  );
+}
+
 function layThongTinPB() {
   let danhSachMa = layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
   while (danhSachMa.length > 0) {
