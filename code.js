@@ -61,9 +61,7 @@ function getDataHose() {
     mang_du_lieu_chinh,
     SHEET_DU_LIEU,
     2,
-    1,
-    mang_du_lieu_chinh.length,
-    mang_du_lieu_chinh[0].length
+    1
   );
 }
 
@@ -71,23 +69,19 @@ function laySuKienChungKhoan() {
   // lay dữ liệu ô F1
   let tenMa = layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
   url =
-    "https://finfo-api.vndirect.com.vn/v4/news?q=tagCodes:" +
-    tenMa +
-    "~newsGroup:disclosure,rights_disclosure~locale:VN&sort=newsDate:desc~newsTime:desc&size=10";
-  response = UrlFetchApp.fetch(url, OPTIONS);
-  object = JSON.parse(response.getContentText());
-  mang_du_lieu_chinh = object.data.map(({ newsTitle, newsUrl, newsDate }) => [
-    newsTitle,
-    newsUrl,
-    newsDate,
-  ]);
+  "https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=" +
+  tenMa +
+  "&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2";
+  const content = UrlFetchApp.fetch(url).getContentText();
+    $ = Cheerio.load(content);
+    $("a").each(function () {
+      mang_du_lieu_chinh.push(new Array(tenMa.toUpperCase(), $(this).attr("title"), "https://s.cafef.vn" + $(this).attr("href"), $(this).siblings("span").text().substr(0,10)));
+    });
   ghiDuLieuVaoDay(
     mang_du_lieu_chinh,
     SHEET_CHI_TIET_MA,
-    4,
-    9,
-    mang_du_lieu_chinh.length,
-    mang_du_lieu_chinh[0].length
+    25,
+    5
   );
 }
 
@@ -125,21 +119,17 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
   );
   mang_du_lieu_chinh = mang_du_lieu_chinh.reverse();
 
-  ghiDuLieuVaoDay(
+  ghiDuLieuVaoDayXoaCot(
     mang_du_lieu_chinh,
     SHEET_CHI_TIET_MA,
     2,
-    1,
-    mang_du_lieu_chinh.length,
-    mang_du_lieu_chinh[0].length
+    1
   );
   ghiDuLieuVaoO(
     object.data.tradingViewData[0].symbol,
     SHEET_CHI_TIET_MA,
     1,
-    8,
-    1,
-    1
+    8
   );
   logTime(SHEET_CHI_TIET_MA, "J2");
 }
@@ -163,16 +153,14 @@ function layThongTinCoDong() {
   response = UrlFetchApp.fetch(url, options);
   object = JSON.parse(response.getContentText());
   mang_du_lieu_chinh = object.data.shareholders.dataList.map(
-    ({ name, percentage, publicdate, ownershiptypecode }) => [name, percentage * 100 + "%" , publicdate, ownershiptypecode]
+    ({ownershiptypecode, name, percentage, quantity, publicdate  }) => [ownershiptypecode, name, percentage * 100 + "%" , quantity,publicdate.substr(0,10)]
   );
 
   ghiDuLieuVaoDay(
     mang_du_lieu_chinh,
     SHEET_CHI_TIET_MA,
-    20,
-    9,
-    mang_du_lieu_chinh.length,
-    mang_du_lieu_chinh[0].length
+    37,
+    5
   );
 }
 
@@ -201,9 +189,7 @@ function layThongTinPB() {
     mang_du_lieu_chinh,
     SHEET_DU_LIEU,
     2,
-    10,
-    mang_du_lieu_chinh.length,
-    mang_du_lieu_chinh[0].length
+    10
   );
 }
 
@@ -232,9 +218,7 @@ function layThongTinPE() {
     mang_du_lieu_chinh,
     SHEET_DU_LIEU,
     2,
-    12,
-    mang_du_lieu_chinh.length,
-    mang_du_lieu_chinh[0].length
+    12
   );
 }
 
@@ -266,9 +250,7 @@ function layThongTinRoomNuocNgoai() {
     mang_du_lieu_chinh,
     SHEET_DU_LIEU,
     2,
-    14,
-    mang_du_lieu_chinh.length,
-    mang_du_lieu_chinh[0].length
+    14
   );
 }
 
@@ -297,9 +279,7 @@ function layThongTinKhoiLuongTrungBinh10Ngay() {
     mang_du_lieu_chinh,
     SHEET_DU_LIEU,
     2,
-    17,
-    mang_du_lieu_chinh.length,
-    mang_du_lieu_chinh[0].length
+    17
   );
 }
 
@@ -333,11 +313,7 @@ function layTinTuc() {
     const content = UrlFetchApp.fetch(url).getContentText();
     $ = Cheerio.load(content);
     $("a").each(function () {
-      let title = $(this).attr("title");
-      let url = "https://s.cafef.vn" + $(this).attr("href");
-      let time = $(this).siblings("span").text();
-      console.log(title, url, time);
-      mang_du_lieu_chinh.push(new Array(tenMa, title, url, time));
+      mang_du_lieu_chinh.push(new Array(tenMa.toUpperCase(), $(this).attr("title"), "https://s.cafef.vn" + $(this).attr("href"), $(this).siblings("span").text().substr(0,10)));
     });
   });
 
@@ -345,9 +321,7 @@ function layTinTuc() {
     mang_du_lieu_chinh,
     SHEET_TIN_TUC,
     2,
-    1,
-    mang_du_lieu_chinh.length,
-    mang_du_lieu_chinh[0].length
+    1
   );
 }
 
@@ -403,9 +377,7 @@ function layGiaTuanGanNhat() {
     mang_du_lieu_chinh,
     SHEET_DU_LIEU,
     2,
-    29,
-    mang_du_lieu_chinh.length,
-    mang_du_lieu_chinh[0].length
+    29
   );
   // in thời điểm lấy dữ liệu hoàn tất
   logTime(SHEET_THAM_CHIEU, "P2");
@@ -453,9 +425,7 @@ function layGiaThamChieu() {
     mang_du_lieu_chinh,
     SHEET_THAM_CHIEU,
     6,
-    1,
-    mang_du_lieu_chinh.length,
-    mang_du_lieu_chinh[0].length
+    1
   );
 
   // in thời điểm lấy dữ liệu hoàn tất
