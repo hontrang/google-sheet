@@ -5,11 +5,6 @@ let SHEET_TIN_TUC = "tin tức";
 let SHEET_DU_LIEU = "dữ liệu";
 let SHEET_CHI_TIET_MA = "chi tiết mã";
 let KICH_THUOC_MANG_PHU = 10;
-let HEADER_MA = "Tên mã";
-let HEADER_KHOI_LUONG = "Khối lượng";
-let HEADER_CODE = "Tên sự kiện";
-let HEADER_DATE = "Thời gian diễn ra sự kiện";
-let HEADER_LINK = "Link sự kiện";
 let mangPhu = new Array();
 let mang_du_lieu_chinh = new Array();
 let response;
@@ -79,10 +74,11 @@ function laySuKienChungKhoan() {
     });
   ghiDuLieuVaoDay(
     mang_du_lieu_chinh,
-    SHEET_CHI_TIET_MA,
-    25,
-    5
+    SHEET_DU_LIEU,
+    2,
+    42
   );
+  console.log("haha");
 }
 
 function layGiaVaKhoiLuongTheoMaChungKhoan() {
@@ -121,9 +117,9 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
 
   ghiDuLieuVaoDayXoaCot(
     mang_du_lieu_chinh,
-    SHEET_CHI_TIET_MA,
+    SHEET_DU_LIEU,
     2,
-    1
+    4
   );
   ghiDuLieuVaoO(
     object.data.tradingViewData[0].symbol,
@@ -153,14 +149,14 @@ function layThongTinCoDong() {
   response = UrlFetchApp.fetch(url, options);
   object = JSON.parse(response.getContentText());
   mang_du_lieu_chinh = object.data.shareholders.dataList.map(
-    ({ownershiptypecode, name, percentage, quantity, publicdate  }) => [ownershiptypecode, name, percentage * 100 + "%" , quantity,publicdate.substr(0,10)]
+    ({ownershiptypecode, name, percentage, quantity, publicdate  }) => [ownershiptypecode, name, percentage, quantity,publicdate.substr(0,10)]
   );
 
   ghiDuLieuVaoDay(
     mang_du_lieu_chinh,
-    SHEET_CHI_TIET_MA,
-    37,
-    5
+    SHEET_DU_LIEU,
+    2,
+    37
   );
 }
 
@@ -313,7 +309,7 @@ function layTinTuc() {
     const content = UrlFetchApp.fetch(url).getContentText();
     $ = Cheerio.load(content);
     $("a").each(function () {
-      mang_du_lieu_chinh.push(new Array(tenMa.toUpperCase(), $(this).attr("title"), "https://s.cafef.vn" + $(this).attr("href"), $(this).siblings("span").text().substr(0,10)));
+      mang_du_lieu_chinh.push(new Array(tenMa, $(this).attr("title"), "https://s.cafef.vn" + $(this).attr("href"), $(this).siblings("span").text().substr(0,10)));
     });
   });
 
