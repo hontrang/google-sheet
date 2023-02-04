@@ -303,19 +303,6 @@ function layThongTinKhoiLuongTrungBinh10Ngay() {
   );
 }
 
-function layGiaTriTheoCot(activeSheet, rowIndex, columnIndex) {
-  let sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
-  range = sheet.getRange(
-    rowIndex,
-    columnIndex,
-    sheet.getLastRow() - rowIndex + 1
-  );
-  // xoá phần tử rỗng trong mảng
-  return range.getValues().filter(function (el) {
-    return el != "";
-  });
-}
-
 function layTinTuc() {
   let sheetBangThongTin =
     SpreadsheetApp.getActive().getSheetByName(SHEET_BANG_THONG_TIN);
