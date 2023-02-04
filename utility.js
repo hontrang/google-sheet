@@ -19,20 +19,28 @@ function ganDuLieuVaoCot(cotThamChieu, cotDoiDuLieu) {
   Logger.log(data);
 }
 
-function ghiDuLieuVaoDay(data, sheetName, row, column, width, height) {
+function ghiDuLieuVaoDay(data, sheetName, row, column) {
   let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
   // xoá trắng range
-  sheet.getRange(row, column, width, height).clearContent();
+  sheet.getRange(row, column, data.length, data[0].length).clearContent();
 
-  sheet.getRange(row, column, width, height).setValues(data);
+  sheet.getRange(row, column, data.length, data[0].length).setValues(data);
 }
 
-function ghiDuLieuVaoO(data, sheetName, row, column, width, height) {
+function ghiDuLieuVaoDayXoaCot(data, sheetName, row, column) {
   let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
   // xoá trắng range
-  sheet.getRange(row, column, width, height).clearContent();
+  sheet.getRange(row, column, sheet.getLastRow(), data[0].length).clearContent();
 
-  sheet.getRange(row, column, width, height).setValue(data);
+  sheet.getRange(row, column, data.length, data[0].length).setValues(data);
+}
+
+function ghiDuLieuVaoO(data, sheetName, row, column) {
+  let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+  // xoá trắng range
+  sheet.getRange(row, column, 1, 1).clearContent();
+
+  sheet.getRange(row, column, 1, 1).setValue(data);
 }
 
 function layDuLieuTrongO(sheetName, row, column) {
