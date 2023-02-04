@@ -2,7 +2,7 @@ function logTime(sheet, cell) {
   SpreadsheetApp.getActive()
     .getSheetByName(sheet)
     .getRange(cell)
-    .setValue(new Date());
+    .setValue(moment().format("YYYY/MM/DD HH:mm:ss"));
 }
 
 function getDate(number) {
@@ -46,4 +46,17 @@ function ghiDuLieuVaoO(data, sheetName, row, column) {
 function layDuLieuTrongO(sheetName, row, column) {
   let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
   return sheet.getRange(row, column).getValue();
+}
+
+function layGiaTriTheoCot(activeSheet, rowIndex, columnIndex) {
+  let sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
+  range = sheet.getRange(
+    rowIndex,
+    columnIndex,
+    sheet.getLastRow() - rowIndex + 1
+  );
+  // xoá phần tử rỗng trong mảng
+  return range.getValues().filter(function (el) {
+    return el != "";
+  });
 }
