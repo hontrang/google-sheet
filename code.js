@@ -63,14 +63,14 @@ function laySuKienChungKhoan() {
   // lay dữ liệu ô F1
   let tenMa = layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
   url =
-  "https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=" +
-  tenMa +
-  "&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2";
+    "https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=" +
+    tenMa +
+    "&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2";
   const content = UrlFetchApp.fetch(url).getContentText();
-    $ = Cheerio.load(content);
-    $("a").each(function () {
-      mang_du_lieu_chinh.push(new Array(tenMa.toUpperCase(), $(this).attr("title"), "https://s.cafef.vn" + $(this).attr("href"), $(this).siblings("span").text().substr(0,10)));
-    });
+  $ = Cheerio.load(content);
+  $("a").each(function () {
+    mang_du_lieu_chinh.push(new Array(tenMa.toUpperCase(), $(this).attr("title"), "https://s.cafef.vn" + $(this).attr("href"), $(this).siblings("span").text().substr(0, 10)));
+  });
   ghiDuLieuVaoDay(
     mang_du_lieu_chinh,
     SHEET_DU_LIEU,
@@ -83,9 +83,9 @@ function layBaoCaoPhanTich() {
   // lay dữ liệu ô F1
   let tenMa = layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
   url =
-  "https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:" +
-  tenMa +
-  "&pageIndex=1&pageSize=9";
+    "https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:" +
+    tenMa +
+    "&pageIndex=1&pageSize=9";
   response = UrlFetchApp.fetch(url, {
     method: "POST",
     headers: {
@@ -161,7 +161,7 @@ function layThongTinCoDong() {
   const data = JSON.stringify({
     query:
       "query shareholders($symbol: String!, $size: Int, $offset: Int, $order: String, $orderBy: String, $type: String, $language: String) { shareholders( symbol: $symbol size: $size offset: $offset order: $order orderBy: $orderBy type: $type language: $language ) }",
-    variables: '{ "symbol": \"'+ tenMa +'\", "size": 10, "offset": 1 }',
+    variables: '{ "symbol": \"' + tenMa + '\", "size": 10, "offset": 1 }',
   });
   let options = {
     headers: {
@@ -173,7 +173,7 @@ function layThongTinCoDong() {
   response = UrlFetchApp.fetch(url, options);
   object = JSON.parse(response.getContentText());
   mang_du_lieu_chinh = object.data.shareholders.dataList.map(
-    ({ownershiptypecode, name, percentage, quantity, publicdate  }) => [ownershiptypecode, name, percentage, quantity,publicdate.substr(0,10)]
+    ({ ownershiptypecode, name, percentage, quantity, publicdate }) => [ownershiptypecode, name, percentage, quantity, publicdate.substr(0, 10)]
   );
 
   ghiDuLieuVaoDay(
@@ -333,7 +333,7 @@ function layTinTuc() {
     const content = UrlFetchApp.fetch(url).getContentText();
     $ = Cheerio.load(content);
     $("a").each(function () {
-      mang_du_lieu_chinh.push(new Array(tenMa, $(this).attr("title"),"", "https://s.cafef.vn" + $(this).attr("href"),"", $(this).siblings("span").text().substr(0,10)));
+      mang_du_lieu_chinh.push(new Array(tenMa, $(this).attr("title"), "", "https://s.cafef.vn" + $(this).attr("href"), "", $(this).siblings("span").text().substr(0, 10)));
     });
   });
 
