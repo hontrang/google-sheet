@@ -1,7 +1,6 @@
 //// Khai bao bien toan cuc /////
 let SHEET_THAM_CHIEU = "tham chiếu";
 let SHEET_BANG_THONG_TIN = "bảng thông tin";
-let SHEET_TIN_TUC = "tin tức";
 let SHEET_DU_LIEU = "dữ liệu";
 let SHEET_CHI_TIET_MA = "chi tiết mã";
 let KICH_THUOC_MANG_PHU = 10;
@@ -18,7 +17,7 @@ let OPTIONS = {
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
-  },
+  }
 };
 
 let OPTIONS_HTML = {
@@ -78,7 +77,34 @@ function laySuKienChungKhoan() {
     2,
     42
   );
-  console.log("haha");
+  console.log("hahah1");
+}
+
+function layBaoCaoPhan() {
+  // lay dữ liệu ô F1
+  let tenMa = layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
+  url =
+  "https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:" +
+  tenMa +
+  "&pageIndex=1&pageSize=9";
+  response = UrlFetchApp.fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    }
+  });
+  object = JSON.parse(response.getContentText());
+  mang_du_lieu_chinh = object.data.stockRealtimesByGroup.map(
+    ({ stockSymbol, matchedPrice }) => [stockSymbol, matchedPrice]
+  );
+  ghiDuLieuVaoDay(
+    mang_du_lieu_chinh,
+    SHEET_DU_LIEU,
+    2,
+    42
+  );
+  console.log("hahah1");
 }
 
 function layGiaVaKhoiLuongTheoMaChungKhoan() {
@@ -309,14 +335,14 @@ function layTinTuc() {
     const content = UrlFetchApp.fetch(url).getContentText();
     $ = Cheerio.load(content);
     $("a").each(function () {
-      mang_du_lieu_chinh.push(new Array(tenMa, $(this).attr("title"), "https://s.cafef.vn" + $(this).attr("href"), $(this).siblings("span").text().substr(0,10)));
+      mang_du_lieu_chinh.push(new Array(tenMa, $(this).attr("title"),"", "https://s.cafef.vn" + $(this).attr("href"),"", $(this).siblings("span").text().substr(0,10)));
     });
   });
 
   ghiDuLieuVaoDay(
     mang_du_lieu_chinh,
-    SHEET_TIN_TUC,
-    2,
+    SHEET_BANG_THONG_TIN,
+    40,
     1
   );
 }
@@ -376,7 +402,7 @@ function layGiaTuanGanNhat() {
     29
   );
   // in thời điểm lấy dữ liệu hoàn tất
-  logTime(SHEET_THAM_CHIEU, "P2");
+  logTime(SHEET_THAM_CHIEU, "L2");
 }
 
 function layGiaThamChieu() {
