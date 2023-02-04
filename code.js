@@ -77,10 +77,9 @@ function laySuKienChungKhoan() {
     2,
     42
   );
-  console.log("hahah1");
 }
 
-function layBaoCaoPhan() {
+function layBaoCaoPhanTich() {
   // lay dữ liệu ô F1
   let tenMa = layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
   url =
@@ -104,7 +103,6 @@ function layBaoCaoPhan() {
     2,
     42
   );
-  console.log("hahah1");
 }
 
 function layGiaVaKhoiLuongTheoMaChungKhoan() {
