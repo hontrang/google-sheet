@@ -82,10 +82,7 @@ function laySuKienChungKhoan() {
 function layBaoCaoPhanTich() {
   // lay dữ liệu ô F1
   let tenMa = layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
-  url =
-    "https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:" +
-    tenMa +
-    "&pageIndex=1&pageSize=9";
+  url = "https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:" + tenMa + "&pageIndex=1&pageSize=9"
   response = UrlFetchApp.fetch(url, {
     method: "POST",
     headers: {
@@ -94,15 +91,14 @@ function layBaoCaoPhanTich() {
     }
   });
   object = JSON.parse(response.getContentText());
-  mang_du_lieu_chinh = object.data.stockRealtimesByGroup.map(
-    ({ stockSymbol, matchedPrice }) => [stockSymbol, matchedPrice]
-  );
+  mang_du_lieu_chinh = object.Data.map(({ SourceName, Title, ReportTypeName, LastUpdate, Url }) => [SourceName, Title, ReportTypeName, LastUpdate, Url]);
   ghiDuLieuVaoDay(
     mang_du_lieu_chinh,
     SHEET_DU_LIEU,
     2,
-    42
+    46
   );
+  return "done";
 }
 
 function layGiaVaKhoiLuongTheoMaChungKhoan() {
