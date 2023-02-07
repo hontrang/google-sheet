@@ -62,6 +62,7 @@ function getDataHose() {
 function laySuKienChungKhoan() {
   // lay dữ liệu ô F1
   let tenMa = layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
+  mang_du_lieu_chinh = new Array();
   url =
     "https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=" +
     tenMa +
@@ -98,7 +99,16 @@ function layBaoCaoPhanTich() {
     2,
     46
   );
-  return "done";
+}
+
+function layThongTinChiTietMa(){
+  logStart(SHEET_CHI_TIET_MA, "J2");
+  layGiaVaKhoiLuongTheoMaChungKhoan();
+  layThongTinCoDong();
+  layBaoCaoPhanTich();
+  laySuKienChungKhoan();
+  logTime(SHEET_CHI_TIET_MA, "J2");
+  return "layThongTinChiTietMa completed";
 }
 
 function layGiaVaKhoiLuongTheoMaChungKhoan() {
@@ -147,7 +157,6 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
     1,
     8
   );
-  logTime(SHEET_CHI_TIET_MA, "J2");
 }
 
 function layThongTinCoDong() {
@@ -241,6 +250,7 @@ function layThongTinPE() {
 function layThongTinRoomNuocNgoai() {
   let danhSachMa = layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
   let mang5Ma = new Array();
+  mang_du_lieu_chinh = new Array();
   while (danhSachMa.length > 0) {
     for (let i = 0; i < KICH_THUOC_MANG_PHU; i++) {
       mang5Ma.push(danhSachMa.shift());
