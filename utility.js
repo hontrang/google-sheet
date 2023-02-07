@@ -5,6 +5,13 @@ function logTime(sheet, cell) {
     .setValue(moment().format("YYYY/MM/DD HH:mm:ss"));
 }
 
+function logStart(sheet, cell) {
+  SpreadsheetApp.getActive()
+    .getSheetByName(sheet)
+    .getRange(cell)
+    .setValue("...");
+}
+
 function getDate(number) {
   let date = new Date(number);
   return (
