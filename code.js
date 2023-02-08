@@ -28,10 +28,6 @@ let OPTIONS_HTML = {
   },
 };
 
-function hamThucThi() {
-  getDataHose();
-}
-
 function getDataHose() {
   url = "https://wgateway-iboard.ssi.com.vn/graphql/";
   const data = JSON.stringify({
