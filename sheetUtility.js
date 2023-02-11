@@ -6,15 +6,11 @@ var SheetUtility = {
 
     sheet.getRange(row, column, data.length, data[0].length).setValues(data);
   },
-  ghiDuLieuVaoO: function (data, sheetName, row, column) {
-    let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
-    // xoá trắng range
-    sheet.getRange(row, column, 1, 1).clearContent();
-
-    sheet.getRange(row, column, 1, 1).setValue(data);
+  ghiDuLieuVaoO: function (data, sheetName, cell) {
+    SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(cell).setValue(data);
   },
-  layDuLieuTrongO: function (sheetName, row, column) {
-    return SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(row, column).getValue();
+  layDuLieuTrongO: function (sheetName, cell) {
+    return SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(cell).getValue();
   },
   layGiaTriTheoCot: function (activeSheet, rowIndex, columnIndex) {
     let sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
@@ -27,6 +23,13 @@ var SheetUtility = {
     return range.getValues().filter(function (el) {
       return el != "";
     });
+  },
+  layDuLieuTrongCot: function (sheetName, column) {
+    let values = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
+    values = values.filter(String);
+    // xoa giá trị trong ô title
+    values.reverse().pop();
+    return values;
   }
 }
 
