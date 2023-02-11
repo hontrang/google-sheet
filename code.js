@@ -57,8 +57,7 @@ function getDataHose() {
 }
 
 function laySuKienChungKhoan() {
-  // lay dữ liệu ô F1
-  let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
+  let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F1");
   mang_du_lieu_chinh = new Array();
   url = `https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
   const content = UrlFetchApp.fetch(url).getContentText();
@@ -66,12 +65,12 @@ function laySuKienChungKhoan() {
   $("a").each(function () {
     mang_du_lieu_chinh.push(new Array(tenMa.toUpperCase(), $(this).attr("title"), "https://s.cafef.vn" + $(this).attr("href"), $(this).siblings("span").text().substr(0, 10)));
   });
+  // ghi từ cột AP
   SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 42);
 }
 
 function layBaoCaoPhanTich() {
-  // lay dữ liệu ô F1
-  let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
+  let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F1");
   url = `https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:${tenMa}&pageIndex=1&pageSize=9`;
   object = SheetHttp.sendRequest(url, {
     method: "POST",
@@ -81,7 +80,6 @@ function layBaoCaoPhanTich() {
     }
   });
   mang_du_lieu_chinh = object.Data.map(({ SourceName, Title, ReportTypeName, LastUpdate, Url }) => [SourceName, Title, ReportTypeName, LastUpdate, Url]);
-  SheetLog.logDebug(mang_du_lieu_chinh[0]);
   SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 46);
 }
 
@@ -96,12 +94,9 @@ function layThongTinChiTietMa() {
 }
 
 function layGiaVaKhoiLuongTheoMaChungKhoan() {
-  // lấy dữ liệu ô F1
-  let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
-  // lấy dữ liệu ô F2
-  let fromDate = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, 2, 6);
-  //lấy dữ liệu ô H2
-  let toDate = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, 2, 8);
+  let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F1");
+  let fromDate = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F2");
+  let toDate = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "H2");
 
   let query = `query { tradingViewData(symbol: "${tenMa}", from: "${fromDate}",to: "${toDate}") { symbol close   volume    time   }  }  `;
   let options = {
@@ -119,13 +114,13 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
     ({ time, close, volume }) => [new Date(time * 1000), close, volume]
   );
   mang_du_lieu_chinh = mang_du_lieu_chinh.reverse();
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 42);
-  SheetUtility.ghiDuLieuVaoO(object.data.tradingViewData[0].symbol, SHEET_CHI_TIET_MA, 1, 8);
+  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 4);
+  SheetUtility.ghiDuLieuVaoO(object.data.tradingViewData[0].symbol, SHEET_CHI_TIET_MA, "H1");
 }
 
 function layThongTinCoDong() {
   url = "https://finfo-iboard.ssi.com.vn/graphql";
-  let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, 1, 6);
+  let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F1");
 
   const data = JSON.stringify({
     query:
@@ -232,31 +227,26 @@ function layThongTinKhoiLuongTrungBinh10Ngay() {
 }
 
 function layTinTuc() {
-  let sheetBangThongTin =
-    SpreadsheetApp.getActive().getSheetByName(SHEET_BANG_THONG_TIN);
   // lay du lieu cot J sheet bảng thông tin
-  let listTenMa = sheetBangThongTin.getRange("J:J").getValues();
-  listTenMa = listTenMa.filter(String);
+  let listTenMa = SheetUtility.layDuLieuTrongCot(SHEET_BANG_THONG_TIN, "J");
 
-  listTenMa.reverse().pop();
-  // lay dữ liệu ô F1
   listTenMa.forEach((tenMa) => {
     url = `https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
     const content = UrlFetchApp.fetch(url).getContentText();
     $ = Cheerio.load(content);
     $("a").each(function () {
-      mang_du_lieu_chinh.push(new Array(tenMa, $(this).attr("title"), "", "https://s.cafef.vn" + $(this).attr("href"), "", $(this).siblings("span").text().substr(0, 10)));
+      mang_du_lieu_chinh.push([tenMa, $(this).attr("title"), "", "https://s.cafef.vn" + $(this).attr("href"), "", $(this).siblings("span").text().substr(0, 10)]);
     });
   });
+  // ghi dữ liệu từ ô A40
   SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_BANG_THONG_TIN, 40, 1);
 }
 
 function layGiaTuanGanNhat() {
   // let danhSachMa = ["STB"];
-  let danhSachMa = SheetUtility.layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
-  let sheet = SpreadsheetApp.getActive().getSheetByName(SHEET_DU_LIEU);
-  let fromDate = sheet.getRange("AA11").getValue();
-  let toDate = sheet.getRange("AB11").getValue();
+  let danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_DU_LIEU, "C");
+  let fromDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AA11");
+  let toDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AB11");
   while (danhSachMa.length > 0) {
     tenMa = danhSachMa.shift();
     let query = `query { tradingViewData(symbol: "${tenMa}", from: "${fromDate}",to: "${toDate}") { symbol close } }`;
@@ -285,9 +275,8 @@ function layGiaTuanGanNhat() {
 }
 
 function layGiaThamChieu() {
-  let danhSachMa = SheetUtility.layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
-  let sheet = SpreadsheetApp.getActive().getSheetByName(SHEET_THAM_CHIEU);
-  let fromDate = SheetDate.getDate(Date.parse(sheet.getRange("K1").getValue()));
+  let danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_DU_LIEU, "C");
+  let fromDate = SheetDate.getDate(Date.parse(SheetUtility.layDuLieuTrongO(SHEET_THAM_CHIEU, "K1")));
   let toDate = SheetDate.getDate(Date.parse(fromDate) + 86400000);
   while (danhSachMa.length > 0) {
     tenMa = danhSachMa.shift();
