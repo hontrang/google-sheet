@@ -98,24 +98,32 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
   let fromDate = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F2");
   let toDate = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "H2");
 
-  let query = `query { tradingViewData(symbol: "${tenMa}", from: "${fromDate}",to: "${toDate}") { symbol close   volume    time   }  }  `;
+  url = "https://finfo-iboard.ssi.com.vn/graphql";
+
+  const data = JSON.stringify({
+    query:"query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) { stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }",
+    variables: `{
+      "symbol": "${tenMa}",
+      "offset": 1,
+      "size": 1000,
+      "fromDate": "${fromDate}",
+      "toDate": "${toDate}"
+    }`,
+  });
   let options = {
-    method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
+      "Content-Type": "application/json; charset=utf-8",
     },
-    payload: JSON.stringify({
-      query,
-    }),
+    payload: data,
+    method: "POST",
   };
-  object = SheetHttp.sendRequest(URL_GRAPHQL_CAFEF, options);
-  mang_du_lieu_chinh = object.data.tradingViewData.map(
-    ({ time, close, volume }) => [new Date(time * 1000), close, volume]
+  object = SheetHttp.sendRequest(url, options);
+  mang_du_lieu_chinh = object.data.stockPrice.dataList.map(
+    ({ tradingdate, closeprice, totalmatchvol }) => [tradingdate.slice(0, 10), closeprice, totalmatchvol]
   );
-  mang_du_lieu_chinh = mang_du_lieu_chinh.reverse();
+  // mang_du_lieu_chinh = mang_du_lieu_chinh.reverse();
   SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 4);
-  SheetUtility.ghiDuLieuVaoO(object.data.tradingViewData[0].symbol, SHEET_CHI_TIET_MA, "H1");
+  SheetUtility.ghiDuLieuVaoO(object.data.stockPrice.dataList[0].symbol, SHEET_CHI_TIET_MA, "H1");
 }
 
 function layThongTinCoDong() {
@@ -123,8 +131,7 @@ function layThongTinCoDong() {
   let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F1");
 
   const data = JSON.stringify({
-    query:
-      "query shareholders($symbol: String!, $size: Int, $offset: Int, $order: String, $orderBy: String, $type: String, $language: String) { shareholders( symbol: $symbol size: $size offset: $offset order: $order orderBy: $orderBy type: $type language: $language ) }",
+    query:"query shareholders($symbol: String!, $size: Int, $offset: Int, $order: String, $orderBy: String, $type: String, $language: String) { shareholders( symbol: $symbol size: $size offset: $offset order: $order orderBy: $orderBy type: $type language: $language ) }",
     variables: `{ "symbol": "${tenMa}", "size": 10, "offset": 1 }`,
   });
   let options = {
@@ -247,9 +254,11 @@ function layGiaTuanGanNhat() {
   let danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_DU_LIEU, "C");
   let fromDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AA11");
   let toDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AB11");
+  let mang_khoi_luong = new Array();
+  // danhSachMa = danhSachMa.slice(1,10);
   while (danhSachMa.length > 0) {
-    tenMa = danhSachMa.shift();
-    let query = `query { tradingViewData(symbol: "${tenMa}", from: "${fromDate}",to: "${toDate}") { symbol close } }`;
+    tenMa = danhSachMa.shift().toString();
+    let query = `query { tradingViewData(symbol: "${tenMa}", from: "${fromDate}",to: "${toDate}") { symbol close volume } }`;
     let options = {
       method: "POST",
       headers: {
@@ -265,18 +274,21 @@ function layGiaTuanGanNhat() {
       mangPhu = object.data.tradingViewData;
       let len = object.data.tradingViewData.length;
       mang_du_lieu_chinh.push(new Array(tenMa, mangPhu[len - 6].close, mangPhu[len - 5].close, mangPhu[len - 4].close, mangPhu[len - 3].close, mangPhu[len - 2].close, mangPhu[len - 1].close));
+      mang_khoi_luong.push(new Array(tenMa, mangPhu[len - 6].volume, mangPhu[len - 5].volume, mangPhu[len - 4].volume, mangPhu[len - 3].volume, mangPhu[len - 2].volume, mangPhu[len - 1].volume));
     } catch (e) {
-      mang_du_lieu_chinh.push(new Array("NA", 0, 0, 0, 0, 0));
+      mang_du_lieu_chinh.push(new Array(tenMa, 0, 0, 0, 0, 0));
+      mang_khoi_luong.push(new Array(tenMa, 0, 0, 0, 0, 0));
     }
   }
   SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 29);
+  SheetUtility.ghiDuLieuVaoDay(mang_khoi_luong, SHEET_DU_LIEU, 2, 51);
   // in thời điểm lấy dữ liệu hoàn tất
   SheetLog.logTime(SHEET_THAM_CHIEU, "L2");
 }
 
 function layGiaThamChieu() {
   let danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_DU_LIEU, "C");
-  let fromDate = SheetDate.getDate(Date.parse(SheetUtility.layDuLieuTrongO(SHEET_THAM_CHIEU, "K1")));
+  let fromDate = SheetDate.getDate(Date.parse(SheetUtility.layDuLieuTrongO(SHEET_THAM_CHIEU, "I1")));
   let toDate = SheetDate.getDate(Date.parse(fromDate) + 86400000);
   while (danhSachMa.length > 0) {
     tenMa = danhSachMa.shift();
@@ -304,5 +316,5 @@ function layGiaThamChieu() {
   SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_THAM_CHIEU, 6, 1);
 
   // in thời điểm lấy dữ liệu hoàn tất
-  SheetLog.logTime(SHEET_THAM_CHIEU, "K2");
+  SheetLog.logTime(SHEET_THAM_CHIEU, "I2");
 }
