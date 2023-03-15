@@ -168,23 +168,18 @@ function layThongTinPB() {
   SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 10);
 }
 
+// code by chat-gpt
 function layThongTinPE() {
   let danhSachMa = SheetUtility.layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
-  while (danhSachMa.length > 0) {
-    for (let i = 0; i < KICH_THUOC_MANG_PHU; i++) {
-      mangPhu.push(danhSachMa.shift());
+  let mang_du_lieu_chinh = danhSachMa.map((ma) => {
+    url = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?order=reportDate&where=itemCode:51006&filter=code:${ma}`;
+    let object = SheetHttp.sendRequest(url, OPTIONS);
+    try {
+      return [object.data[0].code, object.data[0].value];
+    } catch (e) {
+      return [ma, 0];
     }
-    url = "https://api-finfo.vndirect.com.vn/v4/ratios/latest?order=reportDate&where=itemCode:51006&filter=code:" + mangPhu.join(",");
-    object = SheetHttp.sendRequest(url, OPTIONS);
-    object.data.forEach((data) => {
-      try {
-        mang_du_lieu_chinh.push(new Array(data.code, data.value));
-      } catch (e) {
-        mang_du_lieu_chinh.push(new Array(data.code, 0));
-      }
-    });
-    mangPhu = [];
-  }
+  });
   SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 12);
 }
 
