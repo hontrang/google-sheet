@@ -4,6 +4,15 @@ var SheetUtility = {
     sheet.getRange(row, column, data.length, data[0].length).clearContent();
     sheet.getRange(row, column, data.length, data[0].length).setValues(data);
   },
+  ghiDuLieuVaoDayTheoTen: function (data, sheetName, rowName, columnName) {
+    let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+
+    let rowIndex = parseInt(rowName, 10) - 1;
+    let columnIndex = this.columnToIndex(columnName) - 1;
+
+    sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).clearContent();
+    sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).setValues(data);
+  },
   ghiDuLieuVaoO: function (data, sheetName, cell) {
     SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(cell).setValue(data);
   },
@@ -24,6 +33,15 @@ var SheetUtility = {
     // xoa giá trị trong ô title
     values.reverse().pop();
     return values;
+  },
+  columnToIndex: function (columnName) {
+    let index = 0;
+    let length = columnName.length;
+    for (let i = 0; i < length; i++) {
+      let charCode = columnName.toUpperCase().charCodeAt(i) - 64;
+      index += (charCode * Math.pow(26, length - i - 1));
+    }
+    return index;
   }
 }
 
