@@ -53,7 +53,7 @@ function getDataHose() {
   mang_du_lieu_chinh = object.data.stockRealtimesByGroup.map(
     ({ stockSymbol, matchedPrice }) => [stockSymbol, matchedPrice]
   );
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 1);
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "A");
 }
 
 function laySuKienChungKhoan() {
@@ -66,7 +66,7 @@ function laySuKienChungKhoan() {
     mang_du_lieu_chinh.push(new Array(tenMa.toUpperCase(), $(this).attr("title"), "https://s.cafef.vn" + $(this).attr("href"), $(this).siblings("span").text().substr(0, 10)));
   });
   // ghi từ cột AP
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 42);
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "AP");
 }
 
 function layBaoCaoPhanTich() {
@@ -80,7 +80,7 @@ function layBaoCaoPhanTich() {
     }
   });
   mang_du_lieu_chinh = object.Data.map(({ SourceName, Title, ReportTypeName, LastUpdate, Url }) => [SourceName, Title, ReportTypeName, LastUpdate, Url]);
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 46);
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "AT");
 }
 
 function layThongTinChiTietMa() {
@@ -101,7 +101,7 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
   url = "https://finfo-iboard.ssi.com.vn/graphql";
 
   const data = JSON.stringify({
-    query:"query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) { stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }",
+    query: "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) { stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }",
     variables: `{
       "symbol": "${tenMa}",
       "offset": 1,
@@ -122,7 +122,7 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
     ({ tradingdate, closeprice, totalmatchvol }) => [tradingdate.slice(0, 10), closeprice, totalmatchvol]
   );
   // mang_du_lieu_chinh = mang_du_lieu_chinh.reverse();
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 4);
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "D");
   SheetUtility.ghiDuLieuVaoO(object.data.stockPrice.dataList[0].symbol, SHEET_CHI_TIET_MA, "H1");
 }
 
@@ -131,7 +131,7 @@ function layThongTinCoDong() {
   let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F1");
 
   const data = JSON.stringify({
-    query:"query shareholders($symbol: String!, $size: Int, $offset: Int, $order: String, $orderBy: String, $type: String, $language: String) { shareholders( symbol: $symbol size: $size offset: $offset order: $order orderBy: $orderBy type: $type language: $language ) }",
+    query: "query shareholders($symbol: String!, $size: Int, $offset: Int, $order: String, $orderBy: String, $type: String, $language: String) { shareholders( symbol: $symbol size: $size offset: $offset order: $order orderBy: $orderBy type: $type language: $language ) }",
     variables: `{ "symbol": "${tenMa}", "size": 10, "offset": 1 }`,
   });
   let options = {
@@ -165,7 +165,7 @@ function layThongTinPB() {
     });
     mangPhu = [];
   }
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 10);
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "J");
 }
 
 // code by chat-gpt
@@ -180,7 +180,7 @@ function layThongTinPE() {
       return [ma, 0];
     }
   });
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 12);
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "L");
 }
 
 function layThongTinRoomNuocNgoai() {
@@ -204,7 +204,7 @@ function layThongTinRoomNuocNgoai() {
     });
     mang5Ma = [];
   }
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 14);
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "N");
 }
 
 function layThongTinKhoiLuongTrungBinh10Ngay() {
@@ -225,7 +225,7 @@ function layThongTinKhoiLuongTrungBinh10Ngay() {
     });
     mangPhu = [];
   }
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 17);
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "Q");
 }
 
 function layTinTuc() {
@@ -241,43 +241,59 @@ function layTinTuc() {
     });
   });
   // ghi dữ liệu từ ô A40
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_BANG_THONG_TIN, 40, 1);
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_BANG_THONG_TIN, 40, "A");
 }
 
+//todo: remove reverse()
 function layGiaTuanGanNhat() {
-  // let danhSachMa = ["STB"];
-  let danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_DU_LIEU, "C");
-  let fromDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AA11");
-  let toDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AB11");
-  let mang_khoi_luong = new Array();
-  // danhSachMa = danhSachMa.slice(1,10);
-  while (danhSachMa.length > 0) {
-    tenMa = danhSachMa.shift().toString();
-    let query = `query { tradingViewData(symbol: "${tenMa}", from: "${fromDate}",to: "${toDate}") { symbol close volume } }`;
+  const danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_DU_LIEU, "C");
+  // const danhSachMa = ["FRT"];
+  const fromDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AA11");
+  const toDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AB11");
+  const mang_du_lieu_chinh = [];
+  const mang_khoi_luong = [];
+  const url = "https://finfo-iboard.ssi.com.vn/graphql";
+
+  danhSachMa.forEach((tenMa) => {
+
+    const data = JSON.stringify({
+      query: "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) { stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }",
+      variables: `{
+      "symbol": "${tenMa}",
+      "offset": 1,
+      "size": 1000,
+      "fromDate": "${fromDate}",
+      "toDate": "${toDate}"
+    }`,
+    });
     let options = {
-      method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+        "Content-Type": "application/json; charset=utf-8",
       },
-      payload: JSON.stringify({
-        query,
-      }),
+      payload: data,
+      method: "POST",
     };
-    object = SheetHttp.sendRequest(URL_GRAPHQL_CAFEF, options);
-    try {
-      mangPhu = object.data.tradingViewData;
-      let len = object.data.tradingViewData.length;
-      mang_du_lieu_chinh.push(new Array(tenMa, mangPhu[len - 6].close, mangPhu[len - 5].close, mangPhu[len - 4].close, mangPhu[len - 3].close, mangPhu[len - 2].close, mangPhu[len - 1].close));
-      mang_khoi_luong.push(new Array(tenMa, mangPhu[len - 6].volume, mangPhu[len - 5].volume, mangPhu[len - 4].volume, mangPhu[len - 3].volume, mangPhu[len - 2].volume, mangPhu[len - 1].volume));
-    } catch (e) {
-      mang_du_lieu_chinh.push(new Array(tenMa, 0, 0, 0, 0, 0));
-      mang_khoi_luong.push(new Array(tenMa, 0, 0, 0, 0, 0));
+    object = SheetHttp.sendRequest(url, options);
+
+    if (object?.data?.stockPrice?.dataList) {
+      const closes = [];
+      const volumes = [];
+      for (let i = 0; i < 6; i++) {
+          closes.push(object.data.stockPrice.dataList[i].closeprice);
+          volumes.push(object.data.stockPrice.dataList[i].totalmatchvol);
+        }
+      closes.push(tenMa);
+      volumes.push(tenMa);
+      mang_du_lieu_chinh.push(closes.reverse());
+      mang_khoi_luong.push(volumes.reverse());
+    } else {
+      mang_du_lieu_chinh.push([tenMa, 0, 0, 0, 0, 0]);
+      mang_khoi_luong.push([tenMa, 0, 0, 0, 0, 0]);
     }
-  }
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 29);
-  SheetUtility.ghiDuLieuVaoDay(mang_khoi_luong, SHEET_DU_LIEU, 2, 51);
-  // in thời điểm lấy dữ liệu hoàn tất
+  });
+
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "AC");
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_khoi_luong, SHEET_DU_LIEU, 2, "AY");
   SheetLog.logTime(SHEET_THAM_CHIEU, "L2");
 }
 
@@ -308,7 +324,7 @@ function layGiaThamChieu() {
       mang_du_lieu_chinh.push(new Array("NA", 0));
     }
   }
-  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_THAM_CHIEU, 6, 1);
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_THAM_CHIEU, 6, "A");
 
   // in thời điểm lấy dữ liệu hoàn tất
   SheetLog.logTime(SHEET_THAM_CHIEU, "I2");
