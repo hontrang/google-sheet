@@ -244,10 +244,9 @@ function layTinTuc() {
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_BANG_THONG_TIN, 40, "A");
 }
 
-//todo: remove reverse()
 function layGiaTuanGanNhat() {
   const danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_DU_LIEU, "C");
-  // const danhSachMa = ["FRT"];
+  // const danhSachMa = ["YEG"];
   const fromDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AA11");
   const toDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AB11");
   const mang_du_lieu_chinh = [];
@@ -255,13 +254,12 @@ function layGiaTuanGanNhat() {
   const url = "https://finfo-iboard.ssi.com.vn/graphql";
 
   danhSachMa.forEach((tenMa) => {
-
     const data = JSON.stringify({
       query: "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) { stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }",
       variables: `{
       "symbol": "${tenMa}",
       "offset": 1,
-      "size": 1000,
+      "size": 30,
       "fromDate": "${fromDate}",
       "toDate": "${toDate}"
     }`,
@@ -276,16 +274,14 @@ function layGiaTuanGanNhat() {
     object = SheetHttp.sendRequest(url, options);
 
     if (object?.data?.stockPrice?.dataList) {
-      const closes = [];
-      const volumes = [];
-      for (let i = 0; i < 6; i++) {
+      const closes = [tenMa];
+      const volumes = [tenMa];
+      for (let i = 5 ; i >= 0 ; i--) {
           closes.push(object.data.stockPrice.dataList[i].closeprice);
           volumes.push(object.data.stockPrice.dataList[i].totalmatchvol);
         }
-      closes.push(tenMa);
-      volumes.push(tenMa);
-      mang_du_lieu_chinh.push(closes.reverse());
-      mang_khoi_luong.push(volumes.reverse());
+      mang_du_lieu_chinh.push(closes);
+      mang_khoi_luong.push(volumes);
     } else {
       mang_du_lieu_chinh.push([tenMa, 0, 0, 0, 0, 0]);
       mang_khoi_luong.push([tenMa, 0, 0, 0, 0, 0]);
@@ -297,35 +293,41 @@ function layGiaTuanGanNhat() {
   SheetLog.logTime(SHEET_THAM_CHIEU, "L2");
 }
 
+// Hàm lấy giá tham chiếu từ một nguồn dữ liệu và ghi vào Google Sheets
 function layGiaThamChieu() {
-  let danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_DU_LIEU, "C");
-  let fromDate = SheetDate.getDate(Date.parse(SheetUtility.layDuLieuTrongO(SHEET_THAM_CHIEU, "I1")));
-  let toDate = SheetDate.getDate(Date.parse(fromDate) + 86400000);
-  while (danhSachMa.length > 0) {
-    tenMa = danhSachMa.shift();
-    let query = `query { tradingViewData(symbol: "${tenMa}", from: "${fromDate}",to: "${toDate}") { symbol close } }`;
-    let options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      payload: JSON.stringify({
-        query,
-      }),
-    };
-    object = SheetHttp.sendRequest(URL_GRAPHQL_CAFEF, options);
-    try {
-      mangPhu = object.data.tradingViewData;
-      mang_du_lieu_chinh.push(
-        new Array(mangPhu[0].symbol, mangPhu[0].close * 1000)
-      );
-    } catch (e) {
-      mang_du_lieu_chinh.push(new Array("NA", 0));
-    }
-  }
-  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_THAM_CHIEU, 6, "A");
+  const danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_DU_LIEU, "C");
+  const toDate = SheetUtility.layDuLieuTrongO(SHEET_THAM_CHIEU, "I1");
+  const fromDate = moment(toDate,"DD/MM/YYYY").subtract(1, "days").format("DD/MM/YYYY");
+  const url = "https://finfo-iboard.ssi.com.vn/graphql";
 
-  // in thời điểm lấy dữ liệu hoàn tất
+  const mang_du_lieu_chinh = danhSachMa.map(tenMa => {
+    const data = JSON.stringify({
+      query: "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) { stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }",
+      variables: `{
+      "symbol": "${tenMa}",
+      "offset": 1,
+      "size": 1,
+      "fromDate": "${fromDate}",
+      "toDate": "${toDate}"
+    }`,
+    });
+    let options = {
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      payload: data,
+      method: "POST",
+    };
+    object = SheetHttp.sendRequest(url, options);
+
+    try {
+      let closeprice = object.data.stockPrice.dataList[0].closeprice;
+      return [tenMa, closeprice];
+    } catch (e) {
+      return ["NA", 0];
+    }
+  });
+
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_THAM_CHIEU, 4, "A");
   SheetLog.logTime(SHEET_THAM_CHIEU, "I2");
 }
