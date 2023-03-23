@@ -251,9 +251,12 @@ function layGiaTuanGanNhat() {
   const toDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AB11");
   const mang_du_lieu_chinh = [];
   const mang_khoi_luong = [];
+  const mang_foreign_buy = [];
+  const mang_foreign_sell = [];
   const url = "https://finfo-iboard.ssi.com.vn/graphql";
 
   danhSachMa.forEach((tenMa) => {
+    console.log(tenMa);
     const data = JSON.stringify({
       query: "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) { stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }",
       variables: `{
@@ -271,25 +274,42 @@ function layGiaTuanGanNhat() {
       payload: data,
       method: "POST",
     };
-    object = SheetHttp.sendRequest(url, options);
+    try {
+      object = SheetHttp.sendRequest(url, options);
+    } catch (e) {
+      mang_du_lieu_chinh.push([tenMa, 0, 0, 0, 0, 0, 0]);
+      mang_khoi_luong.push([tenMa, 0, 0, 0, 0, 0, 0]);
+      mang_foreign_buy.push([tenMa, 0, 0, 0, 0, 0, 0]);
+      mang_foreign_sell.push([tenMa, 0, 0, 0, 0, 0, 0]);
+    }
 
     if (object?.data?.stockPrice?.dataList) {
       const closes = [tenMa];
       const volumes = [tenMa];
-      for (let i = 5 ; i >= 0 ; i--) {
-          closes.push(object.data.stockPrice.dataList[i].closeprice);
-          volumes.push(object.data.stockPrice.dataList[i].totalmatchvol);
-        }
+      const foreignbuyvoltotal = [tenMa];
+      const foreignsellvoltotal = [tenMa];
+      for (let i = 5; i >= 0; i--) {
+        closes.push(object.data.stockPrice.dataList[i].closeprice);
+        volumes.push(object.data.stockPrice.dataList[i].totalmatchvol);
+        foreignbuyvoltotal.push(object.data.stockPrice.dataList[i].foreignbuyvoltotal);
+        foreignsellvoltotal.push(object.data.stockPrice.dataList[i].foreignsellvoltotal);
+      }
       mang_du_lieu_chinh.push(closes);
       mang_khoi_luong.push(volumes);
+      mang_foreign_buy.push(foreignbuyvoltotal);
+      mang_foreign_sell.push(foreignsellvoltotal);
     } else {
-      mang_du_lieu_chinh.push([tenMa, 0, 0, 0, 0, 0]);
-      mang_khoi_luong.push([tenMa, 0, 0, 0, 0, 0]);
+      mang_du_lieu_chinh.push([tenMa, 0, 0, 0, 0, 0, 0]);
+      mang_khoi_luong.push([tenMa, 0, 0, 0, 0, 0, 0]);
+      mang_foreign_buy.push([tenMa, 0, 0, 0, 0, 0, 0]);
+      mang_foreign_sell.push([tenMa, 0, 0, 0, 0, 0, 0]);
     }
   });
 
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "AC");
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_khoi_luong, SHEET_DU_LIEU, 2, "AY");
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_foreign_buy, SHEET_DU_LIEU, 2, "BG");
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_foreign_sell, SHEET_DU_LIEU, 2, "BN");
   SheetLog.logTime(SHEET_THAM_CHIEU, "L2");
 }
 
@@ -297,7 +317,7 @@ function layGiaTuanGanNhat() {
 function layGiaThamChieu() {
   const danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_DU_LIEU, "C");
   const toDate = SheetUtility.layDuLieuTrongO(SHEET_THAM_CHIEU, "I1");
-  const fromDate = moment(toDate,"DD/MM/YYYY").subtract(1, "days").format("DD/MM/YYYY");
+  const fromDate = moment(toDate, "DD/MM/YYYY").subtract(1, "days").format("DD/MM/YYYY");
   const url = "https://finfo-iboard.ssi.com.vn/graphql";
 
   const mang_du_lieu_chinh = danhSachMa.map(tenMa => {
