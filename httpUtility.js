@@ -1,7 +1,12 @@
 
 var SheetHttp = {
     sendRequest: function (url, options) {
-      var response = UrlFetchApp.fetch(url, options);
-      return JSON.parse(response.getContentText());
+      try{
+        var response = UrlFetchApp.fetch(url, options);
+        return JSON.parse(response.getContentText());
+      }catch(e){
+        SheetLog.logDebug("error: "+ e);
+        return null;
+      }
     }
   }
