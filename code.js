@@ -148,7 +148,7 @@ function layThongTinCoDong() {
 function layThongTinPB() {
   const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
   const danhSachMa = SheetUtility.layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
-  
+
   while (danhSachMa.length > 0) {
     const mang_phu = danhSachMa.splice(0, KICH_THUOC_MANG_PHU);
     const url = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${mang_phu.join(",")}`;
@@ -222,14 +222,15 @@ function layThongTinKhoiLuongTrungBinh10Ngay() {
 }
 
 function layTinTuc() {
-  let danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_BANG_THONG_TIN, "J");
-
-  danhSachMa.forEach((tenMa) => {
+  SheetUtility.layDuLieuTrongCot(SHEET_BANG_THONG_TIN, "J").forEach((tenMa) => {
     url = `https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
     const content = UrlFetchApp.fetch(url).getContentText();
     $ = Cheerio.load(content);
     $("a").each(function () {
-      mang_du_lieu_chinh.push([tenMa, $(this).attr("title"), "", "https://s.cafef.vn" + $(this).attr("href"), "", $(this).siblings("span").text().substr(0, 10)]);
+      const title = $(this).attr("title");
+      const link = "https://s.cafef.vn" + $(this).attr("href");
+      const date = $(this).siblings("span").text().substr(0, 10);
+      mang_du_lieu_chinh.push([tenMa, title, "", link, date]);
     });
   });
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_BANG_THONG_TIN, 40, "A");
@@ -255,14 +256,14 @@ function layGiaTuanGanNhat() {
       "toDate": "${toDate}"
     }`,
     });
-    let options = {
+    let OPTIONS = {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
       },
       payload: data,
       method: "POST",
     };
-    object = SheetHttp.sendRequest(url, options);
+    object = SheetHttp.sendRequest(url, OPTIONS);
     if (object?.data?.stockPrice?.dataList) {
       const closes = [tenMa];
       const volumes = [];
@@ -305,14 +306,14 @@ function layGiaThamChieu() {
       "toDate": "${toDate}"
     }`,
     });
-    let options = {
+    let OPTIONS = {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
       },
       payload: data,
       method: "POST",
     };
-    object = SheetHttp.sendRequest(url, options);
+    object = SheetHttp.sendRequest(url, OPTIONS);
 
     try {
       let closeprice = object.data.stockPrice.dataList[0].closeprice;
