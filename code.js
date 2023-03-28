@@ -36,49 +36,47 @@ let OPTIONS_HTML = {
 };
 
 function getDataHose() {
-  url = "https://wgateway-iboard.ssi.com.vn/graphql/";
-  const data = JSON.stringify({
-    query:
-      "query stockRealtimesByGroup($group: String) {  stockRealtimesByGroup(group: $group) {    stockSymbol     matchedPrice }}",
-    variables: '{  "group": "HOSE"}',
-  });
-  let options = {
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-    },
-    payload: data,
-    method: "POST",
-  };
-  object = SheetHttp.sendRequest(url, options);
-  mang_du_lieu_chinh = object.data.stockRealtimesByGroup.map(
-    ({ stockSymbol, matchedPrice }) => [stockSymbol, matchedPrice]
-  );
-  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "A");
+  const API_URL = "https://wgateway-iboard.ssi.com.vn/graphql/";
+  const QUERY = `query stockRealtimesByGroup($group: String) {
+    stockRealtimesByGroup(group: $group) {
+      stockSymbol
+      matchedPrice
+    }
+  }`;
+  const variables = { group: "HOSE" };
+  const response = SheetHttp.sendGraphQLRequest(API_URL, QUERY, variables);
+  const stockData = response.data.stockRealtimesByGroup.map(({ stockSymbol, matchedPrice }) => [stockSymbol, matchedPrice]);
+  SheetUtility.ghiDuLieuVaoDayTheoTen(stockData, SHEET_DU_LIEU, 2, "A");
 }
 
 function laySuKienChungKhoan() {
-  let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F1");
-  mang_du_lieu_chinh = new Array();
-  url = `https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
-  const content = UrlFetchApp.fetch(url).getContentText();
+  const BASE_URL = "https://s.cafef.vn";
+  const NEWS_PATH = "/Ajax/Events_RelatedNews_New.aspx";
+  const tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F1");
+  mang_du_lieu_chinh = [];
+  const QUERY_URL = `${BASE_URL}${NEWS_PATH}?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
+  const content = UrlFetchApp.fetch(QUERY_URL).getContentText();
   $ = Cheerio.load(content);
   $("a").each(function () {
-    mang_du_lieu_chinh.push(new Array(tenMa.toUpperCase(), $(this).attr("title"), "https://s.cafef.vn" + $(this).attr("href"), $(this).siblings("span").text().substr(0, 10)));
+    const title = $(this).attr("title");
+    const link = `${BASE_URL}${$(this).attr("href")}`;
+    const date = $(this).siblings("span").text().substr(0, 10);
+    mang_du_lieu_chinh.push([tenMa.toUpperCase(), title, link, date]);
   });
-  // ghi từ cột AP
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "AH");
 }
 
 function layBaoCaoPhanTich() {
   let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F1");
   url = `https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:${tenMa}&pageIndex=1&pageSize=9`;
-  object = SheetHttp.sendRequest(url, {
+  const OPTIONS = {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
     }
-  });
+  };
+  object = SheetHttp.sendRequest(url, OPTIONS);
   mang_du_lieu_chinh = object.Data.map(({ SourceName, Title, ReportTypeName, LastUpdate, Url }) => [SourceName, Title, ReportTypeName, LastUpdate, Url]);
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "AL");
 }
@@ -110,18 +108,17 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
       "toDate": "${toDate}"
     }`,
   });
-  let options = {
+  const OPTIONS = {
     headers: {
       "Content-Type": "application/json; charset=utf-8",
     },
     payload: data,
     method: "POST",
   };
-  object = SheetHttp.sendRequest(url, options);
+  object = SheetHttp.sendRequest(url, OPTIONS);
   mang_du_lieu_chinh = object.data.stockPrice.dataList.map(
     ({ tradingdate, closeprice, totalmatchvol }) => [tradingdate.slice(0, 10), closeprice, totalmatchvol]
   );
-  // mang_du_lieu_chinh = mang_du_lieu_chinh.reverse();
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "D");
   SheetUtility.ghiDuLieuVaoO(object.data.stockPrice.dataList[0].symbol, SHEET_CHI_TIET_MA, "H1");
 }
@@ -134,14 +131,14 @@ function layThongTinCoDong() {
     query: "query shareholders($symbol: String!, $size: Int, $offset: Int, $order: String, $orderBy: String, $type: String, $language: String) { shareholders( symbol: $symbol size: $size offset: $offset order: $order orderBy: $orderBy type: $type language: $language ) }",
     variables: `{ "symbol": "${tenMa}", "size": 10, "offset": 1 }`,
   });
-  let options = {
+  const OPTIONS = {
     headers: {
       "Content-Type": "application/json; charset=utf-8",
     },
     payload: data,
     method: "POST",
   };
-  object = SheetHttp.sendRequest(url, options);
+  object = SheetHttp.sendRequest(url, OPTIONS);
   mang_du_lieu_chinh = object.data.shareholders.dataList.map(
     ({ ownershiptypecode, name, percentage, quantity, publicdate }) => [ownershiptypecode, name, percentage, quantity, publicdate.substr(0, 10)]
   );
@@ -150,21 +147,15 @@ function layThongTinCoDong() {
 
 function layThongTinPB() {
   let danhSachMa = SheetUtility.layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
-  while (danhSachMa.length > 0) {
-    for (let i = 0; i < KICH_THUOC_MANG_PHU; i++) {
-      mangPhu.push(danhSachMa.shift());
+  let mang_du_lieu_chinh = danhSachMa.map((ma) => {
+    url = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?order=reportDate&where=itemCode:51012&filter=code:${ma}`;
+    let object = SheetHttp.sendRequest(url, OPTIONS);
+    try {
+      return [object.data[0].code, object.data[0].value];
+    } catch (e) {
+      return [ma, 0];
     }
-    url = "https://api-finfo.vndirect.com.vn/v4/ratios/latest?order=reportDate&where=itemCode:51012&filter=code:" + mangPhu.join(",");
-    object = SheetHttp.sendRequest(url, OPTIONS);
-    object.data.forEach((element) => {
-      try {
-        mang_du_lieu_chinh.push(new Array(element.code, element.value));
-      } catch (e) {
-        mang_du_lieu_chinh.push(new Array(element.code, 0));
-      }
-    });
-    mangPhu = [];
-  }
+  });
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "J");
 }
 
@@ -247,8 +238,8 @@ function layTinTuc() {
 function layGiaTuanGanNhat() {
   const danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_DU_LIEU, "C");
   // const danhSachMa = ["YEG"];
-  const fromDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AA11");
-  const toDate = SheetUtility.layDuLieuTrongO(SHEET_DU_LIEU, "AB11");
+  const fromDate = SheetUtility.layDuLieuTrongO(SHEET_THAM_CHIEU, "T2");
+  const toDate = SheetUtility.layDuLieuTrongO(SHEET_THAM_CHIEU, "U2");
   const mang_du_lieu_chinh = [];
   const url = "https://finfo-iboard.ssi.com.vn/graphql";
 
