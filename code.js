@@ -146,84 +146,85 @@ function layThongTinCoDong() {
 }
 
 function layThongTinPB() {
-  let danhSachMa = SheetUtility.layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
-  let mang_du_lieu_chinh = danhSachMa.map((ma) => {
-    url = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?order=reportDate&where=itemCode:51012&filter=code:${ma}`;
-    let object = SheetHttp.sendRequest(url, OPTIONS);
-    try {
-      return [object.data[0].code, object.data[0].value];
-    } catch (e) {
-      return [ma, 0];
-    }
-  });
+  const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
+  const danhSachMa = SheetUtility.layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
+  
+  while (danhSachMa.length > 0) {
+    const mang_phu = danhSachMa.splice(0, KICH_THUOC_MANG_PHU);
+    const url = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${mang_phu.join(",")}`;
+    const object = SheetHttp.sendRequest(url, OPTIONS);
+    object.data.forEach((element) => {
+      try {
+        mang_du_lieu_chinh.push([element.code, element.value]);
+      } catch (e) {
+        mang_du_lieu_chinh.push([element.code, 0]);
+      }
+    });
+  }
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "J");
 }
 
-// code by chat-gpt
 function layThongTinPE() {
+  const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
   let danhSachMa = SheetUtility.layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
-  let mang_du_lieu_chinh = danhSachMa.map((ma) => {
-    url = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?order=reportDate&where=itemCode:51006&filter=code:${ma}`;
-    let object = SheetHttp.sendRequest(url, OPTIONS);
-    try {
-      return [object.data[0].code, object.data[0].value];
-    } catch (e) {
-      return [ma, 0];
-    }
-  });
+
+  while (danhSachMa.length > 0) {
+    const mang_phu = danhSachMa.splice(0, KICH_THUOC_MANG_PHU);
+    const url = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${mang_phu.join(",")}`;
+    const object = SheetHttp.sendRequest(url, OPTIONS);
+    object.data.forEach((element) => {
+      try {
+        mang_du_lieu_chinh.push([element.code, element.value]);
+      } catch (e) {
+        mang_du_lieu_chinh.push([element.code, 0]);
+      }
+    });
+  }
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "L");
 }
 
 function layThongTinRoomNuocNgoai() {
   let danhSachMa = SheetUtility.layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
-  let mang5Ma = new Array();
-  mang_du_lieu_chinh = new Array();
+
   while (danhSachMa.length > 0) {
-    for (let i = 0; i < KICH_THUOC_MANG_PHU; i++) {
-      mang5Ma.push(danhSachMa.shift());
-    }
-    url = "https://finfo-api.vndirect.com.vn/v4/ownership_foreigns/latest?order=reportedDate&filter=code:" + mang5Ma.join(",");
-    object = SheetHttp.sendRequest(url, OPTIONS);
-    object.data.forEach((data) => {
+    const mang_phu = danhSachMa.splice(0, KICH_THUOC_MANG_PHU);
+    const url = `https://finfo-api.vndirect.com.vn/v4/ownership_foreigns/latest?order=reportedDate&filter=code:${mang_phu.join(",")}`;
+    const object = SheetHttp.sendRequest(url, OPTIONS);
+    object.data.forEach((element) => {
       try {
-        mang_du_lieu_chinh.push(
-          new Array(data.code, data.totalRoom, data.currentRoom)
-        );
+        mang_du_lieu_chinh.push([element.code, element.totalRoom, element.currentRoom]);
       } catch (e) {
-        mang_du_lieu_chinh.push(new Array(data.code, 0, 0));
+        mang_du_lieu_chinh.push([element.code, 0, 0]);
       }
     });
-    mang5Ma = [];
   }
+
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "N");
 }
 
 function layThongTinKhoiLuongTrungBinh10Ngay() {
+  const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
   let danhSachMa = SheetUtility.layGiaTriTheoCot(SHEET_DU_LIEU, 2, 3);
+
   while (danhSachMa.length > 0) {
-    for (let i = 0; i < KICH_THUOC_MANG_PHU; i++) {
-      mangPhu.push(danhSachMa.shift());
-    }
-    url = "https://api-finfo.vndirect.com.vn/v4/ratios/latest?order=reportDate&where=itemCode:51016&filter=code:" +
-      mangPhu.join(",");
-    object = SheetHttp.sendRequest(url, OPTIONS);
-    object.data.forEach((data) => {
+    const mang_phu = danhSachMa.splice(0, KICH_THUOC_MANG_PHU);
+    const url = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${mang_phu.join(",")}`;
+    const object = SheetHttp.sendRequest(url, OPTIONS);
+    object.data.forEach((element) => {
       try {
-        mang_du_lieu_chinh.push(new Array(data.code, data.value));
+        mang_du_lieu_chinh.push([element.code, element.value]);
       } catch (e) {
-        mang_du_lieu_chinh.push(new Array(data.code, 0));
+        mang_du_lieu_chinh.push([element.code, 0]);
       }
     });
-    mangPhu = [];
   }
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "Q");
 }
 
 function layTinTuc() {
-  // lay du lieu cot J sheet bảng thông tin
-  let listTenMa = SheetUtility.layDuLieuTrongCot(SHEET_BANG_THONG_TIN, "J");
+  let danhSachMa = SheetUtility.layDuLieuTrongCot(SHEET_BANG_THONG_TIN, "J");
 
-  listTenMa.forEach((tenMa) => {
+  danhSachMa.forEach((tenMa) => {
     url = `https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
     const content = UrlFetchApp.fetch(url).getContentText();
     $ = Cheerio.load(content);
@@ -231,7 +232,6 @@ function layTinTuc() {
       mang_du_lieu_chinh.push([tenMa, $(this).attr("title"), "", "https://s.cafef.vn" + $(this).attr("href"), "", $(this).siblings("span").text().substr(0, 10)]);
     });
   });
-  // ghi dữ liệu từ ô A40
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_BANG_THONG_TIN, 40, "A");
 }
 
