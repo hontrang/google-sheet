@@ -1,0 +1,58 @@
+{
+    "core": {
+        "currencyCode": "JPY",
+        "language": "ja"
+    },
+    "ecommerce": {
+        "birthYear": "undefined",
+        "checkoutStepName": "Order Confirmation",
+        "deliveryCity": "千代田区",
+        "deliveryPostcode": "1000001",
+        "gender": "Other",
+        "giftCardAmount": "undefined",
+        "giftOrder": false,
+        "orderDiscount": 0,
+        "orderID": "VNSJPDEV-00002787",
+        "orderSubTotal": 15000,
+        "orderTotal": 16500,
+        "paymentMethod": "Master",
+        "product": [
+            {
+                "badge": "Regular",
+                "id": "undefined",
+                "name": "オーセンティック ミュール",
+                "originalPrice": 16500,
+                "price": 16500,
+                "productId": "VN0A54F72BK104500M",
+                "quantity": 1,
+                "ratingAvg": 0,
+                "ratingCount": 0,
+                "sku": "VN0A54F72BK104500M",
+                "style": "0A54F7",
+                "upc": "undefined"
+            }
+        ],
+        "promoCode": "undefined",
+        "shipping": 0,
+        "shippingDiscount": 0,
+        "shippingMethod": "HD",
+        "shippingOption": "undefined",
+        "shippingPreferredDate": "03/04/2023",
+        "shippingPreferredDateLag": 5,
+        "shippingPreferredTime": "12:00-14:00",
+        "tax": 1500
+    },
+    "page": {
+        "breadcrumb": "Checkout/Order Confirmation",
+        "pageName": "Checkout: Order Confirmation",
+        "pageType": "order confirmation"
+    },
+    "visitor": {
+        "actions": {
+            "newAccountCreated": false,
+            "newsLetterSubscribed": false
+        },
+        "customerID": "00002002",
+        "isLoggedIn": true
+    }
+}

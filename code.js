@@ -92,35 +92,28 @@ function layThongTinChiTietMa() {
 }
 
 function layGiaVaKhoiLuongTheoMaChungKhoan() {
-  let tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F1");
-  let fromDate = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F2");
-  let toDate = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "H2");
+  const tenMa = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F1");
+  const fromDate = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "F2");
+  const toDate = SheetUtility.layDuLieuTrongO(SHEET_CHI_TIET_MA, "H2");
 
-  url = "https://finfo-iboard.ssi.com.vn/graphql";
+  const query = `query { tradingViewData(symbol: "${tenMa}", from: "${fromDate}",to: "${toDate}") { symbol close   volume    time   }  }  `;
 
-  const data = JSON.stringify({
-    query: "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) { stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }",
-    variables: `{
-      "symbol": "${tenMa}",
-      "offset": 1,
-      "size": 1000,
-      "fromDate": "${fromDate}",
-      "toDate": "${toDate}"
-    }`,
-  });
   const OPTIONS = {
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-    },
-    payload: data,
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    payload: JSON.stringify({
+      query,
+    }),
   };
-  object = SheetHttp.sendRequest(url, OPTIONS);
-  mang_du_lieu_chinh = object.data.stockPrice.dataList.map(
-    ({ tradingdate, closeprice, totalmatchvol }) => [tradingdate.slice(0, 10), closeprice, totalmatchvol]
-  );
-  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, "D");
-  SheetUtility.ghiDuLieuVaoO(object.data.stockPrice.dataList[0].symbol, SHEET_CHI_TIET_MA, "H1");
+  object = SheetHttp.sendRequest(URL_GRAPHQL_CAFEF, OPTIONS);
+  mang_du_lieu_chinh = object.data.tradingViewData.map(
+    ({ time, close, volume }) => [new Date(time * 1000), close * 1000, volume]
+  ).reverse();
+  SheetUtility.ghiDuLieuVaoDay(mang_du_lieu_chinh, SHEET_DU_LIEU, 2, 4);
+  SheetUtility.ghiDuLieuVaoO(object.data.tradingViewData[0].symbol, SHEET_CHI_TIET_MA, "H1");
 }
 
 function layThongTinCoDong() {
