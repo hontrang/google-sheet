@@ -42,6 +42,14 @@ var SheetUtility = {
       index += (charCode * Math.pow(26, length - i - 1));
     }
     return index;
+  },
+  chen1HangVaoDauSheet: function (sheetName) {
+    let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+    // Chèn một hàng mới vào vị trí đầu tiên của bảng
+    sheet.insertRowsBefore(1, 1);
+
+    // Trả về vị trí của hàng mới
+    return 1;
   }
 }
 
