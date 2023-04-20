@@ -262,7 +262,7 @@ function layGiaVaKhoiLuongTuanGanNhat() {
       const volumes = [];
       const foreignbuyvoltotal = [];
       const foreignsellvoltotal = [];
-      for (let i = 5; i >= 0; i--) {
+      for (let i = 10; i >= 0; i--) {
         closes.push(object.data.stockPrice.dataList[i].closeprice);
         volumes.push(object.data.stockPrice.dataList[i].totalmatchvol);
         foreignbuyvoltotal.push(object.data.stockPrice.dataList[i].foreignbuyvoltotal);
@@ -273,7 +273,7 @@ function layGiaVaKhoiLuongTuanGanNhat() {
       closes.push(...foreignsellvoltotal);
       mang_du_lieu_chinh.push(closes);
     } else {
-      mang_du_lieu_chinh.push([tenMa, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      mang_du_lieu_chinh.push([tenMa, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     }
   });
 
@@ -322,7 +322,7 @@ function layGiaThamChieu() {
 
 
 function layChiSoVnIndex() {
-  const ngayHienTai = moment().format("DD/MM/YYYY");
+  const ngayHienTai = moment().format("YYYY-MM-DD");
   const duLieuNgayMoiNhat = SheetUtility.layDuLieuTrongO("HOSE", "A1");
   const url = "https://wgateway-iboard.ssi.com.vn/graphql";
 
@@ -347,7 +347,7 @@ function layChiSoVnIndex() {
   if (duLieuNgayMoiNhat !== ngayHienTai) {
     SheetUtility.chen1HangVaoDauSheet("HOSE");
   }
-  const mang_du_lieu_chinh = [[ngayHienTai, duLieuNhanVe.indexValue, "", "", "", "", duLieuNhanVe.changePercent / 100, duLieuNhanVe.totalValue]];
+  const mang_du_lieu_chinh = [[ngayHienTai, duLieuNhanVe.indexValue, duLieuNhanVe.changePercent / 100, duLieuNhanVe.totalValue * 1000000]];
 
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, "HOSE", 1, "A");
 }
