@@ -1,4 +1,10 @@
 var SheetUtility = {
+  SHEET_THAM_CHIEU: "tham chiếu",
+  SHEET_BANG_THONG_TIN: "bảng thông tin",
+  SHEET_DU_LIEU: "dữ liệu",
+  SHEET_CHI_TIET_MA: "chi tiết mã",
+  SHEET_DEBUG: "debug",
+  KICH_THUOC_MANG_PHU: 10,
   ghiDuLieuVaoDay: function (data, sheetName, row, column) {
     let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     sheet.getRange(row, column, data.length, data[0].length).clearContent();
@@ -20,8 +26,8 @@ var SheetUtility = {
     return SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(cell).getValue();
   },
   layGiaTriTheoCot: function (activeSheet, rowIndex, columnIndex) {
-    let sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
-    range = sheet.getRange(rowIndex, columnIndex, sheet.getLastRow() - rowIndex + 1);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
+    const range = sheet.getRange(rowIndex, columnIndex, sheet.getLastRow() - rowIndex + 1);
     // xoá phần tử rỗng trong mảng
     return range.getValues().filter(function (el) {
       return el != "";
