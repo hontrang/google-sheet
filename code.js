@@ -1,6 +1,6 @@
 function getDataHose() {
   const url = "https://wgateway-iboard.ssi.com.vn/graphql/";
-  const query = 'query stockRealtimesByGroup($group: String){stockRealtimesByGroup(group: $group){ stockSymbol matchedPrice }}';
+  const query = 'query stockRealtimesByGroup($group: String){stockRealtimesByGroup(group: $group){stockSymbol matchedPrice }}';
   const variables = '{"group":"HOSE"}';
   const response = SheetHttp.sendGraphQLRequest(url, query, variables);
   const stockData = response.data.stockRealtimesByGroup.map(({ stockSymbol, matchedPrice }) => [stockSymbol, matchedPrice]);
@@ -46,7 +46,7 @@ function layGiaVaKhoiLuongTheoMaChungKhoan() {
   const fromDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CHI_TIET_MA, "F2");
   const toDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CHI_TIET_MA, "H2");
 
-  const query = `query { tradingViewData(symbol: "${tenMa}", from: "${fromDate}",to: "${toDate}") { symbol close   volume    time   }  }  `;
+  const query = `query {tradingViewData(symbol: "${tenMa}", from: "${fromDate}",to: "${toDate}") {symbol close volume  time }  }  `;
   const object = SheetHttp.sendGraphQLRequest(SheetHttp.URL_GRAPHQL_CAFEF, query, {});
   const mang_du_lieu_chinh = object.data.tradingViewData.map(
     ({ time, close, volume }) => [new Date(time * 1000), close * 1000, volume]
@@ -59,8 +59,8 @@ function layThongTinCoDong() {
   const url = "https://finfo-iboard.ssi.com.vn/graphql";
   const tenMa = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CHI_TIET_MA, "F1");
 
-  const query = "query shareholders($symbol: String!, $size: Int, $offset: Int, $order: String, $orderBy: String, $type: String, $language: String) { shareholders( symbol: $symbol size: $size offset: $offset order: $order orderBy: $orderBy type: $type language: $language ) }";
-  const variables = `{ "symbol": "${tenMa}", "size": 10, "offset": 1 }`;
+  const query = "query shareholders($symbol: String!, $size: Int, $offset: Int, $order: String, $orderBy: String, $type: String, $language: String) {shareholders( symbol: $symbol size: $size offset: $offset order: $order orderBy: $orderBy type: $type language: $language ) }";
+  const variables = `{"symbol": "${tenMa}", "size": 10, "offset": 1 }`;
   const object = SheetHttp.sendGraphQLRequest(url, query, variables);
   const mang_du_lieu_chinh = object.data.shareholders.dataList.map(
     ({ ownershiptypecode, name, percentage, quantity, publicdate }) => [ownershiptypecode, name, percentage, quantity, publicdate.substr(0, 10)]
@@ -169,7 +169,7 @@ function layGiaVaKhoiLuongTuanGanNhat() {
 
   danhSachMa.forEach((tenMa) => {
     console.log(tenMa);
-    const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) { stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
+    const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
     const variables = `{"symbol": "${tenMa}","offset": 1,"size": 30, "fromDate": "${fromDate}", "toDate": "${toDate}" }`;
     const object = SheetHttp.sendGraphQLRequest(url, query, variables);
     if (object?.data?.stockPrice?.dataList) {
@@ -204,7 +204,7 @@ function layGiaThamChieu() {
   const url = "https://finfo-iboard.ssi.com.vn/graphql";
 
   const mang_du_lieu_chinh = danhSachMa.map(tenMa => {
-    const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) { stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
+    const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
     const variables = `{"symbol": "${tenMa}", "offset": 1, "size": 1, "fromDate": "${fromDate}","toDate": "${toDate}"}`;
     const object = SheetHttp.sendGraphQLRequest(url, query, variables);
 
@@ -225,7 +225,7 @@ function layChiSoVnIndex() {
   const duLieuNgayMoiNhat = SheetUtility.layDuLieuTrongO("HOSE", "A1");
   const url = "https://wgateway-iboard.ssi.com.vn/graphql";
 
-  const query = "query indexQuery($indexIds: [String!]!) {   indexRealtimeLatestByArray(indexIds: $indexIds) {     indexID     indexValue     allQty     allValue     totalQtty     totalValue     advances     declines     nochanges     ceiling     floor     change     changePercent     ratioChange     __typename   } }";
+  const query = "query indexQuery($indexIds: [String!]!) {indexRealtimeLatestByArray(indexIds: $indexIds) {indexID indexValue allQty allValue totalQtty totalValue advances declines nochanges ceiling floor change changePercent ratioChange __typename } }";
   const variables = `{"indexIds": ["VNINDEX" ]}`;
   const object = SheetHttp.sendGraphQLRequest(url, query, variables);
   const duLieuNhanVe = object.data.indexRealtimeLatestByArray[0];
