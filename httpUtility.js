@@ -42,15 +42,16 @@ var SheetHttp = {
     }
   },
   sendGraphQLRequest: function (url, query, variables) {
-    const payload = JSON.stringify({ query, variables });
-    const options = {
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
-      payload,
-      method: "POST"
+    const payload = JSON.stringify({
+      query: query,
+      variables: variables
+    });
+    const OPTIONS = {
+      "headers": { "Content-Type": "application/json; charset=utf-8" },
+      "payload": payload,
+      "method": "POST"
     };
 
-    return this.sendRequest(url, options);
+    return this.sendRequest(url, OPTIONS);
   }
 }
