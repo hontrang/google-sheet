@@ -5,6 +5,7 @@ function getDataHose() {
   const response = SheetHttp.sendGraphQLRequest(url, query, variables);
   const stockData = response.data.stockRealtimesByGroup.map(({ stockSymbol, matchedPrice }) => [stockSymbol, matchedPrice]);
   SheetUtility.ghiDuLieuVaoDayTheoTen(stockData, SheetUtility.SHEET_DU_LIEU, 2, "A");
+  layChiSoVnIndex();
 }
 
 function layThongTinChiTietMa() {
