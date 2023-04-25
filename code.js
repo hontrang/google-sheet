@@ -171,7 +171,7 @@ function layGiaVaKhoiLuongTuanGanNhat() {
     console.log(tenMa);
     const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
     const variables = `{"symbol": "${tenMa}","offset": 1,"size": 30, "fromDate": "${fromDate}", "toDate": "${toDate}" }`;
-    const object = SheetHttp.sendGraphQLRequest(url, query, variables);
+    const object = SheetHttp.sendGraphQLRequest(url, query, JSON.parse(variables));
     if (object?.data?.stockPrice?.dataList) {
       const closes = [tenMa];
       const volumes = [];
@@ -206,7 +206,7 @@ function layGiaThamChieu() {
   const mang_du_lieu_chinh = danhSachMa.map(tenMa => {
     const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
     const variables = `{"symbol": "${tenMa}", "offset": 1, "size": 1, "fromDate": "${fromDate}","toDate": "${toDate}"}`;
-    const object = SheetHttp.sendGraphQLRequest(url, query, variables);
+    const object = SheetHttp.sendGraphQLRequest(url, query, JSON.parse(variables));
 
     try {
       let closeprice = object.data.stockPrice.dataList[0].closeprice;
