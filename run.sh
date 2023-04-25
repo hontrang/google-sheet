@@ -1,3 +1,0 @@
-clasp push
-clasp run
-
