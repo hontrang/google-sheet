@@ -1,8 +1,8 @@
 function getDataHose() {
-  const API_URL = "https://wgateway-iboard.ssi.com.vn/graphql/";
-  const QUERY = `query stockRealtimesByGroup($group: String) { stockRealtimesByGroup(group: $group) { stockSymbolmatchedPrice } }`;
-  const variables = { group: "HOSE" };
-  const response = SheetHttp.sendGraphQLRequest(API_URL, QUERY, variables);
+  const url = "https://wgateway-iboard.ssi.com.vn/graphql/";
+  const query = 'query stockRealtimesByGroup($group: String){stockRealtimesByGroup(group: $group){ stockSymbol matchedPrice }}';
+  const variables = '{"group":"HOSE"}';
+  const response = SheetHttp.sendGraphQLRequest(url, query, variables);
   const stockData = response.data.stockRealtimesByGroup.map(({ stockSymbol, matchedPrice }) => [stockSymbol, matchedPrice]);
   SheetUtility.ghiDuLieuVaoDayTheoTen(stockData, SheetUtility.SHEET_DU_LIEU, 2, "A");
 }
