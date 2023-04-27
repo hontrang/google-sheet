@@ -51,7 +51,6 @@ var SheetHttp = {
       "payload": payload,
       "method": "POST"
     };
-
     return this.sendRequest(url, OPTIONS);
   }
 }
