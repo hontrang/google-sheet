@@ -112,7 +112,7 @@ function layThongTinRoomNuocNgoai() {
 
     object.data.forEach((element) => {
       const value = element.value || 0;
-      mang_du_lieu_chinh.push([element.code, value]);
+      mang_du_lieu_chinh.push([element.code, element.totalRoom, element.currentRoom ]);
     });
   }
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "N");
@@ -160,13 +160,14 @@ function layGiaVaKhoiLuongTuanGanNhat() {
   const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
 
   const mang_du_lieu_chinh = danhSachMa.map((tenMa) => {
+    console.log(tenMa);
     const variables = `{"symbol": "${tenMa}","offset": 1,"size": 30, "fromDate": "${fromDate}", "toDate": "${toDate}" }`;
     const object = SheetHttp.sendGraphQLRequest(url, query, variables);
 
     if (object?.data?.stockPrice?.dataList) {
       const dataItems = object.data.stockPrice.dataList.slice(0, 11).reverse();
-
       const closes = dataItems.map(item => item.closeprice);
+      console.log(closes);
       const volumes = dataItems.map(item => item.totalmatchvol);
       const foreignbuyvoltotal = dataItems.map(item => item.foreignbuyvoltotal);
       const foreignsellvoltotal = dataItems.map(item => item.foreignsellvoltotal);
@@ -176,7 +177,7 @@ function layGiaVaKhoiLuongTuanGanNhat() {
       return [tenMa, ...Array(44).fill(0)];
     }
   });
-
+  
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "AQ");
   SheetLog.logTime(SheetUtility.SHEET_THAM_CHIEU, "L2");
 }
@@ -190,14 +191,21 @@ function layGiaThamChieu() {
   const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
 
   const mang_du_lieu_chinh = danhSachMa.map((tenMa) => {
-    const variables = `{"symbol": "${tenMa}","offset": 1,"size": 30, "fromDate": "${fromDate}", "toDate": "${toDate}" }`;
+    console.log(tenMa);
+    const variables = `{"symbol": "${tenMa}","offset": 1,"size": 1, "fromDate": "${fromDate}", "toDate": "${toDate}" }`;
     const object = SheetHttp.sendGraphQLRequest(url, query, variables);
 
-    if (object.data && object.data.stockPrice && object.data.stockPrice.dataList && object.data.stockPrice.dataList[0]) {
-      let closeprice = object.data.stockPrice.dataList[0].closeprice;
-      return [tenMa, closeprice];
+    if (object?.data?.stockPrice?.dataList) {
+      try{
+        const closeprice = object.data.stockPrice.dataList[0].closeprice;
+        console.log(closeprice);
+        return [tenMa, closeprice];
+      } catch(e){
+          SheetLog.logDebug("unable to get data " + tenMa);
+          return [tenMa, 0];
+      }
     } else {
-      return ["NA", 0];
+      return [tenMa, 0];
     }
   });
 
