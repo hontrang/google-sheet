@@ -17,7 +17,12 @@ var SheetUtility = {
     let columnIndex = this.columnToIndex(columnName) - 1;
 
     sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).clearContent();
-    sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).setValues(data);
+    try {
+      sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).setValues(data);
+    } catch (e) {
+      SheetLog.logDebug(data);
+      console.error(e);
+    }
   },
   ghiDuLieuVaoO: function (data, sheetName, cell) {
     SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(cell).setValue(data);
