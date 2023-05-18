@@ -112,7 +112,7 @@ function layThongTinRoomNuocNgoai() {
 
     object.data.forEach((element) => {
       const value = element.value || 0;
-      mang_du_lieu_chinh.push([element.code, element.totalRoom, element.currentRoom ]);
+      mang_du_lieu_chinh.push([element.code, element.totalRoom, element.currentRoom]);
     });
   }
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "N");
@@ -177,7 +177,7 @@ function layGiaVaKhoiLuongTuanGanNhat() {
       return [tenMa, ...Array(44).fill(0)];
     }
   });
-  
+
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "AQ");
   SheetLog.logTime(SheetUtility.SHEET_THAM_CHIEU, "L2");
 }
@@ -196,13 +196,13 @@ function layGiaThamChieu() {
     const object = SheetHttp.sendGraphQLRequest(url, query, variables);
 
     if (object?.data?.stockPrice?.dataList) {
-      try{
+      try {
         const closeprice = object.data.stockPrice.dataList[0].closeprice;
         console.log(closeprice);
         return [tenMa, closeprice];
-      } catch(e){
-          SheetLog.logDebug("unable to get data " + tenMa);
-          return [tenMa, 0];
+      } catch (e) {
+        SheetLog.logDebug("unable to get data " + tenMa);
+        return [tenMa, 0];
       }
     } else {
       return [tenMa, 0];
