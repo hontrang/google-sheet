@@ -14,6 +14,7 @@ function layThongTinChiTietMa() {
   layThongTinCoDong();
   layBaoCaoPhanTich();
   layTinTucSheetChiTietMa();
+  layBaoCaoTaiChinh();
   SheetLog.logTime(SheetUtility.SHEET_CHI_TIET_MA, "J2");
 }
 
@@ -69,6 +70,19 @@ function layThongTinCoDong() {
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "AC");
 }
 
+function layBaoCaoTaiChinh() {
+  const mang_du_lieu_chinh = [];
+  const QUERY_API = "https://finfo-api.vndirect.com.vn/v4";
+  const tenMa = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CHI_TIET_MA, "F1");
+  const url = `${QUERY_API}/attachments?q=tagCodes:${tenMa}~type:FINANCIALSTATEMENT~locale:VN&sort=releasedDate:desc&size=10&page=1`;
+  const object = SheetHttp.sendGetRequest(url);
+
+  object.data.forEach((element) => {
+    mang_du_lieu_chinh.push([element.title, "", element.fileLink, element.releasedDate]);
+  });
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 18, "AG");
+}
+
 function layThongTinPB() {
   const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
   const danhSachMa = SheetUtility.layGiaTriTheoCot(SheetUtility.SHEET_DU_LIEU, 2, 3);
@@ -111,7 +125,6 @@ function layThongTinRoomNuocNgoai() {
     const object = SheetHttp.sendGetRequest(url);
 
     object.data.forEach((element) => {
-      const value = element.value || 0;
       mang_du_lieu_chinh.push([element.code, element.totalRoom, element.currentRoom]);
     });
   }
