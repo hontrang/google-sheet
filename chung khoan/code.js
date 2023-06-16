@@ -14,6 +14,7 @@ function layThongTinChiTietMa() {
   layThongTinCoDong();
   layBaoCaoPhanTich();
   layTinTucSheetChiTietMa();
+  layBaoCaoTaiChinh();
   SheetLog.logTime(SheetUtility.SHEET_CHI_TIET_MA, "J2");
 }
 
@@ -69,57 +70,62 @@ function layThongTinCoDong() {
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "AC");
 }
 
+function layBaoCaoTaiChinh() {
+  const mang_du_lieu_chinh = [];
+  const QUERY_API = "https://finfo-api.vndirect.com.vn/v4";
+  const tenMa = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CHI_TIET_MA, "F1");
+  const url = `${QUERY_API}/attachments?q=tagCodes:${tenMa}~type:FINANCIALSTATEMENT~locale:VN&sort=releasedDate:desc&size=10&page=1`;
+  const object = SheetHttp.sendGetRequest(url);
+
+  object.data.forEach((element) => {
+    mang_du_lieu_chinh.push([element.title, "", element.fileLink, element.releasedDate]);
+  });
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 18, "AG");
+}
+
 function layThongTinPB() {
   const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
   const danhSachMa = SheetUtility.layGiaTriTheoCot(SheetUtility.SHEET_DU_LIEU, 2, 3);
   const mang_du_lieu_chinh = [];
-  while (danhSachMa.length > 0) {
-    const mang_phu = danhSachMa.splice(0, SheetUtility.KICH_THUOC_MANG_PHU);
-    const url = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${mang_phu.join(",")}`;
+  for (let i = 0; i < danhSachMa.length; i += SheetUtility.KICH_THUOC_MANG_PHU) {
+    const url = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetUtility.KICH_THUOC_MANG_PHU).join(",")}`;
     const object = SheetHttp.sendGetRequest(url);
+
     object.data.forEach((element) => {
-      try {
-        mang_du_lieu_chinh.push([element.code, element.value]);
-      } catch (e) {
-        mang_du_lieu_chinh.push([element.code, 0]);
-      }
+      const value = element.value || 0;
+      mang_du_lieu_chinh.push([element.code, value]);
     });
   }
+
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "J");
 }
 
 function layThongTinPE() {
   const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
   const danhSachMa = SheetUtility.layGiaTriTheoCot(SheetUtility.SHEET_DU_LIEU, 2, 3);
-  const mang_du_lieu_chinh = []
-  while (danhSachMa.length > 0) {
-    const mang_phu = danhSachMa.splice(0, SheetUtility.KICH_THUOC_MANG_PHU);
-    const url = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${mang_phu.join(",")}`;
+  const mang_du_lieu_chinh = [];
+  for (let i = 0; i < danhSachMa.length; i += SheetUtility.KICH_THUOC_MANG_PHU) {
+    const url = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetUtility.KICH_THUOC_MANG_PHU).join(",")}`;
     const object = SheetHttp.sendGetRequest(url);
+
     object.data.forEach((element) => {
-      try {
-        mang_du_lieu_chinh.push([element.code, element.value]);
-      } catch (e) {
-        mang_du_lieu_chinh.push([element.code, 0]);
-      }
+      const value = element.value || 0;
+      mang_du_lieu_chinh.push([element.code, value]);
     });
   }
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "L");
 }
 
 function layThongTinRoomNuocNgoai() {
+  const QUERY_API = "https://finfo-api.vndirect.com.vn/v4";
   const danhSachMa = SheetUtility.layGiaTriTheoCot(SheetUtility.SHEET_DU_LIEU, 2, 3);
   const mang_du_lieu_chinh = [];
-  while (danhSachMa.length > 0) {
-    const mang_phu = danhSachMa.splice(0, SheetUtility.KICH_THUOC_MANG_PHU);
-    const url = `https://finfo-api.vndirect.com.vn/v4/ownership_foreigns/latest?order=reportedDate&filter=code:${mang_phu.join(",")}`;
+  for (let i = 0; i < danhSachMa.length; i += SheetUtility.KICH_THUOC_MANG_PHU) {
+    const url = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetUtility.KICH_THUOC_MANG_PHU).join(",")}`;
     const object = SheetHttp.sendGetRequest(url);
+
     object.data.forEach((element) => {
-      try {
-        mang_du_lieu_chinh.push([element.code, element.totalRoom, element.currentRoom]);
-      } catch (e) {
-        mang_du_lieu_chinh.push([element.code, 0, 0]);
-      }
+      mang_du_lieu_chinh.push([element.code, element.totalRoom, element.currentRoom]);
     });
   }
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "N");
@@ -129,16 +135,14 @@ function layThongTinKhoiLuongTrungBinh10Ngay() {
   const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
   const danhSachMa = SheetUtility.layGiaTriTheoCot(SheetUtility.SHEET_DU_LIEU, 2, 3);
   const mang_du_lieu_chinh = [];
-  while (danhSachMa.length > 0) {
-    const mang_phu = danhSachMa.splice(0, SheetUtility.KICH_THUOC_MANG_PHU);
-    const url = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${mang_phu.join(",")}`;
+
+  for (let i = 0; i < danhSachMa.length; i += SheetUtility.KICH_THUOC_MANG_PHU) {
+    const url = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetUtility.KICH_THUOC_MANG_PHU).join(",")}`;
     const object = SheetHttp.sendGetRequest(url);
+
     object.data.forEach((element) => {
-      try {
-        mang_du_lieu_chinh.push([element.code, element.value]);
-      } catch (e) {
-        mang_du_lieu_chinh.push([element.code, 0]);
-      }
+      const value = element.value || 0;
+      mang_du_lieu_chinh.push([element.code, value]);
     });
   }
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "Q");
@@ -162,34 +166,28 @@ function layTinTucSheetBangThongTin() {
 
 function layGiaVaKhoiLuongTuanGanNhat() {
   const danhSachMa = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "C");
-  // const danhSachMa = ["HOT"];
   const fromDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_THAM_CHIEU, "T2");
   const toDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_THAM_CHIEU, "U2");
-  const mang_du_lieu_chinh = [];
   const url = "https://finfo-iboard.ssi.com.vn/graphql";
 
-  danhSachMa.forEach((tenMa) => {
+  const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
+
+  const mang_du_lieu_chinh = danhSachMa.map((tenMa) => {
     console.log(tenMa);
-    const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
     const variables = `{"symbol": "${tenMa}","offset": 1,"size": 30, "fromDate": "${fromDate}", "toDate": "${toDate}" }`;
     const object = SheetHttp.sendGraphQLRequest(url, query, variables);
+
     if (object?.data?.stockPrice?.dataList) {
-      const closes = [tenMa];
-      const volumes = [];
-      const foreignbuyvoltotal = [];
-      const foreignsellvoltotal = [];
-      for (let i = 10; i >= 0; i--) {
-        closes.push(object.data.stockPrice.dataList[i].closeprice);
-        volumes.push(object.data.stockPrice.dataList[i].totalmatchvol);
-        foreignbuyvoltotal.push(object.data.stockPrice.dataList[i].foreignbuyvoltotal);
-        foreignsellvoltotal.push(object.data.stockPrice.dataList[i].foreignsellvoltotal);
-      }
-      closes.push(...volumes);
-      closes.push(...foreignbuyvoltotal);
-      closes.push(...foreignsellvoltotal);
-      mang_du_lieu_chinh.push(closes);
+      const dataItems = object.data.stockPrice.dataList.slice(0, 11).reverse();
+      const closes = dataItems.map(item => item.closeprice);
+      console.log(closes);
+      const volumes = dataItems.map(item => item.totalmatchvol);
+      const foreignbuyvoltotal = dataItems.map(item => item.foreignbuyvoltotal);
+      const foreignsellvoltotal = dataItems.map(item => item.foreignsellvoltotal);
+
+      return [tenMa, ...closes, ...volumes, ...foreignbuyvoltotal, ...foreignsellvoltotal];
     } else {
-      mang_du_lieu_chinh.push([tenMa, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      return [tenMa, ...Array(44).fill(0)];
     }
   });
 
@@ -203,17 +201,24 @@ function layGiaThamChieu() {
   const toDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_THAM_CHIEU, "I1");
   const fromDate = moment(toDate, "DD/MM/YYYY").subtract(1, "days").format("DD/MM/YYYY");
   const url = "https://finfo-iboard.ssi.com.vn/graphql";
+  const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
 
-  const mang_du_lieu_chinh = danhSachMa.map(tenMa => {
-    const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
-    const variables = `{"symbol": "${tenMa}", "offset": 1, "size": 1, "fromDate": "${fromDate}","toDate": "${toDate}"}`;
+  const mang_du_lieu_chinh = danhSachMa.map((tenMa) => {
+    console.log(tenMa);
+    const variables = `{"symbol": "${tenMa}","offset": 1,"size": 1, "fromDate": "${fromDate}", "toDate": "${toDate}" }`;
     const object = SheetHttp.sendGraphQLRequest(url, query, variables);
 
-    try {
-      let closeprice = object.data.stockPrice.dataList[0].closeprice;
-      return [tenMa, closeprice];
-    } catch (e) {
-      return ["NA", 0];
+    if (object?.data?.stockPrice?.dataList) {
+      try {
+        const closeprice = object.data.stockPrice.dataList[0].closeprice;
+        console.log(closeprice);
+        return [tenMa, closeprice];
+      } catch (e) {
+        SheetLog.logDebug("unable to get data " + tenMa);
+        return [tenMa, 0];
+      }
+    } else {
+      return [tenMa, 0];
     }
   });
 

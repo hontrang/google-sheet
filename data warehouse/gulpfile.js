@@ -5,6 +5,9 @@ gulp.task('push', function (done) {
     exec('clasp push', function (err,stdout) {
         console.log(stdout);
     });
+    exec('clasp open', function (err,stdout) {
+        console.log(stdout);
+    });
     done();
 });
 
