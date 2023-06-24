@@ -7,27 +7,27 @@
  * @see https://developers.google.com/apps-script/guides/triggers/installable#time-driven_triggers
  */
 function createTriggers() {
-  // Tạo trigger chạy theo thời gian
-  ScriptApp.newTrigger("layChiSoVnIndex")
-    .timeBased()
-    .everyMinutes(1)
-    .create();
+    // Tạo trigger chạy theo thời gian
+    ScriptApp.newTrigger("layChiSoVnIndex")
+        .timeBased()
+        .everyMinutes(1)
+        .create();
 
-  ScriptApp.newTrigger("layGiaThamChieu")
-    .timeBased()
-    .everyDays(1)
-    .atHour(3)
-    .nearMinute(0)
-    .create();
+    ScriptApp.newTrigger("layGiaThamChieu")
+        .timeBased()
+        .everyDays(1)
+        .atHour(3)
+        .nearMinute(0)
+        .create();
 
-  ScriptApp.newTrigger("layThongTinCoBan")
-    .timeBased()
-    .everyDays(1)
-    .atHour(1)
-    .nearMinute(0)
-    .create();
+    ScriptApp.newTrigger("layThongTinCoBan")
+        .timeBased()
+        .everyDays(1)
+        .atHour(1)
+        .nearMinute(0)
+        .create();
 
-  Logger.log("Các trigger đã được tạo!");
+    Logger.log("Các trigger đã được tạo!");
 }
 
 /**
@@ -36,9 +36,9 @@ function createTriggers() {
  * @see https://developers.google.com/apps-script/guides/triggers/installable
  */
 function deleteTrigger() {
-  // Loop over all triggers.
-  const allTriggers = ScriptApp.getProjectTriggers();
-  for (let index = 0; index < allTriggers.length; index++) {
-    ScriptApp.deleteTrigger(allTriggers[index]);
-  }
+    // Loop over all triggers.
+    const allTriggers = ScriptApp.getProjectTriggers();
+    for (let index = 0; index < allTriggers.length; index++) {
+        ScriptApp.deleteTrigger(allTriggers[index]);
+    }
 }
