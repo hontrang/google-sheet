@@ -31,20 +31,19 @@ var SheetUtility = {
   layDuLieuTrongO: function (sheetName, cell) {
     return SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(cell).getValue();
   },
-  layGiaTriTheoCot: function (activeSheet, rowIndex, columnIndex) {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
-    const range = sheet.getRange(rowIndex, columnIndex, sheet.getLastRow() - rowIndex + 1);
-    // xoá phần tử rỗng trong mảng
-    return range.getValues().filter(function (el) {
-      return el != "";
-    });
-  },
   layDuLieuTrongCot: function (sheetName, column) {
-    let values = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
-    values = values.filter(String);
-    // xoa giá trị trong ô title
-    values.reverse().pop();
-    return values;
+    const columnData = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
+
+    const dataArray = [];
+    for (const element of columnData) {
+      const value = element[0];
+      if (value !== "") {
+        dataArray.push(value);
+      }
+    }
+    // Xóa phần tử đầu tiên ("title") trong mảng dataArray
+    dataArray.shift();
+    return dataArray;
   },
   columnToIndex: function (columnName) {
     let index = 0;
@@ -64,4 +63,3 @@ var SheetUtility = {
     return 1;
   }
 }
-

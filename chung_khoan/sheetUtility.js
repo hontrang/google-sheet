@@ -3,8 +3,9 @@ var SheetUtility = {
   SHEET_BANG_THONG_TIN: "bảng thông tin",
   SHEET_DU_LIEU: "dữ liệu",
   SHEET_CHI_TIET_MA: "chi tiết mã",
+  SHEET_CAU_HINH: "cấu hình",
   SHEET_DEBUG: "debug",
-  KICH_THUOC_MANG_PHU: 10,
+  KICH_THUOC_MANG_PHU: 20,
   ghiDuLieuVaoDay: function (data, sheetName, row, column) {
     let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     sheet.getRange(row, column, data.length, data[0].length).clearContent();
@@ -30,20 +31,19 @@ var SheetUtility = {
   layDuLieuTrongO: function (sheetName, cell) {
     return SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(cell).getValue();
   },
-  layGiaTriTheoCot: function (activeSheet, rowIndex, columnIndex) {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
-    const range = sheet.getRange(rowIndex, columnIndex, sheet.getLastRow() - rowIndex + 1);
-    // xoá phần tử rỗng trong mảng
-    return range.getValues().filter(function (el) {
-      return el != "";
-    });
-  },
   layDuLieuTrongCot: function (sheetName, column) {
-    let values = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
-    values = values.filter(String);
-    // xoa giá trị trong ô title
-    values.reverse().pop();
-    return values;
+    const columnData = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
+
+    const dataArray = [];
+    for (const element of columnData) {
+      const value = element[0];
+      if (value !== "") {
+        dataArray.push(value);
+      }
+    }
+    // Xóa phần tử đầu tiên ("title") trong mảng dataArray
+    dataArray.shift();
+    return dataArray;
   },
   columnToIndex: function (columnName) {
     let index = 0;
