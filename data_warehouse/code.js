@@ -13,7 +13,7 @@ function layChiSoVnIndex() {
   }
   const mang_du_lieu_chinh = [[ngayHienTai, duLieuNhanVe.indexValue, duLieuNhanVe.changePercent / 100, duLieuNhanVe.totalValue * 1000000]];
 
-  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, "HOSE", 2, "A");
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, "HOSE", 1, "A");
 }
 
 // Hàm lấy giá tham chiếu từ một nguồn dữ liệu và ghi vào Google Sheets
