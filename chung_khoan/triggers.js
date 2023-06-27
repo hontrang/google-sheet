@@ -27,7 +27,7 @@ function createTriggers() {
     .nearMinute(0)
     .create();
 
-  ScriptApp.newTrigger("layTinTucSheetChiTietMa")
+  ScriptApp.newTrigger("layThongTinChiTietMa")
     .forSpreadsheet(SpreadsheetApp.getActive())
     .onEdit()
     .create();
