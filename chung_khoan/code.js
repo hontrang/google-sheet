@@ -10,10 +10,10 @@ function getDataHose() {
 function layThongTinChiTietMa() {
   SheetLog.logStart(SheetUtility.SHEET_CHI_TIET_MA, "J2");
   layGiaVaKhoiLuongTheoMaChungKhoan();
-  layThongTinCoDong();
   layBaoCaoPhanTich();
   layTinTucSheetChiTietMa();
   // layBaoCaoTaiChinh();
+  layThongTinCoDong();
   SheetLog.logTime(SheetUtility.SHEET_CHI_TIET_MA, "J2");
 }
 

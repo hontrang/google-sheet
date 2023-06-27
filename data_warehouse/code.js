@@ -48,8 +48,8 @@ function layGiaThamChieu() {
 }
 
 function layThongTinCoBan() {
-  const danhSachMa = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "A").reverse();
-  SheetUtility.ghiDuLieuVaoDayTheoTen(danhSachMa, SheetUtility.SHEET_DU_LIEU, 2, "D");
+  const danhSachMa = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "A");
+  SheetUtility.ghiDuLieuVaoDayTheoTen(create2DArray(danhSachMa), SheetUtility.SHEET_DU_LIEU, 2, "D");
   layThongTinPB(danhSachMa);
   layThongTinPE(danhSachMa);
   layThongTinRoomNuocNgoai(danhSachMa);
@@ -115,4 +115,12 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa) {
     });
   }
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "I");
+}
+
+function create2DArray(data){
+  const values = [];
+  for (let i = 0; i < data.length; i++) {
+    values.push([data[i]]);
+  }
+  return values;
 }
