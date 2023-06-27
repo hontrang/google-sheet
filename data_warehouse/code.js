@@ -117,6 +117,12 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa) {
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "I");
 }
 
+function doGet(e) {
+  var params = JSON.stringify(e);
+  SheetUtility.ghiDuLieuVaoO(params.name, SheetUtility.SHEET_CAU_HINH, "A2");
+  return HtmlService.createHtmlOutput(params);
+}
+
 function create2DArray(data){
   const values = [];
   for (let i = 0; i < data.length; i++) {

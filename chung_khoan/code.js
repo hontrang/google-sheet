@@ -127,3 +127,11 @@ function layGiaVaKhoiLuongTuanGanNhat() {
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "AQ");
   SheetLog.logTime(SheetUtility.SHEET_THAM_CHIEU, "L2");
 }
+
+function sendSimpleHttpRequest() {
+  var url = "https://script.google.com/macros/s/1KthkbVsUEKIO0GG5-ytuRrEDdVvCM5Wnx7Ea32R1Iq2A-L9MRWTkSb5u/exec?name=hontrang"; // Đường dẫn URL bạn muốn gửi yêu cầu đến
+  
+  var response = UrlFetchApp.fetch(url); // Gửi HTTP GET request
+  
+  Logger.log(response.getContentText()); // Ghi log nội dung phản hồi từ server
+}
