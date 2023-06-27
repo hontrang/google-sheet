@@ -13,12 +13,12 @@ function createTriggers() {
     .everyMinutes(1)
     .create();
 
-  ScriptApp.newTrigger("layGiaThamChieu")
-    .timeBased()
-    .everyDays(1)
-    .atHour(3)
-    .nearMinute(0)
-    .create();
+//   ScriptApp.newTrigger("layGiaThamChieu")
+//     .timeBased()
+//     .everyDays(1)
+//     .atHour(3)
+//     .nearMinute(0)
+//     .create();
 
   ScriptApp.newTrigger("layThongTinCoBan")
     .timeBased()

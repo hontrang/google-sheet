@@ -3,9 +3,8 @@ var SheetUtility = {
   SHEET_BANG_THONG_TIN: "bảng thông tin",
   SHEET_DU_LIEU: "dữ liệu",
   SHEET_CHI_TIET_MA: "chi tiết mã",
-  SHEET_CAU_HINH: "cấu hình",
   SHEET_DEBUG: "debug",
-  KICH_THUOC_MANG_PHU: 20,
+  KICH_THUOC_MANG_PHU: 10,
   ghiDuLieuVaoDay: function (data, sheetName, row, column) {
     let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     sheet.getRange(row, column, data.length, data[0].length).clearContent();
@@ -30,6 +29,14 @@ var SheetUtility = {
   },
   layDuLieuTrongO: function (sheetName, cell) {
     return SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(cell).getValue();
+  },
+  layGiaTriTheoCot: function (activeSheet, rowIndex, columnIndex) {
+    const sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
+    const data = sheet.getRange(rowIndex, columnIndex, sheet.getLastRow() - rowIndex + 1);
+    // xoá phần tử rỗng trong mảng
+    return range.getValues().filter(function (el) {
+      return el != "";
+    });
   },
   layDuLieuTrongCot: function (sheetName, column) {
     const columnData = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();

@@ -31,8 +31,16 @@ var SheetUtility = {
   layDuLieuTrongO: function (sheetName, cell) {
     return SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(cell).getValue();
   },
+  layGiaTriTheoCot: function (activeSheet, rowIndex, columnIndex) {
+    const sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
+    const range = sheet.getRange(rowIndex, columnIndex, sheet.getLastRow() - rowIndex + 1);
+    // xoá phần tử rỗng trong mảng
+    return range.getValues().filter(function (el) {
+      return el != "";
+    });
+  },
   layDuLieuTrongCot: function (sheetName, column) {
-    const columnData = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
+   const columnData = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
 
     const dataArray = [];
     for (const element of columnData) {
@@ -63,3 +71,4 @@ var SheetUtility = {
     return 1;
   }
 }
+
