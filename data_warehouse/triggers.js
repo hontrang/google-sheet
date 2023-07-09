@@ -27,6 +27,13 @@ function createTriggers() {
     .nearMinute(0)
     .create();
 
+  ScriptApp.newTrigger("layGiaVaKhoiLuongTuanGanNhat")
+    .timeBased()
+    .everyDays(1)
+    .atHour(6)
+    .nearMinute(0)
+    .create();
+
   Logger.log("Các trigger đã được tạo!");
 }
 

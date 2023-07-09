@@ -12,10 +12,10 @@ var SheetUtility = {
     sheet.getRange(row, column, data.length, data[0].length).setValues(data);
   },
   ghiDuLieuVaoDayTheoTen: function (data, sheetName, rowName, columnName) {
-    let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
 
-    let rowIndex = parseInt(rowName, 10) - 1;
-    let columnIndex = this.columnToIndex(columnName) - 1;
+    const rowIndex = parseInt(rowName, 10) - 1;
+    const columnIndex = this.columnToIndex(columnName) - 1;
 
     sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).clearContent();
     try {

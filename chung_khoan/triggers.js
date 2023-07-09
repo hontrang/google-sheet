@@ -20,13 +20,6 @@ function createTriggers() {
     .nearMinute(0)
     .create();
 
-  ScriptApp.newTrigger("layGiaVaKhoiLuongTuanGanNhat")
-    .timeBased()
-    .everyDays(1)
-    .atHour(6)
-    .nearMinute(0)
-    .create();
-
   ScriptApp.newTrigger("layThongTinChiTietMa")
     .forSpreadsheet(SpreadsheetApp.getActive())
     .onEdit()
