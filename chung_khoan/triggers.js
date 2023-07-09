@@ -8,30 +8,26 @@
  */
 function createTriggers() {
   // Tạo trigger chạy theo thời gian
-  ScriptApp.newTrigger("layChiSoVnIndex")
+  ScriptApp.newTrigger("getDataHose")
     .timeBased()
-    .everyMinutes(1)
+    .everyHours(1)
     .create();
-
-//   ScriptApp.newTrigger("layGiaThamChieu")
-//     .timeBased()
-//     .everyDays(1)
-//     .atHour(3)
-//     .nearMinute(0)
-//     .create();
-
-  ScriptApp.newTrigger("layThongTinCoBan")
+    
+  ScriptApp.newTrigger("layTinTucSheetBangThongTin")
     .timeBased()
     .everyDays(1)
-    .atHour(1)
+    .atHour(4)
     .nearMinute(0)
     .create();
 
-  ScriptApp.newTrigger("layGiaVaKhoiLuongTuanGanNhat")
-    .timeBased()
-    .everyDays(1)
-    .atHour(6)
-    .nearMinute(0)
+  ScriptApp.newTrigger("layThongTinChiTietMa")
+    .forSpreadsheet(SpreadsheetApp.getActive())
+    .onEdit()
+    .create();
+  
+  ScriptApp.newTrigger("getDataHose")
+    .forSpreadsheet(SpreadsheetApp.getActive())
+    .onOpen()
     .create();
 
   Logger.log("Các trigger đã được tạo!");

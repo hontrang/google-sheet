@@ -12,10 +12,10 @@ var SheetUtility = {
     sheet.getRange(row, column, data.length, data[0].length).setValues(data);
   },
   ghiDuLieuVaoDayTheoTen: function (data, sheetName, rowName, columnName) {
-    let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
 
-    let rowIndex = parseInt(rowName, 10) - 1;
-    let columnIndex = this.columnToIndex(columnName) - 1;
+    const rowIndex = parseInt(rowName, 10) - 1;
+    const columnIndex = this.columnToIndex(columnName) - 1;
 
     sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).clearContent();
     try {
@@ -40,11 +40,18 @@ var SheetUtility = {
     });
   },
   layDuLieuTrongCot: function (sheetName, column) {
-    let values = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
-    values = values.filter(String);
-    // xoa giá trị trong ô title
-    values.reverse().pop();
-    return values;
+   const columnData = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
+
+    const dataArray = [];
+    for (const element of columnData) {
+      const value = element[0];
+      if (value !== "") {
+        dataArray.push(value);
+      }
+    }
+    // Xóa phần tử đầu tiên ("title") trong mảng dataArray
+    dataArray.shift();
+    return dataArray;
   },
   columnToIndex: function (columnName) {
     let index = 0;
