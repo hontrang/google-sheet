@@ -8,13 +8,11 @@ function getDataHose() {
 }
 
 function layThongTinChiTietMa() {
-  SheetLog.logStart(SheetUtility.SHEET_CHI_TIET_MA, "J2");
-  layGiaVaKhoiLuongTheoMaChungKhoan();
-  layBaoCaoPhanTich();
-  layTinTucSheetChiTietMa();
-  // layBaoCaoTaiChinh();
-  layThongTinCoDong();
-  SheetLog.logTime(SheetUtility.SHEET_CHI_TIET_MA, "J2");
+  const tenMa = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CHI_TIET_MA, "F1");
+  const KEY = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CAU_HINH, "B2");
+  const QUERY_URL = `https://script.google.com/macros/s/${KEY}/exec?chucnang=chiTietMa&ma=${tenMa}`;
+  const content = UrlFetchApp.fetch(QUERY_URL).getResponseCode();
+  Logger.log(content);
 }
 
 function layTinTucSheetChiTietMa() {
@@ -126,12 +124,4 @@ function layGiaVaKhoiLuongTuanGanNhat() {
 
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "AQ");
   SheetLog.logTime(SheetUtility.SHEET_THAM_CHIEU, "L2");
-}
-
-function sendSimpleHttpRequest() {
-  var url = "https://script.google.com/macros/s/1KthkbVsUEKIO0GG5-ytuRrEDdVvCM5Wnx7Ea32R1Iq2A-L9MRWTkSb5u/exec?name=hontrang"; // Đường dẫn URL bạn muốn gửi yêu cầu đến
-  
-  var response = UrlFetchApp.fetch(url); // Gửi HTTP GET request
-  
-  Logger.log(response.getContentText()); // Ghi log nội dung phản hồi từ server
 }
