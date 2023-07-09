@@ -13,7 +13,7 @@ function layChiSoVnIndex() {
   }
   const mang_du_lieu_chinh = [[ngayHienTai, duLieuNhanVe.indexValue, duLieuNhanVe.changePercent / 100, duLieuNhanVe.totalValue * 1000000]];
 
-  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, "HOSE", 2, "A");
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, "HOSE", 1, "A");
 }
 
 // Hàm lấy giá tham chiếu từ một nguồn dữ liệu và ghi vào Google Sheets
@@ -48,8 +48,8 @@ function layGiaThamChieu() {
 }
 
 function layThongTinCoBan() {
-  const danhSachMa = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "A").reverse();
-  SheetUtility.ghiDuLieuVaoDayTheoTen(danhSachMa, SheetUtility.SHEET_DU_LIEU, 2, "D");
+  const danhSachMa = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "A");
+  SheetUtility.ghiDuLieuVaoDayTheoTen(create2DArray(danhSachMa), SheetUtility.SHEET_DU_LIEU, 2, "D");
   layThongTinPB(danhSachMa);
   layThongTinPE(danhSachMa);
   layThongTinRoomNuocNgoai(danhSachMa);
@@ -115,4 +115,53 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa) {
     });
   }
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "I");
+}
+
+function layGiaVaKhoiLuongTuanGanNhat() {
+  const danhSachMa = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "A");
+  const fromDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CAU_HINH, "C4");
+  const toDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CAU_HINH, "E4");
+  const url = "https://finfo-iboard.ssi.com.vn/graphql";
+
+  const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
+  let HANG_BAT_DAU = 2;
+  danhSachMa.map((tenMa) => {
+    const data = [];
+    const variables = `{"symbol": "${tenMa}","offset": 1,"size": 30, "fromDate": "${fromDate}", "toDate": "${toDate}" }`;
+    const object = SheetHttp.sendGraphQLRequest(url, query, variables);
+
+    if (object?.data?.stockPrice?.dataList) {
+      const dataItems = object.data.stockPrice.dataList.slice(0, 11).reverse();
+      const closes = dataItems.map(item => item.closeprice);
+      console.log(closes);
+      const volumes = dataItems.map(item => item.totalmatchvol);
+      const foreignbuyvoltotal = dataItems.map(item => item.foreignbuyvoltotal);
+      const foreignsellvoltotal = dataItems.map(item => item.foreignsellvoltotal);
+
+      data.push([tenMa, ...closes, ...volumes, ...foreignbuyvoltotal, ...foreignsellvoltotal]);
+    } else {
+      data.push( [tenMa, ...Array(44).fill(0)]);
+    }
+    SheetUtility.ghiDuLieuVaoDayTheoTen(data, SheetUtility.SHEET_DU_LIEU, HANG_BAT_DAU, "AE");
+    HANG_BAT_DAU++;
+  });
+
+  SheetLog.logTime(SheetUtility.SHEET_CAU_HINH, "G4");
+}
+
+function doGet(e) {
+  if (e.parameter.chucnang === 'chiTietMa') {
+    layThongTinChiTietMa(e.parameter.ma);
+    return HtmlService.createHtmlOutput("Thành công");
+  } else {
+    return HtmlService.createHtmlOutput("Chức năng không đúng");
+  }
+}
+
+function create2DArray(data) {
+  const values = [];
+  for (let i = 0; i < data.length; i++) {
+    values.push([data[i]]);
+  }
+  return values;
 }
