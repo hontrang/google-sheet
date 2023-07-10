@@ -5,17 +5,17 @@ var SheetUtility = {
   SHEET_CHI_TIET_MA: "chi tiết mã",
   SHEET_CAU_HINH: "cấu hình",
   SHEET_DEBUG: "debug",
-  KICH_THUOC_MANG_PHU: 20,
+  KICH_THUOC_MANG_PHU: 10,
   ghiDuLieuVaoDay: function (data, sheetName, row, column) {
     let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     sheet.getRange(row, column, data.length, data[0].length).clearContent();
     sheet.getRange(row, column, data.length, data[0].length).setValues(data);
   },
   ghiDuLieuVaoDayTheoTen: function (data, sheetName, rowName, columnName) {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+    let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
 
-    const rowIndex = parseInt(rowName, 10) - 1;
-    const columnIndex = this.columnToIndex(columnName) - 1;
+    let rowIndex = parseInt(rowName, 10) - 1;
+    let columnIndex = this.columnToIndex(columnName) - 1;
 
     sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).clearContent();
     try {
@@ -33,14 +33,14 @@ var SheetUtility = {
   },
   layGiaTriTheoCot: function (activeSheet, rowIndex, columnIndex) {
     const sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
-    const range = sheet.getRange(rowIndex, columnIndex, sheet.getLastRow() - rowIndex + 1);
+    const data = sheet.getRange(rowIndex, columnIndex, sheet.getLastRow() - rowIndex + 1);
     // xoá phần tử rỗng trong mảng
     return range.getValues().filter(function (el) {
       return el != "";
     });
   },
   layDuLieuTrongCot: function (sheetName, column) {
-   const columnData = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
+    const columnData = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
 
     const dataArray = [];
     for (const element of columnData) {
