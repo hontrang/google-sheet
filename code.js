@@ -115,33 +115,3 @@ function layBaoCaoTaiChinh() {
   });
   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 18, "AA");
 }
-// function layGiaVaKhoiLuongTuanGanNhat() {
-//   const danhSachMa = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "C");
-//   const fromDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_THAM_CHIEU, "T2");
-//   const toDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_THAM_CHIEU, "U2");
-//   const url = "https://finfo-iboard.ssi.com.vn/graphql";
-
-//   const query = "query stockPrice( $symbol: String! $size: Int $offset: Int $fromDate: String $toDate: String ) {stockPrice( symbol: $symbol size: $size offset: $offset fromDate: $fromDate toDate: $toDate ) }";
-
-//   const mang_du_lieu_chinh = danhSachMa.map((tenMa) => {
-//     console.log(tenMa);
-//     const variables = `{"symbol": "${tenMa}","offset": 1,"size": 30, "fromDate": "${fromDate}", "toDate": "${toDate}" }`;
-//     const object = SheetHttp.sendGraphQLRequest(url, query, variables);
-
-//     if (object?.data?.stockPrice?.dataList) {
-//       const dataItems = object.data.stockPrice.dataList.slice(0, 11).reverse();
-//       const closes = dataItems.map(item => item.closeprice);
-//       console.log(closes);
-//       const volumes = dataItems.map(item => item.totalmatchvol);
-//       const foreignbuyvoltotal = dataItems.map(item => item.foreignbuyvoltotal);
-//       const foreignsellvoltotal = dataItems.map(item => item.foreignsellvoltotal);
-
-//       return [tenMa, ...closes, ...volumes, ...foreignbuyvoltotal, ...foreignsellvoltotal];
-//     } else {
-//       return [tenMa, ...Array(44).fill(0)];
-//     }
-//   });
-
-//   SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, 2, "AQ");
-//   SheetLog.logTime(SheetUtility.SHEET_THAM_CHIEU, "L2");
-// }
