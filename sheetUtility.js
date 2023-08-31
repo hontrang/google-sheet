@@ -63,12 +63,43 @@ var SheetUtility = {
     return index;
   },
   chen1HangVaoDauSheet: function (sheetName) {
+    const index = 1;
+    return this.chen1HangVaoSheet(sheetName, index);
+  },
+  chen1HangVaoSheet: function (sheetName, index) {
     let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     // Chèn một hàng mới vào vị trí đầu tiên của bảng
-    sheet.insertRowsBefore(1, 1);
+    sheet.insertRowsBefore(index, 1);
 
     // Trả về vị trí của hàng mới
     return 1;
+  },
+  layDuLieuTrongHang: function (sheetName, rowIndex) {
+  let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+  
+  // Lấy số lượng cột trong Sheet
+  const numColumns = sheet.getLastColumn();
+  
+  // Lấy dữ liệu từ hàng
+  const range = sheet.getRange(rowIndex, 1, 1, numColumns);
+  const rowData = range.getValues();
+  
+  // rowData là một mảng 2 chiều, chúng ta cần phải lấy phần tử đầu tiên để có mảng 1 chiều
+  return rowData[0];
+},
+  ghiDuLieuVaoDayTheoTenThamChieu: function (data, sheetName, cotBatDau, cotThamChieu, giaTriThamChieu) {
+    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+    const hangBatDau = this.timHangCoGiaTriTrongCot(sheetName, cotThamChieu, giaTriThamChieu);
+    const rowIndex = parseInt(hangBatDau, 10) - 1;
+    const columnIndex = this.columnToIndex(cotBatDau) - 1;
+
+    sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).clearContent();
+    try {
+      sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).setValues(data);
+    } catch (e) {
+      SheetLog.logDebug(data);
+      console.error(e);
+    }
   }
 }
 

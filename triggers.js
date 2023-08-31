@@ -27,12 +27,26 @@ function createTriggers() {
     .nearMinute(0)
     .create();
 
-  // ScriptApp.newTrigger("layGiaVaKhoiLuongTuanGanNhat")
-  //   .timeBased()
-  //   .everyDays(1)
-  //   .atHour(6)
-  //   .nearMinute(0)
-  //   .create();
+  ScriptApp.newTrigger("layGiaVaKhoiLuongTuanGanNhat")
+    .timeBased()
+    .everyDays(1)
+    .atHour(18)
+    .nearMinute(0)
+    .create();
+
+  ScriptApp.newTrigger("layKhoiNgoaiTuanGanNhat")
+    .timeBased()
+    .everyDays(1)
+    .atHour(18)
+    .nearMinute(10)
+    .create();
+
+    ScriptApp.newTrigger("layGiaHangNgay")
+    .timeBased()
+    .everyDays(1)
+    .atHour(14)
+    .nearMinute(10)
+    .create();
 
   Logger.log("Các trigger đã được tạo!");
 }
