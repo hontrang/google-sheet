@@ -20,7 +20,7 @@ function createTriggers() {
     .nearMinute(0)
     .create();
 
-  ScriptApp.newTrigger("layThongTinChiTietMa")
+  ScriptApp.newTrigger("batSukienSuaThongTinO")
     .forSpreadsheet(SpreadsheetApp.getActive())
     .onEdit()
     .create();
