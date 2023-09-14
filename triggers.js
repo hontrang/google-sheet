@@ -13,40 +13,47 @@ function createTriggers() {
     .everyMinutes(1)
     .create();
 
-//   ScriptApp.newTrigger("layGiaThamChieu")
-//     .timeBased()
-//     .everyDays(1)
-//     .atHour(3)
-//     .nearMinute(0)
-//     .create();
-
+  //   ScriptApp.newTrigger("layGiaThamChieu")
+  //     .timeBased()
+  //     .everyDays(1)
+  //     .atHour(3)
+  //     .nearMinute(0)
+  //     .create();
+  
   ScriptApp.newTrigger("layThongTinCoBan")
     .timeBased()
     .everyDays(1)
-    .atHour(1)
-    .nearMinute(0)
-    .create();
-
-  ScriptApp.newTrigger("layGiaVaKhoiLuongTuanGanNhat")
-    .timeBased()
-    .everyDays(1)
     .atHour(18)
     .nearMinute(0)
     .create();
 
-  ScriptApp.newTrigger("layKhoiNgoaiTuanGanNhat")
+  ScriptApp.newTrigger("layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay")
     .timeBased()
     .everyDays(1)
-    .atHour(18)
-    .nearMinute(10)
+    .atHour(15)
+    .nearMinute(0)
     .create();
 
-    ScriptApp.newTrigger("layGiaHangNgay")
-    .timeBased()
-    .everyDays(1)
-    .atHour(14)
-    .nearMinute(10)
-    .create();
+  // ScriptApp.newTrigger("layGiaVaKhoiLuongTuanGanNhat")
+  //   .timeBased()
+  //   .everyDays(1)
+  //   .atHour(18)
+  //   .nearMinute(0)
+  //   .create();
+
+  // ScriptApp.newTrigger("layKhoiNgoaiTuanGanNhat")
+  //   .timeBased()
+  //   .everyDays(1)
+  //   .atHour(18)
+  //   .nearMinute(10)
+  //   .create();
+
+  //   ScriptApp.newTrigger("layGiaHangNgay")
+  //   .timeBased()
+  //   .everyDays(1)
+  //   .atHour(14)
+  //   .nearMinute(10)
+  //   .create();
 
   Logger.log("Các trigger đã được tạo!");
 }
