@@ -14,9 +14,14 @@ or click start gulp task on left-hand menu
 
 ![gulp](./asset/gulp.png "gulp")
 
-## To push code
+## To push code to appscripts
 ```bash
 clasp push
+```
+
+## To pull code from appscripts to local
+```bash
+clasp pull
 ```
 
 ## To execute function
