@@ -2,63 +2,23 @@ function layChiSoVnIndex() {
   const ngayHienTai = moment().format("YYYY-MM-DD");
   const duLieuNgayMoiNhat = SheetUtility.layDuLieuTrongOTheoTen(SheetUtility.SHEET_HOSE, "A1");
   const thanhKhoanMoiNhat = SheetUtility.layDuLieuTrongOTheoTen(SheetUtility.SHEET_HOSE, "D1");
-  const url = "https://wgateway-iboard.ssi.com.vn/graphql";
+  const url = "https://banggia.cafef.vn/stockhandler.ashx?index=true";
 
-  const query = "query indexQuery($indexIds: [String!]!) {indexRealtimeLatestByArray(indexIds: $indexIds) {indexID indexValue allQty allValue totalQtty totalValue advances declines nochanges ceiling floor change changePercent ratioChange __typename } }";
-  const variables = `{"indexIds": ["VNINDEX" ]}`;
-  const object = SheetHttp.sendGraphQLRequest(url, query, variables);
-  const duLieuNhanVe = object.data.indexRealtimeLatestByArray[0];
-  const thanhKhoan = duLieuNhanVe.totalValue * 1000000;
+  const object = SheetHttp.sendPostRequest(url);
+  const duLieuNhanVe = object[1];
+  const thanhKhoan = parseFloat(duLieuNhanVe.value.replace(/,/g, '')) * 1000000000;
   console.log(duLieuNgayMoiNhat !== ngayHienTai);
   console.log(thanhKhoan !== thanhKhoanMoiNhat);
   if (duLieuNgayMoiNhat === ngayHienTai && thanhKhoan !== thanhKhoanMoiNhat) {
-    const mang_du_lieu_chinh = [[ngayHienTai, duLieuNhanVe.indexValue, duLieuNhanVe.changePercent / 100, thanhKhoan]];
+    const mang_du_lieu_chinh = [[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]];
     SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_HOSE, 1, "A");
   } else {
     if (thanhKhoan !== thanhKhoanMoiNhat) {
       SheetUtility.chen1HangVaoDauSheet(SheetUtility.SHEET_HOSE);
-      const mang_du_lieu_chinh = [[ngayHienTai, duLieuNhanVe.indexValue, duLieuNhanVe.changePercent / 100, thanhKhoan]];
+      const mang_du_lieu_chinh = [[ngayHienTai, duLieuNhanVe.indexValue, duLieuNhanVe.percent / 100, thanhKhoan]];
       SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_HOSE, 1, "A");
     }
   }
-
-}
-
-// Hàm lấy giá tham chiếu từ một nguồn dữ liệu và ghi vào Google Sheets
-function layGiaThamChieu() {
-  const danhSachMa = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "A");
-  danhSachMa.shift();
-  // const danhSachMa = ["LBM","LAF","L10","KSB","KPF"];
-  const toDate = SheetUtility.layDuLieuTrongOTheoTen(SheetUtility.SHEET_CAU_HINH, "B1");
-  const fromDate = moment(toDate, "YYYY-MM-DD").subtract(1, "days").format("YYYY-MM-DD");
-  while (danhSachMa.length > 0) {
-    const MANG_PHU = danhSachMa.splice(0, 5);
-    const URL = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=100&sort=date&q=code:${MANG_PHU.join(",")}~date:gte:${fromDate}~date:lte:${toDate}`
-    const object = SheetHttp.sendGetRequest(URL);
-
-    if (object?.data) {
-      MANG_PHU.map(tenMaMangPhu => {
-        const data = [];
-        console.log(tenMaMangPhu);
-        let dataItems = [];
-        object.data.map(item => {
-          if (item.code === tenMaMangPhu) {
-            dataItems.push(item);
-          }
-        });
-        const tenMa = tenMaMangPhu;
-        const giaDongCua = dataItems[0].close * 1000;
-        // const ngay = dataItems.map(item => item.date);
-        data.push([giaDongCua]);
-        SheetUtility.ghiDuLieuVaoDayTheoTenThamChieu(data, SheetUtility.SHEET_DU_LIEU, "B", "A", tenMa);
-      });
-    } else {
-      data.push([Array(1).fill(0)]);
-      SheetUtility.ghiDuLieuVaoDayTheoTenThamChieu(data, SheetUtility.SHEET_DU_LIEU, "B", "A", tenMa);
-    }
-  }
-
-  SheetLog.logTime(SheetUtility.SHEET_CAU_HINH, "D1");
 }
 
 function layThongTinCoBan() {
@@ -138,110 +98,28 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa) {
   SheetUtility.ghiDuLieuVaoDayTheoTenThamChieu(mang_du_lieu_chinh, SheetUtility.SHEET_DU_LIEU, "I", "A", tenMa);
 }
 
-// function layGiaVaKhoiLuongTuanGanNhat() {
-//   const danhSachMa = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "A");
-//   danhSachMa.shift();
-//   const fromDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CAU_HINH, "C4");
-//   const toDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CAU_HINH, "E4");
-//   while (danhSachMa.length > 0) {
-//     const MANG_PHU = danhSachMa.splice(0, 400);
-//     const URL = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=10000&sort=date&q=code:${MANG_PHU.join(",")}~date:gte:${fromDate}~date:lte:${toDate}`
-//     const object = SheetHttp.sendGetRequest(URL);
-
-//     if (object?.data) {
-//       MANG_PHU.map(tenMaMangPhu => {
-//         const data = [];
-//         let dataItems = [];
-//         console.log(tenMaMangPhu);
-//         object.data.map(item => {
-//           if (item.code === tenMaMangPhu) {
-//             dataItems.push(item);
-//           }
-//         });
-//         const tenMa = tenMaMangPhu;
-//         dataItems = dataItems.slice(0, 11).reverse();
-//         const giaDongCua = dataItems.map(item => item.close * 1000);
-//         const khoiLuong = dataItems.map(item => item.nmVolume);
-//         data.push([...giaDongCua, ...khoiLuong]);
-//         SheetUtility.ghiDuLieuVaoDayTheoTenThamChieu(data, SheetUtility.SHEET_DU_LIEU, "AF", "A", tenMa);
-//       });
-//     } else {
-//       data.push([Array(44).fill(0)]);
-//       SheetUtility.ghiDuLieuVaoDayTheoTenThamChieu(data, SheetUtility.SHEET_DU_LIEU, "AF", "A", tenMa);
-//     }
-//   }
-//   SheetLog.logTime(SheetUtility.SHEET_CAU_HINH, "G4");
-// }
-
-// function layKhoiNgoaiTuanGanNhat() {
-//   const danhSachMa = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "A");
-//   danhSachMa.shift();
-//   const fromDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CAU_HINH, "C4");
-//   const toDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CAU_HINH, "E4");
-//   while (danhSachMa.length > 0) {
-//     const MANG_PHU = danhSachMa.splice(0, 400);
-//     const URL = `https://finfo-api.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${MANG_PHU.join(",")}~tradingDate:gte:${fromDate}~tradingDate:lte:${toDate}`;
-//     const object = SheetHttp.sendGetRequest(URL);
-
-//     if (object?.data) {
-//       MANG_PHU.map(tenMaMangPhu => {
-//         const data = [];
-//         console.log(tenMaMangPhu);
-//         let dataItems = [];
-//         object.data.map(item => {
-//           if (item.code === tenMaMangPhu) {
-//             dataItems.push(item);
-//           }
-//         });
-//         const tenMa = tenMaMangPhu;
-//         dataItems = dataItems.slice(0, 11).reverse();
-//         const foreignbuyvoltotal = dataItems.map(item => item.buyVol);
-//         const foreignsellvoltotal = dataItems.map(item => item.sellVol);
-//         data.push([...foreignbuyvoltotal, ...foreignsellvoltotal]);
-//         SheetUtility.ghiDuLieuVaoDayTheoTenThamChieu(data, SheetUtility.SHEET_DU_LIEU, "BB", "A", tenMa);
-//       });
-//     } else {
-//       data.push([Array(22).fill(0)]);
-//       SheetUtility.ghiDuLieuVaoDayTheoTenThamChieu(data, SheetUtility.SHEET_DU_LIEU, "BB", "A", tenMa);
-//     }
-//   }
-//   SheetLog.logTime(SheetUtility.SHEET_CAU_HINH, "G4");
-// }
-
 // Hàm lấy giá tham chiếu từ một nguồn dữ liệu và ghi vào Google Sheets
 function layGiaThamChieu() {
   const danhSachMa = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "A");
-  danhSachMa.shift();
   // const danhSachMa = ["LBM","LAF","L10","KSB","KPF"];
   const date = SheetUtility.layDuLieuTrongOTheoTen(SheetUtility.SHEET_CAU_HINH, "B1");
+  const data = [];
   while (danhSachMa.length > 0) {
     const MANG_PHU = danhSachMa.splice(0, 400);
-    const URL = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=100&sort=date&q=code:${MANG_PHU.join(",")}~date:gte:${date}~date:lte:${date}`
+    const URL = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${MANG_PHU.join(",")}~date:gte:${date}~date:lte:${date}`;
     const object = SheetHttp.sendGetRequest(URL);
 
-    if (object?.data) {
-      MANG_PHU.map(tenMaMangPhu => {
-        const data = [];
-        console.log(tenMaMangPhu);
-        let dataItems = [];
-        object.data.map(item => {
-          if (item.code === tenMaMangPhu) {
-            dataItems.push(item);
-          }
-        });
-        const tenMa = tenMaMangPhu;
-        const giaDongCua = dataItems[0].close * 1000;
-        // const ngay = dataItems.map(item => item.date);
-        data.push([giaDongCua]);
-        SheetUtility.ghiDuLieuVaoDayTheoTenThamChieu(data, SheetUtility.SHEET_DU_LIEU, "B", "A", tenMa);
+    if (object?.data.length > 0) {
+      object.data.map(item => {
+        const tenMa = item.code;
+        console.log(tenMa);
+        data.push([tenMa, item.close * 1000])
+        SheetUtility.ghiDuLieuVaoDay(data, SheetUtility.SHEET_DU_LIEU, 2, 11);
       });
-    } else {
-      data.push([Array(1).fill(0)]);
-      SheetUtility.ghiDuLieuVaoDayTheoTenThamChieu(data, SheetUtility.SHEET_DU_LIEU, "B", "A", tenMa);
     }
-  }
 
-  SheetLog.logTime(SheetUtility.SHEET_CAU_HINH, "D1");
+    SheetLog.logTime(SheetUtility.SHEET_CAU_HINH, "D1");
+  }
 }
 
 function layThongTinPB(danhSachMa) {
@@ -310,7 +188,7 @@ function duLieuTam(date) {
   // const fromDate = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CAU_HINH, "C5");
   while (danhSachMa.length > 0) {
     const MANG_PHU = danhSachMa.splice(0, 400);
-    const URL = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${MANG_PHU.join(",")}~date:gte:${date}~date:lte:${date}`;
+    const URL = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${MANG_PHU.join(",")}~date:gte:${date}~date:lte:${date}`
     const object = SheetHttp.sendGetRequest(URL);
     if (object?.data.length > 0) {
       const header = SheetUtility.layDuLieuTrongHang("Tam", 1);
@@ -319,7 +197,7 @@ function duLieuTam(date) {
       object.data.map(item => {
         for (let i = 0; i < header.length; i++) {
           if (header[i] === item.code) {
-            SheetUtility.ghiDuLieuVaoDay([[item.close * 1000]], "Tam", 2, i + 1);
+            SheetUtility.ghiDuLieuVaoDay([[item.nmVolume]], "Tam", 2, i + 1);
           }
         }
       });
