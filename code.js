@@ -1,9 +1,8 @@
 function getDataHose() {
-  const url = "https://wgateway-iboard.ssi.com.vn/graphql/";
-  const query = 'query stockRealtimesByGroup($group: String){stockRealtimesByGroup(group: $group){stockSymbol matchedPrice }}';
-  const variables = '{"group":"HOSE"}';
-  const response = SheetHttp.sendGraphQLRequest(url, query, variables);
-  const stockData = response.data.stockRealtimesByGroup.map(({ stockSymbol, matchedPrice }) => [stockSymbol, matchedPrice]);
+  const url = "https://msh-data.cafef.vn/graphql/";
+  const query = 'query { HOSE { stocks(take: 3000) { items { symbol currentPrice } } } }';
+  const response = SheetHttp.sendGraphQLRequest(url, query);
+  const stockData = response.data.HOSE.stocks.items.map(({ symbol, currentPrice }) => [symbol, currentPrice * 1000]);
   SheetUtility.ghiDuLieuVaoDayTheoTen(stockData, SheetUtility.SHEET_DU_LIEU, 2, "B");
 }
 
@@ -30,7 +29,7 @@ function layThongTinChiTietMa() {
   layBaoCaoPhanTich(tenMa);
   layTinTucSheetChiTietMa(tenMa);
   layBaoCaoTaiChinh();
-  layThongTinCoDong(tenMa);
+  // layThongTinCoDong(tenMa);
   updateChart();
   SheetLog.logTime(SheetUtility.SHEET_CHI_TIET_MA, "J2");
   Logger.log("Hàm " + "layThongTinChiTietMa" + " chạy thành công");
@@ -72,11 +71,11 @@ function layTinTucSheetChiTietMa(tenMa) {
 }
 
 function layThongTinCoDong(tenMa) {
-  const url = "https://finfo-iboard.ssi.com.vn/graphql";
+  const url = "https://restv2.fireant.vn/symbols/VIX/holders";
 
   const query = "query shareholders($symbol: String!, $size: Int, $offset: Int, $order: String, $orderBy: String, $type: String, $language: String) {shareholders( symbol: $symbol size: $size offset: $offset order: $order orderBy: $orderBy type: $type language: $language ) }";
   const variables = `{"symbol": "${tenMa}", "size": 10, "offset": 1 }`;
-  const object = SheetHttp.sendGraphQLRequest(url, query, variables);
+  const object = SheetHttp.sendPostRequest(url);
   const mang_du_lieu_chinh = object.data.shareholders.dataList.map(
     ({ ownershiptypecode, name, percentage, quantity, publicdate }) => [ownershiptypecode, name, percentage, quantity, publicdate.substr(0, 10)]
   );
