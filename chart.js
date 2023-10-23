@@ -26,8 +26,8 @@ function updateChart() {
       }, // Trục dọc bên trái
       1: { // Trục dọc bên phải
         viewWindow: {
-          min: 1150, // Đặt giá trị tối thiểu cho trục dọc bên phải
-          max: 1300 // Đặt giá trị tối đa cho trục dọc bên phải
+          min: 1100, // Đặt giá trị tối thiểu cho trục dọc bên phải
+          max: 1250 // Đặt giá trị tối đa cho trục dọc bên phải
         }
       }
     })
