@@ -19,7 +19,7 @@ function layTinTucSheetBangThongTin() {
       mang_du_lieu_chinh.push([tenMa, title, "", link, "", date]);
     });
   });
-  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_BANG_THONG_TIN, 38, "A");
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_BANG_THONG_TIN, 34, "A");
 }
 
 function layThongTinChiTietMa() {
