@@ -1,8 +1,8 @@
 function getDataHose() {
-  const url = "https://msh-data.cafef.vn/graphql/";
-  const query = 'query { HOSE { stocks(take: 3000) { items { symbol currentPrice } } } }';
-  const response = SheetHttp.sendGraphQLRequest(url, query);
-  const stockData = response.data.HOSE.stocks.items.map(({ symbol, currentPrice }) => [symbol, currentPrice * 1000]);
+  const DANH_SACH_MA = SheetUtility.layDuLieuTrongCot(SheetUtility.SHEET_DU_LIEU, "A");
+  const URL = `https://bgapidatafeed.vps.com.vn/getliststockdata/${DANH_SACH_MA.join(",")}`;
+  const response = SheetHttp.sendGetRequest(URL);
+  const stockData = response.map(({ sym, lastPrice }) => [sym, lastPrice * 1000]);
   SheetUtility.ghiDuLieuVaoDayTheoTen(stockData, SheetUtility.SHEET_DU_LIEU, 2, "B");
 }
 
@@ -19,14 +19,14 @@ function layTinTucSheetBangThongTin() {
       mang_du_lieu_chinh.push([tenMa, title, "", link, "", date]);
     });
   });
-  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_BANG_THONG_TIN, 34, "A");
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtility.SHEET_BANG_THONG_TIN, 35, "A");
 }
 
 function layThongTinChiTietMa() {
   SheetUtility.ghiDuLieuVaoO("...", SheetUtility.SHEET_CHI_TIET_MA, "J2");
   const tenMa = SheetUtility.layDuLieuTrongO(SheetUtility.SHEET_CHI_TIET_MA, "F1");
   layGiaVaKhoiLuongTheoMaChungKhoan(tenMa);
-  layBaoCaoPhanTich(tenMa);
+  // layBaoCaoPhanTich(tenMa);
   layTinTucSheetChiTietMa(tenMa);
   layBaoCaoTaiChinh();
   // layThongTinCoDong(tenMa);
@@ -71,11 +71,9 @@ function layTinTucSheetChiTietMa(tenMa) {
 }
 
 function layThongTinCoDong(tenMa) {
-  const url = "https://restv2.fireant.vn/symbols/VIX/holders";
+  const URL = `https://restv2.fireant.vn/symbols/${tenMa}/holders`;
 
-  const query = "query shareholders($symbol: String!, $size: Int, $offset: Int, $order: String, $orderBy: String, $type: String, $language: String) {shareholders( symbol: $symbol size: $size offset: $offset order: $order orderBy: $orderBy type: $type language: $language ) }";
-  const variables = `{"symbol": "${tenMa}", "size": 10, "offset": 1 }`;
-  const object = SheetHttp.sendPostRequest(url);
+  const object = SheetHttp.sendRequest(URL);
   const mang_du_lieu_chinh = object.data.shareholders.dataList.map(
     ({ ownershiptypecode, name, percentage, quantity, publicdate }) => [ownershiptypecode, name, percentage, quantity, publicdate.substr(0, 10)]
   );
@@ -94,13 +92,11 @@ function layBaoCaoTaiChinh() {
     const link = $(this).children("td:nth-child(3)").children("a").attr("href");
     mang_du_lieu_chinh.push([tenMa.toUpperCase(), title, date, link]);
   });
-  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh.slice(1, 11), SheetUtility.SHEET_DU_LIEU, 18, "AG");
+  SheetUtility.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh.slice(1, 11), SheetUtility.SHEET_DU_LIEU, 18, "AH");
 }
 
 function batSukienSuaThongTinO(e) {
-  var sheet = e.source.getActiveSheet();
-  var range = e.range;
-  if (range.getA1Notation() === "F1" && sheet.getName() === SheetUtility.SHEET_CHI_TIET_MA) {
+  if (e.range.getA1Notation() === "F1" && sheet.getName() === SheetUtility.SHEET_CHI_TIET_MA) {
     layThongTinChiTietMa();
     SheetUtility.ghiDuLieuVaoO("ok", SheetUtility.SHEET_CAU_HINH, "B6");
   } else {
