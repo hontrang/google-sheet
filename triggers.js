@@ -39,9 +39,11 @@ function createTriggers() {
  * @see https://developers.google.com/apps-script/guides/triggers/installable
  */
 function deleteTrigger() {
-  // Loop over all triggers.
+  // Lấy tất cả triggers trong dự án
   const allTriggers = ScriptApp.getProjectTriggers();
-  for (let index = 0; index < allTriggers.length; index++) {
-    ScriptApp.deleteTrigger(allTriggers[index]);
+  
+  // Sử dụng vòng lặp for-of để duyệt qua mỗi trigger
+  for (const trigger of allTriggers) {
+    ScriptApp.deleteTrigger(trigger);
   }
 }
