@@ -1,4 +1,4 @@
-var SheetUtility = {
+const SheetUtility = {
   SHEET_THAM_CHIEU: "tham chiếu",
   SHEET_BANG_THONG_TIN: "bảng thông tin",
   SHEET_DU_LIEU: "dữ liệu",
@@ -31,14 +31,6 @@ var SheetUtility = {
   layDuLieuTrongO: function (sheetName, cell) {
     return SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(cell).getValue();
   },
-  layGiaTriTheoCot: function (activeSheet, rowIndex, columnIndex) {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(activeSheet);
-    const data = sheet.getRange(rowIndex, columnIndex, sheet.getLastRow() - rowIndex + 1);
-    // xoá phần tử rỗng trong mảng
-    return range.getValues().filter(function (el) {
-      return el != "";
-    });
-  },
   layDuLieuTrongCot: function (sheetName, column) {
     const columnData = SpreadsheetApp.getActive().getSheetByName(sheetName).getRange(`${column}:${column}`).getValues();
 
@@ -63,7 +55,7 @@ var SheetUtility = {
     return index;
   },
   chen1HangVaoDauSheet: function (sheetName) {
-    let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     // Chèn một hàng mới vào vị trí đầu tiên của bảng
     sheet.insertRowsBefore(1, 1);
 
