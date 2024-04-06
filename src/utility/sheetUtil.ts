@@ -10,7 +10,7 @@ interface SheetUtilityType {
     SHEET_DEBUG: string;
     KICH_THUOC_MANG_PHU: number;
     ghiDuLieuVaoDay: (data: any[][], sheetName: string, row: number, column: number) => void;
-    ghiDuLieuVaoDayTheoTen: (data: any[][], sheetName: string, rowName: string, columnName: string) => void;
+    ghiDuLieuVaoDayTheoTen: (data: any[][], sheetName: string, rowNumber: number, columnName: string) => void;
     ghiDuLieuVaoO: (data: any, sheetName: string, cell: string) => void;
     layDuLieuTrongO: (sheetName: string, cell: string) => any;
     layDuLieuTrongCot: (sheetName: string, column: string) => any[];
@@ -35,13 +35,13 @@ const SheetUtil: SheetUtilityType = {
         sheet.getRange(row, column, data.length, data[0].length).clearContent();
         sheet.getRange(row, column, data.length, data[0].length).setValues(data);
     },
-    ghiDuLieuVaoDayTheoTen(data, sheetName, rowName, columnName) {
+    ghiDuLieuVaoDayTheoTen(data, sheetName, rowNumber, columnName) {
         let sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) {
             console.log("Sheet không tồn tại");
             return -1;
         }
-        let rowIndex = parseInt(rowName, 10) - 1;
+        let rowIndex = rowNumber - 1;
         let columnIndex = this.columnToIndex(columnName) - 1;
 
         sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).clearContent();

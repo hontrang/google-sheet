@@ -1,7 +1,31 @@
 {
+  "title": "Quản lý chứng khoán bằng google sheet",
+  "name": "google-sheet",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm run clean && npx tsc && npm run build:assets",
+    "build:deploy": "npm run clean && npx tsc && npm run build:assets && npm run deploy",
+    "build:assets": "node scripts/build-assets.js",
+    "clean": "node scripts/clean.js",
+    "deploy": "clasp open"
+  },
+  "description": "Quản lý chứng khoán bằng google sheet",
   "devDependencies": {
+    "@babel/core": "^7.24.4",
+    "@babel/plugin-transform-runtime": "^7.24.3",
+    "@babel/preset-env": "^7.24.4",
+    "@babel/preset-typescript": "^7.24.1",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@types/google-apps-script": "^1.0.83",
     "@types/moment": "^2.13.0",
-    "typescript": "^5.4.4"
-  }
+    "@types/node": "^20.12.5",
+    "cheerio": "^1.0.0-rc.12",
+    "globals": "^15.0.0",
+    "rollup": "^4.14.0",
+    "shelljs": "0.8.5",
+    "typescript": "^5.4.4",
+    "upath": "2.0.1"
+  },
+  "type": "module"
 }

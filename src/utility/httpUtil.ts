@@ -64,3 +64,4 @@ const SheetHttp = {
         return SheetHttp.sendRequest(url);
     }
 };
+export { SheetHttp }
