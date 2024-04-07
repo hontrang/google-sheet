@@ -6,8 +6,14 @@
     "build": "npm run clean && npx tsc && npm run build:assets",
     "build:deploy": "npm run clean && npx tsc && npm run build:assets && npm run deploy",
     "build:assets": "node scripts/build-assets.js",
-    "clean": "node scripts/clean.js",
-    "deploy": "clasp open"
+    "clean": "gts clean",
+    "deploy": "clasp open",
+    "lint": "gts lint",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm.cmd run compile",
+    "pretest": "npm.cmd run compile",
+    "posttest": "npm.cmd run lint"
   },
   "description": "Quản lý chứng khoán bằng google sheet",
   "devDependencies": {
@@ -19,12 +25,12 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@types/google-apps-script": "^1.0.83",
     "@types/moment": "^2.13.0",
-    "@types/node": "^20.12.5",
+    "@types/node": "20.11.5",
     "cheerio": "^1.0.0-rc.12",
     "globals": "^15.0.0",
     "rollup": "^4.14.0",
     "shelljs": "0.8.5",
-    "typescript": "^5.4.4",
+    "typescript": "~5.4.3",
     "upath": "2.0.1"
   },
   "type": "module"

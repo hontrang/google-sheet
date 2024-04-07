@@ -1,31 +1,25 @@
-import { SheetLog } from "./logUtil";
+import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions
 
-interface Options {
-    method: string;
-    headers: {
-        "Content-Type": string;
-        Accept: string;
+namespace SheetHttp {
+    export const URL_GRAPHQL_CAFEF = "https://msh-data.cafef.vn/graphql";
+
+    export const OPTIONS_POST: URLFetchRequestOptions = {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        }
     };
-    payload?: string;
-}
 
-const SheetHttp = {
-    URL_GRAPHQL_CAFEF: "https://msh-data.cafef.vn/graphql",
-    OPTIONS_POST: {
-        method: "POST",
+    export const OPTIONS_GET: URLFetchRequestOptions = {
+        method: "get",
         headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
         }
-    } as Options,
-    OPTIONS_GET: {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-        }
-    } as Options,
-    sendRequest: (url: string): any => {
+    };
+
+    export function sendRequest(url: string): any {
         try {
             const response = UrlFetchApp.fetch(url);
             return JSON.parse(response.getContentText());
@@ -33,35 +27,39 @@ const SheetHttp = {
             SheetLog.logDebug(`error: ${e}`);
             return null;
         }
-    },
-    sendPostRequest: (url: string): any => {
+    }
+
+    export function sendPostRequest(url: string, options?: URLFetchRequestOptions): any {
         try {
-            const response = UrlFetchApp.fetch(url);
+            const effectiveOptions = options || OPTIONS_POST;
+            const response = UrlFetchApp.fetch(url, effectiveOptions);
             return JSON.parse(response.getContentText());
         } catch (e) {
             SheetLog.logDebug(`error: ${e}`);
             return null;
         }
-    },
-    sendGetRequest: (url: string): any => {
+    }
+    
+
+    export function sendGetRequest(url: string): any {
         try {
-            const response = UrlFetchApp.fetch(url);
+            const response = UrlFetchApp.fetch(url, OPTIONS_GET);
             return JSON.parse(response.getContentText());
         } catch (e) {
             SheetLog.logDebug(`error: ${e}`);
             return null;
         }
-    },
-    sendGraphQLRequest: (url: string, query: string, variables?: any): any => {
-        const payload = JSON.stringify({
+    }
+
+    export function sendGraphQLRequest(url: string, query: string, variables?: any): any {
+        const PAYLOAD = JSON.stringify({
             query: query,
             variables: variables
         });
-        const options = {
-            ...SheetHttp.OPTIONS_POST, // Kế thừa các OPTIONS_POST và ghi đè payload
-            payload: payload
-        };
-        return SheetHttp.sendRequest(url);
+        const OPTIONS: URLFetchRequestOptions = {
+            method: "post",
+            payload: PAYLOAD
+        }
+        return sendPostRequest(url, OPTIONS); // Sửa lại để gọi sendPostRequest với url và options đã chỉnh sửa
     }
-};
-export { SheetHttp }
+}

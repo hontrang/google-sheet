@@ -1,29 +1,34 @@
-import moment from 'moment';
+namespace SheetLog {
+    export function logDebug(content: string): boolean {
+        const data: [string, string][] = [
+            [moment().format("YYYY/MM/DD HH:mm:ss"), content.toString()]
+        ];
+        Logger.log(content);
+        const sheet = SpreadsheetApp.getActive().getSheetByName(SheetUtil.SHEET_DEBUG);
+        if (!sheet) return false;
+        else {
+            sheet.getRange(sheet.getLastRow() + 1, 1, data.length, data[0].length).setValues(data);
+            return true;
+        }
+    }
 
-declare const SpreadsheetApp: any;
-declare const SheetUtility: any;
+    export function logTime(sheetName: string, cell: string): boolean {
+        const sheet = SpreadsheetApp.getActive()
+            .getSheetByName(sheetName);
+        if (!sheet) return false;
+        else {
+            sheet.getRange(cell).setValue(moment().format("YYYY/MM/DD HH:mm:ss"));
+            return true;
+        }
+    }
 
-const SheetLog = {
-  logDebug: function (content: any): void {
-    const data: [string, string][] = [
-      [moment().format("YYYY/MM/DD HH:mm:ss"), content.toString()]
-    ];
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetUtility.SHEET_DEBUG);
-    sheet.getRange(sheet.getLastRow() + 1, 1, data.length, data[0].length).setValues(data);
-    Logger.log(content);
-  },
-  logTime: function (sheetName: string, cell: string): void {
-    SpreadsheetApp.getActive()
-      .getSheetByName(sheetName)
-      .getRange(cell)
-      .setValue(moment().format("YYYY/MM/DD HH:mm:ss"));
-  },
-
-  logStart: function (sheetName: string, cell: string): void {
-    SpreadsheetApp.getActive()
-      .getSheetByName(sheetName)
-      .getRange(cell)
-      .setValue("...");
-  }
-};
-export { SheetLog }
+    export function logStart(sheetName: string, cell: string): boolean {
+        const sheet = SpreadsheetApp.getActive()
+            .getSheetByName(sheetName);
+        if (!sheet) return false;
+        else {
+            sheet.getRange(cell).setValue("...");
+            return true;
+        }
+    }
+}
