@@ -1,6 +1,6 @@
-export const DateUtil: { getDate: (number: number) => string } = {
-    getDate: function (number: number): string {
-        let date: Date = new Date(number);
+namespace DateUtil {
+    export function getDate(num: string) {
+        let date: Date = new Date(num);
         return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     }
 }
