@@ -103,3 +103,10 @@ function layThongTinCoDong(tenMa: string): void {
 
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AC");
 }
+
+function batSukienSuaThongTinO(e: any) {
+  const sheet = SpreadsheetApp.getActive().getActiveSheet();
+  if (e.range.getA1Notation() === "F1" && sheet.getName() === SheetUtil.SHEET_CHI_TIET_MA) {
+    layThongTinChiTietMa();
+  }
+}
