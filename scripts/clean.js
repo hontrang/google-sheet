@@ -12,6 +12,7 @@ const __dirname = dirname(__filename);
 
 // Tạo đường dẫn đích
 const destPath = upath.resolve(__dirname, '../dist');
+const buildPath = upath.resolve(__dirname, '../build');
 
 // Xóa tất cả các file trong thư mục đích
-sh.rm('-rf', `${destPath}/*`);
+sh.rm('-rf', [`${destPath}/*`, `${buildPath}/*`]);

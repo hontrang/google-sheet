@@ -13,6 +13,7 @@ export function renderClasp() {
     // copy clasp
     let sourcePath = upath.resolve(__dirname, '../src/clasp');
     let destPath = upath.resolve(__dirname, '../dist');
+    console.log("Sao chép files trong folder clasp vào dist");
     // Lấy tất cả file trong thư mục nguồn, bao gồm cả file ẩn
     glob("**/*", { dot: true, cwd: sourcePath }, function (er, files) {
         if (er) {
