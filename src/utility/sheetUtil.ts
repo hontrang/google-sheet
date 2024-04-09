@@ -6,6 +6,11 @@ namespace SheetUtil {
     export const SHEET_CAU_HINH = "cấu hình";
     export const SHEET_DEBUG = "debug";
     export const KICH_THUOC_MANG_PHU = 10;
+    export const SHEET_HOSE = "HOSE";
+    export const SHEET_GIA = "Giá";
+    export const SHEET_KHOI_LUONG = "Khối Lượng";
+    export const SHEET_KHOI_NGOAI_MUA = "KN Mua";
+    export const SHEET_KHOI_NGOAI_BAN = "KN Bán";
 
     export function ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
@@ -24,7 +29,7 @@ namespace SheetUtil {
             return;
         }
         const rowIndex = rowNumber - 1;
-        const columnIndex = columnToIndex(columnName) - 1;
+        const columnIndex = doiTenCotThanhChiSo(columnName) - 1;
 
         sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).clearContent();
         try {
@@ -39,6 +44,12 @@ namespace SheetUtil {
         if (!sheet) return false;
         sheet.getRange(cell).setValue(data);
         return true;
+    }
+
+    export function layDuLieuTrongOTheoTen(sheetName: string, cell: string): string {
+        const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+        if (!sheet) return "invalid sheet name";
+        return sheet.getRange(cell).getValue();
     }
 
     export function layDuLieuTrongO(sheetName: string, cell: string): string {
@@ -63,7 +74,13 @@ namespace SheetUtil {
         return dataArray;
     }
 
-    export function columnToIndex(columnName: string): number {
+    export function laySoHangTrongSheet(sheetName: string): number {
+        const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+        if (!sheet) return -1;
+        return sheet.getLastRow();
+    }
+
+    export function doiTenCotThanhChiSo(columnName: string): number {
         let index = 0;
         let length = columnName.length;
         for (let i = 0; i < length; i++) {
@@ -71,6 +88,20 @@ namespace SheetUtil {
             index += (charCode * Math.pow(26, length - i - 1));
         }
         return index;
+    }
+
+    export function layDuLieuTrongHang(sheetName: string, rowIndex: number): string[] {
+        const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+        if (!sheet) return new Array();
+        // Lấy số lượng cột trong Sheet
+        const numColumns = sheet.getLastColumn();
+
+        // Lấy dữ liệu từ hàng
+        const range = sheet.getRange(rowIndex, 1, 1, numColumns);
+        const rowData = range.getValues();
+
+        // rowData là một mảng 2 chiều, chúng ta cần phải lấy phần tử đầu tiên để có mảng 1 chiều
+        return rowData[0];
     }
 
     export function chen1HangVaoDauSheet(sheetName: string): number {
