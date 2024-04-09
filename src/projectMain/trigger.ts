@@ -6,7 +6,7 @@
  * Creates two time-driven triggers.
  * @see https://developers.google.com/apps-script/guides/triggers/installable#time-driven_triggers
  */
-function createTriggers(): void {
+function main_createTriggers(): void {
     // Tạo trigger chạy theo thời gian
     ScriptApp.newTrigger("getDataHose")
         .timeBased()
@@ -37,7 +37,7 @@ function createTriggers(): void {
  * Deletes all triggers in the project.
  * @see https://developers.google.com/apps-script/guides/triggers/installable
  */
-function deleteTrigger(): void {
+function main_deleteTrigger(): void {
     // Lấy tất cả triggers trong dự án
     const allTriggers: GoogleAppsScript.Script.Trigger[] = ScriptApp.getProjectTriggers();
 
