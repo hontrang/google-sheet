@@ -1,4 +1,4 @@
-namespace ChartUtil {
+namespace ZChartUtil {
     export const CHART_ID = 559458186;
     export const API_KEY = "AIzaSyBr-2mGf58LY2kXma1KFUFpgEGuI8lNhgw";
 
