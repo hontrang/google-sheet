@@ -37,7 +37,7 @@ function layThongTinChiTietMa(): void {
 
   // layThongTinCoDong(tenMa);
 
-  ChartUtil.updateChart();
+  ZChartUtil.updateChart();
   SheetLog.logTime(SheetUtil.SHEET_CHI_TIET_MA, "J2");
   Logger.log("Hàm layThongTinChiTietMa chạy thành công");
 }

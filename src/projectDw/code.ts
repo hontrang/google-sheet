@@ -96,6 +96,15 @@ function layThongTinPE(danhSachMa: string[]): void {
     SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "F");
 }
 
+interface RoomData {
+    totalRoom?: number;
+    currentRoom?: number;
+}
+
+interface VolumnData {
+    value?: number;
+}
+
 function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
     const QUERY_API: string = "https://finfo-api.vndirect.com.vn/v4";
     const mangDuLieuChinh: [number, number][] = []; // Kiểu mảng của cặp số
@@ -103,10 +112,10 @@ function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
         const object: any = SheetHttp.sendGetRequest(url); // Khuyến khích định nghĩa kiểu cụ thể thay vì sử dụng `any`
-        const jsonData = JSON.parse(object.data);
-        jsonData.forEach((element: { totalRoom?: number, currentRoom?: number }) => {
+        const datas = Array.from(object.data) as RoomData[];
+        datas.forEach((element: { totalRoom?: number, currentRoom?: number }) => {
             const totalRoom: number = element.totalRoom ?? 0;
-            const currentRoom: number = element.totalRoom ?? 0;
+            const currentRoom: number = element.currentRoom ?? 0;
             mangDuLieuChinh.push([totalRoom, currentRoom]);
         });
     }
@@ -121,8 +130,8 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
         const object: any = SheetHttp.sendGetRequest(url);
-
-        object.data.forEach((element: { value?: number }) => {
+        const datas = Array.from(object.data) as VolumnData[];
+        datas.forEach((element: { value?: number }) => {
             const value: number = element.value ?? 0;
             mangDuLieuChinh.push([value]);
         });
@@ -182,7 +191,7 @@ function layKhoiNgoaiBanHangNgay(): void {
                     }
                 });
             }
-            console.log(date);
+            console.log("Lấy khối ngoại bán hàng ngày thành công");
         }
     } else {
         console.log("done");
@@ -212,7 +221,7 @@ function layKhoiNgoaiMuaHangNgay(): void {
                     }
                 });
             }
-            console.log(date);
+            console.log("Lấy khối ngoại mua hàng ngày thành công");
         }
     } else {
         console.log("done");
@@ -242,7 +251,7 @@ function layKhoiLuongHangNgay(): void {
                     }
                 });
             }
-            console.log(date);
+            console.log("Lấy khối lượng hàng ngày thành công");
         }
     } else {
         console.log("done");
@@ -272,7 +281,7 @@ function layGiaHangNgay(): void {
                     }
                 });
             }
-            console.log(date);
+            console.log("Lấy giá hàng ngày thành công");
         }
     } else {
         console.log("done");
