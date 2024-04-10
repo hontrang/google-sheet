@@ -1,7 +1,7 @@
 function layChiSoVnIndex(): void {
     const ngayHienTai: string = moment().format("YYYY-MM-DD");
     const duLieuNgayMoiNhat: string = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "A1");
-    const thanhKhoanMoiNhat: number = parseFloat(SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "D1").replace(/,/g, '')) * 1000000000;
+    const thanhKhoanMoiNhat: number = parseFloat(SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "D1"));
     const url: string = "https://banggia.cafef.vn/stockhandler.ashx?index=true";
 
     const object = SheetHttp.sendPostRequest(url);
@@ -12,14 +12,12 @@ function layChiSoVnIndex(): void {
     if (duLieuNgayMoiNhat === ngayHienTai && thanhKhoan !== thanhKhoanMoiNhat) {
         const mangDuLieuChinh: [[string, number, number, number]] = [[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]];
         SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_HOSE, 1, "A");
+    } else if (thanhKhoan !== thanhKhoanMoiNhat) {
+        SheetUtil.chen1HangVaoDauSheet(SheetUtil.SHEET_HOSE);
+        const mang_du_lieu_chinh: [[string, number, number, number]] = [[ngayHienTai, duLieuNhanVe.indexValue, duLieuNhanVe.percent / 100, thanhKhoan]];
+        SheetUtil.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtil.SHEET_HOSE, 1, "A");
     } else {
-        if (thanhKhoan !== thanhKhoanMoiNhat) {
-            SheetUtil.chen1HangVaoDauSheet(SheetUtil.SHEET_HOSE);
-            const mang_du_lieu_chinh: [[string, number, number, number]] = [[ngayHienTai, duLieuNhanVe.indexValue, duLieuNhanVe.percent / 100, thanhKhoan]];
-            SheetUtil.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh, SheetUtil.SHEET_HOSE, 1, "A");
-        } else {
-            console.log("No action required");
-        }
+        console.log("No action required");
     }
 }
 
