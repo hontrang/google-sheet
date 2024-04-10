@@ -25,3 +25,6 @@ clasp run [function name]
 ```
 ## To fix issue push file ineffective
 Re-check rootDir on file .clasp.json. It should be mapped with working directory
+
+## generate js files
+npx tsc
