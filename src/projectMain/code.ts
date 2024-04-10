@@ -30,7 +30,7 @@ function layThongTinChiTietMa(): void {
   const tenMa: string = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F1");
 
   layGiaVaKhoiLuongTheoMaChungKhoan(tenMa);
-  // layBaoCaoPhanTich(tenMa);
+  layBaoCaoPhanTich(tenMa);
 
   layTinTucSheetChiTietMa(tenMa);
   layBaoCaoTaiChinh();
@@ -86,10 +86,30 @@ function layBaoCaoTaiChinh(): void {
   SheetUtil.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh.slice(1, 11), SheetUtil.SHEET_DU_LIEU, 18, "AH");
 }
 
+interface ReportData {
+  SourceName?: string;
+  Title?: string;
+  ReportTypeName?: string;
+  LastUpdate?: string;
+  Url?: string;
+}
+
 function layBaoCaoPhanTich(tenMa: string): void {
+  const mangDuLieuChinh: [string, string, string, string, string][] = [];
   const url: string = `https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:${tenMa}&pageIndex=1&pageSize=9`;
   const object = SheetHttp.sendPostRequest(url); // Giả định về cấu trúc và kiểu dữ liệu của object
-  const mangDuLieuChinh = object.Data.ReportData.map(({ SourceName, Title, ReportTypeName, LastUpdate, Url }: { SourceName: string, Title: string, ReportTypeName: string, LastUpdate: string, Url: string }) => [SourceName, Title, ReportTypeName, LastUpdate, Url]);
+
+  const datas = Array.from(object.Data) as ReportData[];
+
+  datas.forEach((element: { SourceName?: string, Title?: string, ReportTypeName?: string, LastUpdate?: string, Url?: string }) => {
+    const SourceName: string = element.SourceName ?? "____";
+    const Title: string = element.Title ?? "____";
+    const ReportTypeName: string = element.ReportTypeName ?? "____";
+    const LastUpdate: string = element.LastUpdate ?? "____";
+    const Url: string = element.Url ?? "____";
+    mangDuLieuChinh.push([SourceName, Title, ReportTypeName, LastUpdate, Url]);
+  });
+
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AL");
 }
 
