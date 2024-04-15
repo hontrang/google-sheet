@@ -30,13 +30,11 @@ function layThongTinChiTietMa(): void {
   const tenMa: string = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F1");
 
   layGiaVaKhoiLuongTheoMaChungKhoan(tenMa);
-  // layBaoCaoPhanTich(tenMa);
+  layBaoCaoPhanTich(tenMa);
 
   layTinTucSheetChiTietMa(tenMa);
   layBaoCaoTaiChinh();
-
-  // layThongTinCoDong(tenMa);
-
+  layThongTinCoDong(tenMa);
   ZChartUtil.updateChart();
   SheetLog.logTime(SheetUtil.SHEET_CHI_TIET_MA, "J2");
   Logger.log("Hàm layThongTinChiTietMa chạy thành công");
@@ -86,22 +84,42 @@ function layBaoCaoTaiChinh(): void {
   SheetUtil.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh.slice(1, 11), SheetUtil.SHEET_DU_LIEU, 18, "AH");
 }
 
+interface ReportData {
+  SourceName?: string;
+  Title?: string;
+  ReportTypeName?: string;
+  LastUpdate?: string;
+  Url?: string;
+}
+
 function layBaoCaoPhanTich(tenMa: string): void {
+  const mangDuLieuChinh: [string, string, string, string, string][] = [];
   const url: string = `https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:${tenMa}&pageIndex=1&pageSize=9`;
   const object = SheetHttp.sendPostRequest(url); // Giả định về cấu trúc và kiểu dữ liệu của object
-  const mangDuLieuChinh = object.Data.ReportData.map(({ SourceName, Title, ReportTypeName, LastUpdate, Url }: { SourceName: string, Title: string, ReportTypeName: string, LastUpdate: string, Url: string }) => [SourceName, Title, ReportTypeName, LastUpdate, Url]);
+
+  const datas = Array.from(object.Data) as ReportData[];
+
+  datas.forEach((element: { SourceName?: string, Title?: string, ReportTypeName?: string, LastUpdate?: string, Url?: string }) => {
+    const SourceName: string = element.SourceName ?? "____";
+    const Title: string = element.Title ?? "____";
+    const ReportTypeName: string = element.ReportTypeName ?? "____";
+    const LastUpdate: string = element.LastUpdate ?? "____";
+    const Url: string = element.Url ?? "____";
+    mangDuLieuChinh.push([SourceName, Title, ReportTypeName, LastUpdate, Url]);
+  });
+
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AL");
 }
 
 function layThongTinCoDong(tenMa: string): void {
-  const URL: string = `https://restv2.fireant.vn/symbols/${tenMa}/holders`;
+  const URL: string = `https://apipubaws.tcbs.com.vn/tcanalysis/v1/company/${tenMa}/large-share-holders`;
 
   const object = SheetHttp.sendRequest(URL); // Giả định về phương thức và kiểu trả về của sendRequest
-  const mangDuLieuChinh: Array<[string, string, string, string, string]> = object.data.shareholders.dataList.map(
-    ({ ownershiptypecode, name, percentage, quantity, publicdate }: { ownershiptypecode: string; name: string; percentage: string; quantity: string; publicdate: string }) => [ownershiptypecode, name, percentage, quantity, publicdate]
+  const mangDuLieuChinh: Array<[string, string, string]> = object.listShareHolder.map(
+    ({ ticker, name, ownPercent }: { ticker: string; name: string; ownPercent: string }) => [ticker, name, ownPercent]
   );
 
-  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AC");
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AD");
 }
 
 function batSukienSuaThongTinO(e: any) {

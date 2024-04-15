@@ -3,8 +3,8 @@
   "name": "google-sheet",
   "version": "1.0.0",
   "scripts": {
-    "build:main": "npm run clean && tsc && npm run removeImport && npm run build:assets && npm run cpMain && npm run build:clasp:main",
-    "build:dw": "npm run clean && npx tsc && npm run removeImport && npm run build:assets && npm run cpDW && npm run build:clasp:dw",
+    "build:main": "npm run clean && tsc && npm run build:assets && npm run cpMain && npm run build:clasp:main && npm run removeImport",
+    "build:dw": "npm run clean && npx tsc && npm run build:assets && npm run cpDW && npm run build:clasp:dw && npm run removeImport",
     "build:deploy": "npm run deploy",
     "build:assets": "copyfiles -u 1 -f -E src/assets/**/*.js dist",
     "build:clasp:main": "node scripts/build-clasp-main.js",
