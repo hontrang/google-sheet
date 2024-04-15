@@ -34,9 +34,7 @@ function layThongTinChiTietMa(): void {
 
   layTinTucSheetChiTietMa(tenMa);
   layBaoCaoTaiChinh();
-
-  // layThongTinCoDong(tenMa);
-
+  layThongTinCoDong(tenMa);
   ZChartUtil.updateChart();
   SheetLog.logTime(SheetUtil.SHEET_CHI_TIET_MA, "J2");
   Logger.log("Hàm layThongTinChiTietMa chạy thành công");
@@ -114,14 +112,14 @@ function layBaoCaoPhanTich(tenMa: string): void {
 }
 
 function layThongTinCoDong(tenMa: string): void {
-  const URL: string = `https://restv2.fireant.vn/symbols/${tenMa}/holders`;
+  const URL: string = `https://apipubaws.tcbs.com.vn/tcanalysis/v1/company/${tenMa}/large-share-holders`;
 
   const object = SheetHttp.sendRequest(URL); // Giả định về phương thức và kiểu trả về của sendRequest
-  const mangDuLieuChinh: Array<[string, string, string, string, string]> = object.data.shareholders.dataList.map(
-    ({ ownershiptypecode, name, percentage, quantity, publicdate }: { ownershiptypecode: string; name: string; percentage: string; quantity: string; publicdate: string }) => [ownershiptypecode, name, percentage, quantity, publicdate]
+  const mangDuLieuChinh: Array<[string, string, string]> = object.listShareHolder.map(
+    ({ ticker, name, ownPercent }: { ticker: string; name: string; ownPercent: string }) => [ticker, name, ownPercent]
   );
 
-  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AC");
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AD");
 }
 
 function batSukienSuaThongTinO(e: any) {
