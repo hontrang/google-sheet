@@ -146,6 +146,7 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
             mangDuLieuChinh.push([value]);
         });
     }
+    
 
     SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "I");
 }
