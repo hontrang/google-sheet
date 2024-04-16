@@ -11,6 +11,7 @@ namespace SheetUtil {
     export const SHEET_KHOI_LUONG = "Khối Lượng";
     export const SHEET_KHOI_NGOAI_MUA = "KN Mua";
     export const SHEET_KHOI_NGOAI_BAN = "KN Bán";
+    export const SHEET_TY_GIA = "Tỷ Giá USD/VND";
 
     export function ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
