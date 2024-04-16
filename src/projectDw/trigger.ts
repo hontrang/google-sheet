@@ -12,13 +12,6 @@ function dw_createTriggers() {
       .timeBased()
       .everyMinutes(1)
       .create();
-  
-    //   ScriptApp.newTrigger("layGiaThamChieu")
-    //     .timeBased()
-    //     .everyDays(1)
-    //     .atHour(3)
-    //     .nearMinute(0)
-    //     .create();
     
     ScriptApp.newTrigger("layThongTinCoBan")
       .timeBased()
@@ -34,27 +27,6 @@ function dw_createTriggers() {
       .nearMinute(0)
       .create();
   
-    // ScriptApp.newTrigger("layGiaVaKhoiLuongTuanGanNhat")
-    //   .timeBased()
-    //   .everyDays(1)
-    //   .atHour(18)
-    //   .nearMinute(0)
-    //   .create();
-  
-    // ScriptApp.newTrigger("layKhoiNgoaiTuanGanNhat")
-    //   .timeBased()
-    //   .everyDays(1)
-    //   .atHour(18)
-    //   .nearMinute(10)
-    //   .create();
-  
-    //   ScriptApp.newTrigger("layGiaHangNgay")
-    //   .timeBased()
-    //   .everyDays(1)
-    //   .atHour(14)
-    //   .nearMinute(10)
-    //   .create();
-  
     Logger.log("Các trigger đã được tạo!");
   }
   
@@ -66,7 +38,7 @@ function dw_createTriggers() {
   function dw_deleteTrigger() {
     // Loop over all triggers.
     const allTriggers = ScriptApp.getProjectTriggers();
-    for (let index = 0; index < allTriggers.length; index++) {
-      ScriptApp.deleteTrigger(allTriggers[index]);
+    for (const element of allTriggers) {
+      ScriptApp.deleteTrigger(element);
     }
   }
