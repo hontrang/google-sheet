@@ -21,12 +21,24 @@ function layChiSoVnIndex(): void {
     }
 }
 
+function layTyGiaUSDVND() {
+    const tyGiaHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_DU_LIEU, "O2");
+    const ngayHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "A1");
+    const duLieuNgayMoiNhat = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_TY_GIA, "A2");
+    if (duLieuNgayMoiNhat !== ngayHomNay) {
+        SheetUtil.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetUtil.SHEET_TY_GIA, 2, "A");
+    }else {
+        console.log("No action required");
+    }
+}
+
 function layThongTinCoBan(): void {
     const danhSachMa: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
     layThongTinPB(danhSachMa);
     layThongTinPE(danhSachMa);
     layThongTinRoomNuocNgoai(danhSachMa);
     layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa);
+    layTyGiaUSDVND();
 }
 
 // Hàm lấy giá, khối lượng và thông tin mua bán của khối ngoại hàng ngày
@@ -56,8 +68,6 @@ function layGiaThamChieu(): void {
                 SheetUtil.ghiDuLieuVaoDayTheoTen(data, SheetUtil.SHEET_DU_LIEU, 2, "K");
             });
         }
-
-        // SheetLog.logTime(SheetUtil.SHEET_CAU_HINH, "D1");
     }
 }
 
