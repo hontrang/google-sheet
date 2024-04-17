@@ -1,6 +1,5 @@
 namespace ZChartUtil {
     export const CHART_ID = 559458186;
-    export const API_KEY = "AIzaSyBr-2mGf58LY2kXma1KFUFpgEGuI8lNhgw";
 
     export function updateChart(): void {
         const tenMa: string = `${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F1")} - ${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "G1")}`;
