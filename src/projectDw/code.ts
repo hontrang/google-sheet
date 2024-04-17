@@ -24,10 +24,14 @@ function layChiSoVnIndex(): void {
 function layTyGiaUSDVND() {
     const tyGiaHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_DU_LIEU, "O2");
     const ngayHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "A1");
-    const duLieuNgayMoiNhat = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_TY_GIA, "A2");
-    if (duLieuNgayMoiNhat !== ngayHomNay) {
-        SheetUtil.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetUtil.SHEET_TY_GIA, 2, "A");
-    }else {
+    const duLieuNgayMoiNhat = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_TY_GIA, "A1");
+    const tiGiaNgayMoiNhat = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_TY_GIA, "B1");
+    if (duLieuNgayMoiNhat !== ngayHomNay && tyGiaHomNay !== tiGiaNgayMoiNhat) {
+        SheetUtil.chen1HangVaoDauSheet(SheetUtil.SHEET_TY_GIA);
+        SheetUtil.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetUtil.SHEET_TY_GIA, 1, "A");
+    } else if (duLieuNgayMoiNhat !== ngayHomNay) {
+        SheetUtil.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetUtil.SHEET_TY_GIA, 1, "A");
+    } else {
         console.log("No action required");
     }
 }
@@ -38,7 +42,6 @@ function layThongTinCoBan(): void {
     layThongTinPE(danhSachMa);
     layThongTinRoomNuocNgoai(danhSachMa);
     layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa);
-    layTyGiaUSDVND();
 }
 
 // Hàm lấy giá, khối lượng và thông tin mua bán của khối ngoại hàng ngày
@@ -78,7 +81,7 @@ function layThongTinPB(danhSachMa: string[]): void {
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-        const object: any = SheetHttp.sendGetRequest(url); // Sử dụng kiểu `any` cho đối tượng trả về; tốt hơn là định nghĩa kiểu cụ thể nếu có thể
+        const object: any = SheetHttp.sendGetRequest(url);
 
         object.data.forEach((element: { value?: number }) => {
             const value: number = element.value ?? 0;
@@ -95,10 +98,9 @@ function layThongTinPE(danhSachMa: string[]): void {
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-        const object: any = SheetHttp.sendGetRequest(url); // Sử dụng `any` cho object; tốt hơn nếu có interface cụ thể
-
+        const object: any = SheetHttp.sendGetRequest(url);
         object.data.forEach((element: { value?: number }) => {
-            const value: number = element.value ?? 0; // Sử dụng nullish coalescing operator (??) thay vì OR (||) để xử lý 0 một cách chính xác
+            const value: number = element.value ?? 0;
             mangDuLieuChinh.push([value]);
         });
     }
@@ -117,11 +119,11 @@ interface VolumnData {
 
 function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
     const QUERY_API: string = "https://finfo-api.vndirect.com.vn/v4";
-    const mangDuLieuChinh: [number, number][] = []; // Kiểu mảng của cặp số
+    const mangDuLieuChinh: [number, number][] = [];
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-        const object: any = SheetHttp.sendGetRequest(url); // Khuyến khích định nghĩa kiểu cụ thể thay vì sử dụng `any`
+        const object: any = SheetHttp.sendGetRequest(url);
         const datas = Array.from(object.data) as RoomData[];
         datas.forEach((element: { totalRoom?: number, currentRoom?: number }) => {
             const totalRoom: number = element.totalRoom ?? 0;
@@ -135,7 +137,7 @@ function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
 
 function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
     const QUERY_API: string = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
-    const mangDuLieuChinh: number[][] = []; // Kiểu mảng của mảng số để lưu trữ các giá trị
+    const mangDuLieuChinh: number[][] = [];
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
@@ -146,6 +148,7 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
             mangDuLieuChinh.push([value]);
         });
     }
+
 
     SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "I");
 }

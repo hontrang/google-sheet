@@ -70,7 +70,7 @@ function layTinTucSheetChiTietMa(tenMa: string): void {
 }
 
 function layBaoCaoTaiChinh(): void {
-  const mang_du_lieu_chinh: Array<[string, string, string, string]> = [];
+  const mangDuLieuChinh: Array<[string, string, string, string]> = [];
   const tenMa: string = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F1");
   const QUERY_URL: string = `https://s.cafef.vn/Ajax/CongTy/BaoCaoTaiChinh.aspx?sym=${tenMa}`;
   const content: string = UrlFetchApp.fetch(QUERY_URL).getContentText();
@@ -79,9 +79,9 @@ function layBaoCaoTaiChinh(): void {
     const title: string = $(this).children("td:nth-child(1)").text();
     const date: string = $(this).children("td:nth-child(2)").text();
     const link: string = $(this).children("td:nth-child(3)").children("a").attr("href") ?? ""; // Sử dụng giá trị mặc định để tránh undefined
-    mang_du_lieu_chinh.push([tenMa.toUpperCase(), title, date, link]);
+    mangDuLieuChinh.push([tenMa.toUpperCase(), title, date, link]);
   });
-  SheetUtil.ghiDuLieuVaoDayTheoTen(mang_du_lieu_chinh.slice(1, 11), SheetUtil.SHEET_DU_LIEU, 18, "AH");
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh.slice(1, 11), SheetUtil.SHEET_DU_LIEU, 18, "AH");
 }
 
 interface ReportData {
