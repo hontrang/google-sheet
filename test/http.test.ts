@@ -2,6 +2,7 @@
 
 
 const axios = require('axios');
+let TOKEN: string | undefined;
 describe("kiểm tra url vndirect chạy chính xác", () => {
     test("kiểm tra phản hồi từ api vndirect", async () => {
         const tenMa = "HPG";
@@ -62,3 +63,118 @@ describe("kiểm tra url tcbs chạy chính xác", () => {
         expect(data[0].ticker).toBe(tenMa);
     });
 });
+
+describe("kiểm tra url ssi chạy chính xác", () => {
+    test("kiểm tra url lấy tên mã trên HOSE", async () => {
+        const market = 'HOSE';
+        const pageIndex = 1;
+        const pageSize = 1000;
+        const token = await getToken();
+        const URL = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
+        const response = await axios.get(URL, { headers: { Authorization: token } });
+        const data = response.data.data;
+        expect(data[0].Market).toBe(market);
+    });
+
+    test("kiểm tra url SecuritiesDetails", async () => {
+        const market = 'HOSE';
+        const tenMa = 'HPG';
+        const pageIndex = 1;
+        const pageSize = 1000;
+        const token = await getToken();
+        const URL = `https://fc-data.ssi.com.vn/api/v2/Market/SecuritiesDetails?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.symbol=${tenMa}`;
+        const response = await axios.get(URL, { headers: { Authorization: token } });
+        const data = response.data.data[0].RepeatedInfo;
+        expect(data[0].Exchange).toBe(market);
+        expect(data[0].Symbol).toBe(tenMa);
+    });
+
+    test("kiểm tra url IndexComponents", async () => {
+        const indexCode = 'HNX';
+        const pageIndex = 1;
+        const pageSize = 1000;
+        const token = await getToken();
+        const URL = `https://fc-data.ssi.com.vn/api/v2/Market/IndexComponents?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.indexCode=${indexCode}`;
+        const response = await axios.get(URL, { headers: { Authorization: token } });
+        const data = response.data;
+        expect(data.status).toBe("Success");
+    });
+
+    test("kiểm tra url GetIndexList", async () => {
+        const exchange = 'HOSE';
+        const pageIndex = 1;
+        const pageSize = 1000;
+        const token = await getToken();
+        const URL = `https://fc-data.ssi.com.vn/api/v2/Market/IndexComponents?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.Exchange=${exchange}`;
+        const response = await axios.get(URL, { headers: { Authorization: token } });
+        const data = response.data;
+        expect(data.status).toBe('Success');
+    });
+
+    test("kiểm tra url Daily OHLC", async () => {
+        const tenMa = 'HPG';
+        const pageIndex = 1;
+        const pageSize = 1000;
+        const fromDate = "04/05/2020";
+        const toDate = "04/05/2020";
+        const ascending = true;
+        const token = await getToken();
+        const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
+        const response = await axios.get(URL, { headers: { Authorization: token } });
+        const data = response.data;
+        expect(data.status).toBe('Success');
+    });
+
+    test("kiểm tra url GetIntradayOHLC", async () => {
+        const tenMa = 'HPG';
+        const pageIndex = 1;
+        const pageSize = 1000;
+        const fromDate = "04/05/2020";
+        const toDate = "04/05/2020";
+        const ascending = true;
+        const token = await getToken();
+        const URL = `https://fc-data.ssi.com.vn/api/v2/Market/IntradayOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
+        const response = await axios.get(URL, { headers: { Authorization: token } });
+        const data = response.data;
+        expect(data.status).toBe('Success');
+    });
+
+    test("kiểm tra url GetDailyIndex", async () => {
+        const indexCode = 'HNX';
+        const pageIndex = 1;
+        const pageSize = 1000;
+        const fromDate = "04/05/2020";
+        const toDate = "04/05/2020";
+        const orderBy = "Tradingdate";
+        const order = "desc";
+        const token = await getToken();
+        const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyIndex?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.OrderBy=${orderBy}&lookupRequest.Order=${order}&lookupRequest.IndexCode=${indexCode}`;
+        const response = await axios.get(URL, { headers: { Authorization: token } });
+        const data = response.data;
+        expect(data.status).toBe('Success');
+    });
+
+    test("kiểm tra url GetStockPrice", async () => {
+        const fromDate = "04/05/2020";
+        const toDate = "04/05/2020";
+        const market = "HOSE";
+        const token = await getToken();
+        const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.market=${market}`;
+        const response = await axios.get(URL, { headers: { Authorization: token } });
+        const data = response.data;
+        expect(data.status).toBe('Success');
+    });
+});
+
+async function getToken(): Promise<string> {
+    if (TOKEN !== undefined) return TOKEN;
+    else {
+        const consumerID = '';
+        const consumerSecret = '';
+        const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
+        const response = await axios.post(URL, { consumerID: consumerID, consumerSecret: consumerSecret });
+        TOKEN = "Bearer " + response.data.data.accessToken;
+        return TOKEN;
+    }
+
+}
