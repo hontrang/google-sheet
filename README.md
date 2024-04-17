@@ -83,9 +83,6 @@ Thực hiện các bước sau đây để cài đặt ứng dụng
    npm install
    ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- USAGE EXAMPLES -->
 ## 3. SỬ DỤNG
