@@ -44,7 +44,7 @@
 ## 1. THÔNG TIN DỰ ÁN
 
 Đây là dự án cá nhân của tôi, mục đích trước tiên là tìm ra những phương pháp đầu tư cổ phiếu để thu được lợi nhuận cao và giảm công sức của nhà đầu tư (NDT) phải bỏ ra.
-Mở rộng hơn, định hướng phát triển của dự án là áp dụng những công nghệ mới nhất, như AI, ML, Data analys,... vào việc phân tích, dự đoán các xu hướng, sự kiện có thể xảy ra trong tương lai trên thị trường.
+Mở rộng hơn, định hướng phát triển của dự án là áp dụng những công nghệ mới nhất, như AI, ML, data analysis,... vào việc phân tích, dự đoán các xu hướng, sự kiện có thể xảy ra trong tương lai trên thị trường.
 
 
 ### KỸ THUẬT
