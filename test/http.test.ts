@@ -1,7 +1,6 @@
 
+import axios from 'axios';
 
-
-const axios = require('axios');
 let TOKEN: string | undefined;
 describe("kiểm tra url vndirect chạy chính xác", () => {
     test("kiểm tra phản hồi từ api vndirect", async () => {
