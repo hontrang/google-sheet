@@ -105,13 +105,36 @@ namespace SheetUtil {
         return rowData[0];
     }
 
-    export function chen1HangVaoDauSheet(sheetName: string): number {
+    export function chen1HangVaoDauSheet(sheetName: string): boolean {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) {
             console.log("Sheet không tồn tại");
-            return -1;
+            return false;
         }
         sheet.insertRowsBefore(1, 1);
-        return 1;
+        return true;
+    }
+
+    // xóa cột và dời dữ liệu cột sau đó về trước
+    export function xoaCot(sheetName: string, column: string, numOfCol: number): boolean {
+        const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+        if (!sheet) {
+            console.log("Sheet không tồn tại");
+            return false;
+        }
+        sheet.deleteColumns(SheetUtil.doiTenCotThanhChiSo(column), numOfCol);
+        return true;
+    }
+
+    export function xoaDuLieuTrongCot(sheetName: string, column: string, numOfCol: number, startRow: number): boolean {
+        const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+        if (!sheet) {
+            console.log("Sheet không tồn tại");
+            return false;
+        }
+        const numRows = sheet.getLastRow() - startRow + 1;
+        const range = sheet.getRange(startRow, SheetUtil.doiTenCotThanhChiSo(column), numRows, numOfCol);
+        range.clear();
+        return true;
     }
 }
