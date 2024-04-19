@@ -1,4 +1,5 @@
 import * as Cheerio from 'cheerio';
+import { data } from 'cheerio/lib/api/attributes';
 
 function getDataHose(): void {
   const DANH_SACH_MA: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
@@ -27,6 +28,7 @@ function layTinTucSheetBangThongTin(): void {
 
 function layThongTinChiTietMa(): void {
   SheetUtil.ghiDuLieuVaoO("...", SheetUtil.SHEET_CHI_TIET_MA, "J2");
+  SheetUtil.xoaDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "P", 3, 2);
   const tenMa: string = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F1");
 
   layGiaVaKhoiLuongTheoMaChungKhoan(tenMa);
@@ -44,20 +46,21 @@ function layThongTinChiTietMa(): void {
 function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa: string): void {
   const fromDate: string = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F2");
   const toDate: string = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "H2");
-
+  const mangDuLieuChinh: Array<[string, number, number]> = [];
+  mangDuLieuChinh.push(["chi tiết mã", 0, 0])
   const URL: string = `https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
   const object = SheetHttp.sendGetRequest(URL);
-  const mangDuLieuChinh: Array<[string, number, number]> = object.data.map(
-    ({ date, close, nmVolume }: { date: string; close: number; nmVolume: number; }) => [date, close * 1000, nmVolume]
-  );
-  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "P");
+  const datas = object.data;
+  for (const element of datas) {
+    mangDuLieuChinh.push([element.date, element.close * 1000, element.nmVolume]);
+  }
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 1, "P");
 }
 
 function layTinTucSheetChiTietMa(tenMa: string): void {
-  const BASE_URL: string = "https://s.cafef.vn";
-  const NEWS_PATH: string = "/Ajax/Events_RelatedNews_New.aspx";
+  const BASE_URL: string = "https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx";
   const mangDuLieuChinh: Array<[string, string, string, string]> = [];
-  const QUERY_URL: string = `${BASE_URL}${NEWS_PATH}?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
+  const QUERY_URL: string = `${BASE_URL}?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
   const content: string = UrlFetchApp.fetch(QUERY_URL).getContentText();
   const $ = Cheerio.load(content);
   $("a").each(function (this: any) {
