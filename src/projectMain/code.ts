@@ -17,7 +17,7 @@ function layTinTucSheetBangThongTin(): void {
     const content: string = UrlFetchApp.fetch(url).getContentText();
     const $ = Cheerio.load(content);
     $("a").each(function (this: any) {
-      const title: string = $(this).attr("title") ?? ""; // Giả định rằng title luôn có sẵn, nhưng sử dụng fallback cho an toàn
+      const title: string = $(this).attr("title") ?? ""; // Giả định rằng tiurl: string, token?: string, URLFetchRequestOptions?: any, p0?: { method: string; headers: { Authorization: string; "Content-Type": string; Accept: string; }; }URLFetchRequestOptions?: any, p0?: { method: string; headers: { Authorization: string; "Content-Type": string; Accept: string; }; }URLFetchRequestOptions?: any, p0?: { method: string; headers: { Authorization: string; "Content-Type": string; Accept: string; }; }ng fallback cho an toàn
       const link: string = "https://s.cafef.vn" + ($(this).attr("href") ?? "");
       const date: string = $(this).siblings("span").text().substring(0, 10);
       mangDuLieuChinh.push([tenMa, title, "", link, "", date]);
@@ -37,6 +37,7 @@ function layThongTinChiTietMa(): void {
   layTinTucSheetChiTietMa(tenMa);
   layBaoCaoTaiChinh();
   layThongTinCoDong(tenMa);
+  layThongTongSoLuongCoPhieuDangNiemYet(tenMa);
   ZChartUtil.updateChart();
   SheetLog.logTime(SheetUtil.SHEET_CHI_TIET_MA, "J2");
   Logger.log("Hàm layThongTinChiTietMa chạy thành công");
@@ -123,6 +124,25 @@ function layThongTinCoDong(tenMa: string): void {
   );
 
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AD");
+}
+
+
+function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {
+  const market = 'HOSE';
+  const URL = `https://fc-data.ssi.com.vn/api/v2/Market/SecuritiesDetails?lookupRequest.market=${market}&lookupRequest.pageIndex=1&lookupRequest.pageSize=1000&lookupRequest.symbol=${tenMa}`;
+  const token = SheetHttp.getToken();
+  const OPTION: URLFetchRequestOptions = {
+    method: "get",
+    headers: {
+      "Authorization": token,
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    }
+  }
+  const object = SheetHttp.sendRequest(URL, OPTION); // Giả định về phương thức và kiểu trả về của sendRequest
+  const mangDuLieuChinh: Array<[string]> = [];
+  mangDuLieuChinh.push([object.data[0].RepeatedInfo[0].ListedShare]);
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_CHI_TIET_MA, 69, "G");
 }
 
 function batSukienSuaThongTinO(e: any) {

@@ -13,7 +13,7 @@
     "removeImport": "node scripts/remove-import.js",
     "cpMain": "copyfiles -u 1 -f -E build/src/utility/*.js build/src/projectMain/*.js dist",
     "cpDW": "copyfiles -u 1 -f -E build/src/utility/*.js build/src/projectDw/*.js dist",
-    "deploy": "cd dist && clasp push",
+    "deploy": "cd dist && clasp push && clasp open",
     "compile": "tsc",
     "test": "jest -c"
   },

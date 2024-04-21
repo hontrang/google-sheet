@@ -168,8 +168,8 @@ describe("kiểm tra url ssi chạy chính xác", () => {
 async function getToken(): Promise<string> {
     if (TOKEN !== undefined) return TOKEN;
     else {
-        const consumerID = '';
-        const consumerSecret = '';
+        const consumerID = '35e723ae7e4c426694226ed4649379d5';
+        const consumerSecret = 'a54573a4a78949a0b59befc59523aee2';
         const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
         const response = await axios.post(URL, { consumerID: consumerID, consumerSecret: consumerSecret });
         TOKEN = "Bearer " + response.data.data.accessToken;
