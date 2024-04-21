@@ -1,5 +1,4 @@
 import * as Cheerio from 'cheerio';
-import { data } from 'cheerio/lib/api/attributes';
 
 function getDataHose(): void {
   const DANH_SACH_MA: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
@@ -23,7 +22,7 @@ function layTinTucSheetBangThongTin(): void {
       mangDuLieuChinh.push([tenMa, title, "", link, "", date]);
     });
   });
-  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_BANG_THONG_TIN, 35, "A");
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_BANG_THONG_TIN, 31, "A");
 }
 
 function layThongTinChiTietMa(): void {
