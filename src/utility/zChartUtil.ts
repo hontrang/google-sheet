@@ -1,11 +1,15 @@
 namespace ZChartUtil {
-    export const CHART_ID = 559458186;
+    export const CHART_ID = 911649750;
 
     export function updateChart(): void {
-        const tenMa: string = `${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F1")} - ${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "G1")}`;
-        const HIGH: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_DU_LIEU, "AD51");
-        const LOW: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_DU_LIEU, "AD50");
-        const ABS: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_DU_LIEU, "AD49");
+        const label: string = `${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F1")} - ${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "G1")}`;
+        const tenMa: string = `${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F1")}`;
+        const HIGH_MA: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, "B5");
+        const LOW_MA: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, "B4");
+        const ABS_MA: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, "B3");
+        const HIGH_VNI: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, "C5");
+        const LOW_VNI: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, "C4");
+        const ABS_VNI: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, "C3");
         const chart = getChartById(CHART_ID, SheetUtil.SHEET_CHI_TIET_MA);
         const sheet = SpreadsheetApp.getActive().getSheetByName(SheetUtil.SHEET_CHI_TIET_MA);
 
@@ -15,17 +19,20 @@ namespace ZChartUtil {
         }
 
         const updatedChart = chart.modify()
-            .setOption('title', tenMa)
-            .setOption('vAxis.minValue', LOW - ABS * 2)
-            .setOption('vAxis.maxValue', HIGH + ABS * 2)
-            .setOption('series', { 0: { labelInLegend: tenMa } })
-            .setOption('vAxes', {
-                0: { viewWindow: { min: LOW - ABS * 2, max: HIGH + ABS * 2 } },
-                1: { viewWindow: { min: 1100, max: 1250 } }
+            .setOption('title', label)
+            .setOption('vAxis.minValue', LOW_MA - ABS_MA * 2)
+            .setOption('vAxis.maxValue', HIGH_MA + ABS_MA * 2)
+            .setOption('series', {
+                0: { labelInLegend: tenMa },
+                1: { labelInLegend: "VN-INDEX" }
             })
-            .build();
+            .setOption('vAxes', {
+                0: { viewWindow: { min: LOW_MA - ABS_MA * 2, max: HIGH_MA + ABS_MA * 2 } },
+                1: { viewWindow: { min: LOW_VNI - ABS_VNI * 2, max: HIGH_VNI + ABS_VNI * 2 } }
+            }).build();
 
         sheet.updateChart(updatedChart);
+
     }
 
     export function createChart(): void {
