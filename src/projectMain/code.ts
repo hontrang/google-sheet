@@ -141,7 +141,7 @@ function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {
   const object = SheetHttp.sendRequest(URL, OPTION); // Giả định về phương thức và kiểu trả về của sendRequest
   const mangDuLieuChinh: Array<[string]> = [];
   mangDuLieuChinh.push([object.data[0].RepeatedInfo[0].ListedShare]);
-  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_CHI_TIET_MA, 69, "G");
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_CHI_TIET_MA, 68, "G");
 }
 
 function batSukienSuaThongTinO(e: any) {
