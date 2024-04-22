@@ -14,6 +14,17 @@ const config: JestConfigWithTsJest = {
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
+  "reporters": [
+    "default",
+    ["jest-html-reporters", {
+      "publicPath": "./html-report",
+      "filename": "report.html",
+      "openReport": true,
+      "pageTitle": "Report API chứng khoán VN",
+      "includeConsoleLog": true,
+      "darkTheme": true
+    }]
+  ]
 };
 
 export default config;
