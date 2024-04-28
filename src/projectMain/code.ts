@@ -20,7 +20,7 @@ function layTinTucSheetBangThongTin(): void {
     const content: string = UrlFetchApp.fetch(url).getContentText();
     const $ = Cheerio.load(content);
     $("a").each(function (this: any) {
-      const title: string = $(this).attr("title") ?? ""; // Giả định rằng tiurl: string, token?: string, URLFetchRequestOptions?: any, p0?: { method: string; headers: { Authorization: string; "Content-Type": string; Accept: string; }; }URLFetchRequestOptions?: any, p0?: { method: string; headers: { Authorization: string; "Content-Type": string; Accept: string; }; }URLFetchRequestOptions?: any, p0?: { method: string; headers: { Authorization: string; "Content-Type": string; Accept: string; }; }ng fallback cho an toàn
+      const title: string = $(this).attr("title") ?? "";
       const link: string = "https://s.cafef.vn" + ($(this).attr("href") ?? "");
       const date: string = $(this).siblings("span").text().substring(0, 10);
       mangDuLieuChinh.push([tenMa, title, "", link, "", date]);
