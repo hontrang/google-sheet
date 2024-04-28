@@ -104,16 +104,15 @@ function layBaoCaoPhanTich(tenMa: string): void {
   const url: string = `https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:${tenMa}&pageIndex=1&pageSize=9`;
   const object = SheetHttp.sendPostRequest(url); // Giả định về cấu trúc và kiểu dữ liệu của object
 
-  const datas = Array.from(object.Data) as ReportData[];
-
-  datas.forEach((element: { SourceName?: string, Title?: string, ReportTypeName?: string, LastUpdate?: string, Url?: string }) => {
+  const datas = object.Data;
+  for (const element of datas) {
     const SourceName: string = element.SourceName ?? "____";
     const Title: string = element.Title ?? "____";
     const ReportTypeName: string = element.ReportTypeName ?? "____";
     const LastUpdate: string = element.LastUpdate ?? "____";
     const Url: string = element.Url ?? "____";
     mangDuLieuChinh.push([SourceName, Title, ReportTypeName, LastUpdate, Url]);
-  });
+  }
 
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AL");
 }
