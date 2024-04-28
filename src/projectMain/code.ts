@@ -2,10 +2,14 @@ import * as Cheerio from 'cheerio';
 
 function getDataHose(): void {
   const DANH_SACH_MA: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
+  const mangDuLieuChinh: Array<[string]> = [];
   const URL: string = `https://bgapidatafeed.vps.com.vn/getliststockdata/${DANH_SACH_MA.join(",")}`;
   const response = SheetHttp.sendGetRequest(URL);
-  const stockData = response.map(({ sym, lastPrice }: { sym: string; lastPrice: number; }) => [sym, lastPrice * 1000]);
-  SheetUtil.ghiDuLieuVaoDayTheoTen(stockData, SheetUtil.SHEET_DU_LIEU, 2, "B");
+  for (const element of DANH_SACH_MA) {
+    const price = response.filter((object: { sym: string; }) => object.sym === element).map((object: { lastPrice: number; }) => object.lastPrice * 1000);
+    mangDuLieuChinh.push([price]);
+  }
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "B");
 }
 
 function layTinTucSheetBangThongTin(): void {
@@ -16,7 +20,7 @@ function layTinTucSheetBangThongTin(): void {
     const content: string = UrlFetchApp.fetch(url).getContentText();
     const $ = Cheerio.load(content);
     $("a").each(function (this: any) {
-      const title: string = $(this).attr("title") ?? ""; // Giả định rằng tiurl: string, token?: string, URLFetchRequestOptions?: any, p0?: { method: string; headers: { Authorization: string; "Content-Type": string; Accept: string; }; }URLFetchRequestOptions?: any, p0?: { method: string; headers: { Authorization: string; "Content-Type": string; Accept: string; }; }URLFetchRequestOptions?: any, p0?: { method: string; headers: { Authorization: string; "Content-Type": string; Accept: string; }; }ng fallback cho an toàn
+      const title: string = $(this).attr("title") ?? "";
       const link: string = "https://s.cafef.vn" + ($(this).attr("href") ?? "");
       const date: string = $(this).siblings("span").text().substring(0, 10);
       mangDuLieuChinh.push([tenMa, title, "", link, "", date]);
@@ -64,8 +68,8 @@ function layTinTucSheetChiTietMa(tenMa: string): void {
   const content: string = UrlFetchApp.fetch(QUERY_URL).getContentText();
   const $ = Cheerio.load(content);
   $("a").each(function (this: any) {
-    const title: string = $(this).attr("title") ?? ""; // Sử dụng giá trị mặc định nếu không tồn tại
-    const link: string = `${BASE_URL}${$(this).attr("href") ?? ""}`; // Tương tự, giả sử luôn có href nhưng thêm kiểm tra để tránh lỗi
+    const title: string = $(this).attr("title") ?? "";
+    const link: string = `${BASE_URL}${$(this).attr("href") ?? ""}`;
     const date: string = $(this).siblings("span").text().substring(0, 10);
     mangDuLieuChinh.push([tenMa.toUpperCase(), title, link, date]);
   });
@@ -81,7 +85,7 @@ function layBaoCaoTaiChinh(): void {
   $("#divDocument>div>table>tbody>tr").each(function (this: any) {
     const title: string = $(this).children("td:nth-child(1)").text();
     const date: string = $(this).children("td:nth-child(2)").text();
-    const link: string = $(this).children("td:nth-child(3)").children("a").attr("href") ?? ""; // Sử dụng giá trị mặc định để tránh undefined
+    const link: string = $(this).children("td:nth-child(3)").children("a").attr("href") ?? "";
     mangDuLieuChinh.push([tenMa.toUpperCase(), title, date, link]);
   });
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh.slice(1, 11), SheetUtil.SHEET_DU_LIEU, 18, "AH");
@@ -141,7 +145,7 @@ function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {
   const object = SheetHttp.sendRequest(URL, OPTION); // Giả định về phương thức và kiểu trả về của sendRequest
   const mangDuLieuChinh: Array<[string]> = [];
   mangDuLieuChinh.push([object.data[0].RepeatedInfo[0].ListedShare]);
-  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_CHI_TIET_MA, 69, "G");
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_CHI_TIET_MA, 68, "G");
 }
 
 function batSukienSuaThongTinO(e: any) {

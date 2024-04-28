@@ -7,8 +7,6 @@ function layChiSoVnIndex(): void {
     const object = SheetHttp.sendPostRequest(url);
     const duLieuNhanVe = object[1];
     const thanhKhoan: number = parseFloat(duLieuNhanVe.value.replace(/,/g, '')) * 1000000000;
-    console.log(duLieuNgayMoiNhat !== ngayHienTai);
-    console.log(thanhKhoan !== thanhKhoanMoiNhat);
     if (duLieuNgayMoiNhat === ngayHienTai && thanhKhoan !== thanhKhoanMoiNhat) {
         const mangDuLieuChinh: [[string, number, number, number]] = [[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]];
         SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_HOSE, 1, "A");
@@ -25,14 +23,11 @@ function layTyGiaUSDVND() {
     const tyGiaHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_DU_LIEU, "O2");
     const ngayHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "A1");
     const duLieuNgayMoiNhat = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_TY_GIA, "A1");
-    const tiGiaNgayMoiNhat = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_TY_GIA, "B1");
-    if (duLieuNgayMoiNhat !== ngayHomNay && tyGiaHomNay !== tiGiaNgayMoiNhat) {
+    if (duLieuNgayMoiNhat !== ngayHomNay) {
         SheetUtil.chen1HangVaoDauSheet(SheetUtil.SHEET_TY_GIA);
         SheetUtil.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetUtil.SHEET_TY_GIA, 1, "A");
-    } else if (duLieuNgayMoiNhat !== ngayHomNay) {
-        SheetUtil.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetUtil.SHEET_TY_GIA, 1, "A");
     } else {
-        console.log("No action required");
+        SheetUtil.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetUtil.SHEET_TY_GIA, 1, "A");
     }
 }
 
@@ -307,6 +302,32 @@ function taoMang2D<T>(data: T[]): T[][] {
         values.push([element]);
     }
     return values;
+}
+
+function layDanhSachMa(): void {
+    const market = 'HOSE';
+    const pageIndex = 1;
+    const pageSize = 1000;
+    const token = SheetHttp.getToken();
+    const URL = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
+    const OPTION: URLFetchRequestOptions = {
+        method: "get",
+        headers: {
+            "Authorization": token,
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        }
+    }
+    const mangDuLieuChinh: Array<[string, string]> = [];
+    const response = SheetHttp.sendRequest(URL, OPTION);
+    const datas = response.data;
+    SheetUtil.xoaDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A", 2, 2);
+    for (const element of datas) {
+        if (element.Symbol.length == 3) {
+            mangDuLieuChinh.push([element.Symbol, element.StockName]);
+        }
+    }
+    SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "A");
 }
 
 
