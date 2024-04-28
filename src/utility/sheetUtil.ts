@@ -39,6 +39,20 @@ namespace SheetUtil {
             console.error(e);
         }
     }
+    
+    export function ghiDuLieuVaoDayTheoTenThamChieu(data: any, sheetName: string, cotGhiDuLieu: string, cotThamChieu: string, hangBatDau: number, tenMa: string): void {
+        const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+        let vitri = -1;
+        if (!sheet) {
+            console.log("Sheet không tồn tại");
+            return;
+        }
+        const duLieuCotThamChieu: string[] = SheetUtil.layDuLieuTrongCot(sheetName, cotThamChieu);
+        for (let i = 0; i < duLieuCotThamChieu.length; i++) {
+            if (duLieuCotThamChieu[i] === tenMa) vitri = i + hangBatDau;
+        }
+        SheetUtil.ghiDuLieuVaoO(data, sheetName, cotGhiDuLieu + vitri);
+    }
 
     export function ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
@@ -71,7 +85,7 @@ namespace SheetUtil {
                 dataArray.push(value);
             }
         }
-        dataArray.shift(); // Xóa phần tử đầu tiên ("title") trong mảng dataArray
+        dataArray.shift();
         return dataArray;
     }
 
