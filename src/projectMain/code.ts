@@ -41,6 +41,7 @@ function layThongTinChiTietMa(): void {
   layBaoCaoTaiChinh();
   layThongTinCoDong(tenMa);
   layThongTongSoLuongCoPhieuDangNiemYet(tenMa);
+  layThongTinCoTuc(tenMa);
   ZChartUtil.updateChart();
   SheetLog.logTime(SheetUtil.SHEET_CHI_TIET_MA, "J2");
   Logger.log("Hàm layThongTinChiTietMa chạy thành công");
@@ -127,6 +128,35 @@ function layThongTinCoDong(tenMa: string): void {
 
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AD");
 }
+
+function layThongTinCoTuc(tenMa: string): void {
+  const mangDuLieuChinh: [string, string, string][] = [];
+
+  const OPTIONS_CO_TUC: URLFetchRequestOptions = {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+     },
+    payload: JSON.stringify({
+        "tickers": [`${tenMa}`],
+        "page": 0,
+        "size": 10
+    })
+};
+  const url: string = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
+  const response = SheetHttp.sendRequest(url, OPTIONS_CO_TUC);
+
+  const datas = response.data;
+  for (const element of datas) {
+    const content: string = element.content ?? "____";
+    const date: string = element.date ?? "____";
+    mangDuLieuChinh.push([content, "",date]);
+  }
+
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 18, "AO");
+}
+
 
 
 function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {
