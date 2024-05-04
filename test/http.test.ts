@@ -1,5 +1,6 @@
 
 import axios from 'axios';
+import config from '../config';
 
 let TOKEN: string | undefined;
 describe("kiểm tra url vndirect chạy chính xác", () => {
@@ -179,8 +180,8 @@ describe("kiểm tra url ssi chạy chính xác", () => {
 async function getToken(): Promise<string> {
     if (TOKEN !== undefined) return TOKEN;
     else {
-        const consumerID = '';
-        const consumerSecret = '';
+        const consumerID = config.consumerID;
+        const consumerSecret = config.consumerSecret;
         const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
         const response = await axios.post(URL, { consumerID: consumerID, consumerSecret: consumerSecret });
         TOKEN = "Bearer " + response.data.data.accessToken;
