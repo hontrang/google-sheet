@@ -92,18 +92,10 @@ function layBaoCaoTaiChinh(): void {
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh.slice(1, 11), SheetUtil.SHEET_DU_LIEU, 18, "AH");
 }
 
-interface ReportData {
-  SourceName?: string;
-  Title?: string;
-  ReportTypeName?: string;
-  LastUpdate?: string;
-  Url?: string;
-}
-
 function layBaoCaoPhanTich(tenMa: string): void {
   const mangDuLieuChinh: [string, string, string, string, string][] = [];
   const url: string = `https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:${tenMa}&pageIndex=1&pageSize=9`;
-  const object = SheetHttp.sendPostRequest(url); // Giả định về cấu trúc và kiểu dữ liệu của object
+  const object = SheetHttp.sendPostRequest(url);
 
   const datas = object.Data;
   for (const element of datas) {
@@ -121,7 +113,7 @@ function layBaoCaoPhanTich(tenMa: string): void {
 function layThongTinCoDong(tenMa: string): void {
   const URL: string = `https://apipubaws.tcbs.com.vn/tcanalysis/v1/company/${tenMa}/large-share-holders`;
 
-  const object = SheetHttp.sendRequest(URL); // Giả định về phương thức và kiểu trả về của sendRequest
+  const object = SheetHttp.sendRequest(URL);
   const mangDuLieuChinh: Array<[string, string, string]> = object.listShareHolder.map(
     ({ ticker, name, ownPercent }: { ticker: string; name: string; ownPercent: string }) => [ticker, name, ownPercent]
   );
@@ -171,7 +163,7 @@ function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {
       "Accept": "application/json"
     }
   }
-  const object = SheetHttp.sendRequest(URL, OPTION); // Giả định về phương thức và kiểu trả về của sendRequest
+  const object = SheetHttp.sendRequest(URL, OPTION);
   const mangDuLieuChinh: Array<[string]> = [];
   mangDuLieuChinh.push([object.data[0].RepeatedInfo[0].ListedShare]);
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_CHI_TIET_MA, 68, "G");
