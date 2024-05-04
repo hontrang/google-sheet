@@ -49,24 +49,30 @@ function layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay(): void {
 }
 
 function layGiaThamChieu(): void {
-    const danhSachMa: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
-    const date: string = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_CAU_HINH, "B1");
-    const data: [string, number][] = [];
-    while (danhSachMa.length > 0) {
-        const MANG_PHU: string[] = danhSachMa.splice(0, 400);
-        const URL: string = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${MANG_PHU.join(",")}~date:gte:${date}~date:lte:${date}`;
-        const object = SheetHttp.sendGetRequest(URL);
+    const DEFAULT_FORMAT = "YYYY-MM-DD";
+    const DANH_SACH_MA: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
+    const date: string = DateUtil.changeFormatDate(SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_CAU_HINH, "B1"), DEFAULT_FORMAT, "DD/MM/YYYY");
+    const market = "HOSE";
+    const mangDuLieuChinh: Array<[string]> = [];
 
-        if (object?.data.length > 0) {
-            object.data.forEach((item: { code?: string, close?: number }) => {
-                const code: string = item.code ?? "___";
-                const close: number = item.close ?? 0;
-                console.log(code);
-                data.push([code, close * 1000]);
-                SheetUtil.ghiDuLieuVaoDayTheoTen(data, SheetUtil.SHEET_DU_LIEU, 2, "K");
-            });
+    const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${date}&lookupRequest.toDate=${date}&lookupRequest.market=${market}`;
+    const token = SheetHttp.getToken();
+    const OPTION: URLFetchRequestOptions = {
+        method: "get",
+        headers: {
+            "Authorization": token,
+            "Content-Type": "application/json",
+            "Accept": "application/json"
         }
     }
+    const object = SheetHttp.sendRequest(URL, OPTION);
+    const datas = object.data;
+
+    for (const element of DANH_SACH_MA) {
+        const price = datas.filter((object: { Symbol: string; }) => object.Symbol === element && object.Symbol.length == 3).map((object: { ClosePrice: number; }) => object.ClosePrice);
+        mangDuLieuChinh.push([price]);
+    }
+    SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "C");
 }
 
 

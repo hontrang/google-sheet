@@ -41,6 +41,7 @@ function layThongTinChiTietMa(): void {
   layBaoCaoTaiChinh();
   layThongTinCoDong(tenMa);
   layThongTongSoLuongCoPhieuDangNiemYet(tenMa);
+  layThongTinCoTuc(tenMa);
   ZChartUtil.updateChart();
   SheetLog.logTime(SheetUtil.SHEET_CHI_TIET_MA, "J2");
   Logger.log("Hàm layThongTinChiTietMa chạy thành công");
@@ -104,16 +105,15 @@ function layBaoCaoPhanTich(tenMa: string): void {
   const url: string = `https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:${tenMa}&pageIndex=1&pageSize=9`;
   const object = SheetHttp.sendPostRequest(url); // Giả định về cấu trúc và kiểu dữ liệu của object
 
-  const datas = Array.from(object.Data) as ReportData[];
-
-  datas.forEach((element: { SourceName?: string, Title?: string, ReportTypeName?: string, LastUpdate?: string, Url?: string }) => {
+  const datas = object.Data;
+  for (const element of datas) {
     const SourceName: string = element.SourceName ?? "____";
     const Title: string = element.Title ?? "____";
     const ReportTypeName: string = element.ReportTypeName ?? "____";
     const LastUpdate: string = element.LastUpdate ?? "____";
     const Url: string = element.Url ?? "____";
     mangDuLieuChinh.push([SourceName, Title, ReportTypeName, LastUpdate, Url]);
-  });
+  }
 
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AL");
 }
@@ -128,6 +128,35 @@ function layThongTinCoDong(tenMa: string): void {
 
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "AD");
 }
+
+function layThongTinCoTuc(tenMa: string): void {
+  const mangDuLieuChinh: [string, string, string][] = [];
+
+  const OPTIONS_CO_TUC: URLFetchRequestOptions = {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+     },
+    payload: JSON.stringify({
+        "tickers": [`${tenMa}`],
+        "page": 0,
+        "size": 10
+    })
+};
+  const URL: string = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
+  const response = SheetHttp.sendRequest(URL, OPTIONS_CO_TUC);
+
+  const datas = response.data;
+  for (const element of datas) {
+    const content: string = element.content ?? "____";
+    const date: string = element.date ?? "____";
+    mangDuLieuChinh.push([content, "",date]);
+  }
+
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 18, "AO");
+}
+
 
 
 function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {

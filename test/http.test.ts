@@ -14,6 +14,17 @@ describe("kiểm tra url vndirect chạy chính xác", () => {
     });
 });
 
+describe("kiểm tra url simplize chạy chính xác", () => {
+    test("kiểm tra phản hồi từ api lấy cổ tức", async () => {
+        const tenMa = "HPG";
+        const URL: string = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
+        const response = await axios.post(URL, { tickers: [`${tenMa}`], page: 0, size: 10 });
+        const data = response.data;
+        expect(data).not.toBeNull();
+        expect(response.status).toBe(200);
+    });
+});
+
 describe("kiểm tra url vps chạy chính xác", () => {
     test("kiểm tra phản hồi từ api vps", async () => {
         const ma1 = "HPG";
