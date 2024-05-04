@@ -77,12 +77,12 @@ function layGiaThamChieu(): void {
 
 
 function layThongTinPB(danhSachMa: string[]): void {
-    const QUERY_API: string = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
+    const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
     const mangDuLieuChinh: number[][] = []; // Sử dụng kiểu mảng số để lưu giá trị
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
-        const url: string = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-        const object: any = SheetHttp.sendGetRequest(url);
+        const URL = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
+        const object: any = SheetHttp.sendGetRequest(URL);
 
         object.data.forEach((element: { value?: number }) => {
             const value: number = element.value ?? 0;
@@ -156,7 +156,7 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
 
 function duLieuTam(): void {
     SheetUtil.layDuLieuTrongCot("TRUY VAN", "A").forEach((date: string) => {
-        let danhSachMa: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
+        const danhSachMa: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
 
         while (danhSachMa.length > 0) {
             const MANG_PHU: string[] = danhSachMa.splice(0, 400);

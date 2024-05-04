@@ -97,9 +97,9 @@ namespace SheetUtil {
 
     export function doiTenCotThanhChiSo(columnName: string): number {
         let index = 0;
-        let length = columnName.length;
+        const length = columnName.length;
         for (let i = 0; i < length; i++) {
-            let charCode = columnName.toUpperCase().charCodeAt(i) - 64;
+            const charCode = columnName.toUpperCase().charCodeAt(i) - 64;
             index += (charCode * Math.pow(26, length - i - 1));
         }
         return index;
@@ -107,7 +107,7 @@ namespace SheetUtil {
 
     export function layDuLieuTrongHang(sheetName: string, rowIndex: number): string[] {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
-        if (!sheet) return new Array();
+        if (!sheet) return [];
         // Lấy số lượng cột trong Sheet
         const numColumns = sheet.getLastColumn();
 
