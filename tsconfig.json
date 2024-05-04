@@ -109,7 +109,7 @@
   "include": [
     "src/**/*.ts",
     "test/**/*.ts"
-  ],
+, "config.ts"  ],
   "exclude": [
     "node_modules",
     "**/*.spec.ts"
