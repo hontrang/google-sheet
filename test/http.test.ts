@@ -14,6 +14,17 @@ describe("kiểm tra url vndirect chạy chính xác", () => {
     });
 });
 
+describe("kiểm tra url simplize chạy chính xác", () => {
+    test("kiểm tra phản hồi từ api lấy cổ tức", async () => {
+        const tenMa = "HPG";
+        const URL: string = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
+        const response = await axios.post(URL, { tickers: [`${tenMa}`], page: 0, size: 10 });
+        const data = response.data;
+        expect(data).not.toBeNull();
+        expect(response.status).toBe(200);
+    });
+});
+
 describe("kiểm tra url vps chạy chính xác", () => {
     test("kiểm tra phản hồi từ api vps", async () => {
         const ma1 = "HPG";
@@ -168,8 +179,8 @@ describe("kiểm tra url ssi chạy chính xác", () => {
 async function getToken(): Promise<string> {
     if (TOKEN !== undefined) return TOKEN;
     else {
-        const consumerID = '';
-        const consumerSecret = '';
+        const consumerID = '35e723ae7e4c426694226ed4649379d5';
+        const consumerSecret = 'a54573a4a78949a0b59befc59523aee2';
         const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
         const response = await axios.post(URL, { consumerID: consumerID, consumerSecret: consumerSecret });
         TOKEN = "Bearer " + response.data.data.accessToken;

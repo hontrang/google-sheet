@@ -144,8 +144,8 @@ function layThongTinCoTuc(tenMa: string): void {
         "size": 10
     })
 };
-  const url: string = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
-  const response = SheetHttp.sendRequest(url, OPTIONS_CO_TUC);
+  const URL: string = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
+  const response = SheetHttp.sendRequest(URL, OPTIONS_CO_TUC);
 
   const datas = response.data;
   for (const element of datas) {
