@@ -15,10 +15,12 @@
     "cpDW": "copyfiles -u 1 -f -E build/src/utility/*.js build/src/projectDw/*.js dist",
     "deploy": "cd dist && clasp push && clasp open",
     "compile": "tsc",
-    "test": "jest -c"
+    "test": "jest -c",
+    "lint": "eslint ."
   },
   "description": "Quản lý chứng khoán bằng google sheet",
   "devDependencies": {
+    "@eslint/js": "^9.2.0",
     "@types/google-apps-script": "^1.0.83",
     "@types/jest": "^29.5.3",
     "@types/moment": "^2.13.0",
@@ -26,6 +28,7 @@
     "axios": "^1.6.8",
     "cheerio": "^1.0.0-rc.12",
     "copyfiles": "^2.4.1",
+    "eslint": "^8.57.0",
     "globals": "^15.0.0",
     "gulp": "^5.0.0",
     "gulp-replace": "^1.1.4",
@@ -38,7 +41,8 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "tslib": "^2.6.2",
-    "typescript": "^5.1.6",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.8.0",
     "upath": "2.0.1"
   },
   "type": "module"
