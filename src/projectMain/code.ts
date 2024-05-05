@@ -3,7 +3,7 @@ import * as Cheerio from 'cheerio';
 function getDataHose(): void {
   const DANH_SACH_MA: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
   const mangDuLieuChinh: Array<[string]> = [];
-  const URL: string = `https://bgapidatafeed.vps.com.vn/getliststockdata/${DANH_SACH_MA.join(",")}`;
+  const URL = `https://bgapidatafeed.vps.com.vn/getliststockdata/${DANH_SACH_MA.join(",")}`;
   const response = SheetHttp.sendGetRequest(URL);
   for (const element of DANH_SACH_MA) {
     const price = response.filter((object: { sym: string; }) => object.sym === element).map((object: { lastPrice: number; }) => object.lastPrice * 1000);
