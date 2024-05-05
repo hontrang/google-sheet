@@ -42,11 +42,11 @@ function layThongTinChiTietMa(): void {
   layThongTinCoDong(tenMa);
   layThongTongSoLuongCoPhieuDangNiemYet(tenMa);
   layThongTinCoTuc(tenMa);
+  layHeSoBetaVaFreeFloat(tenMa);
   ZChartUtil.updateChart();
   SheetLog.logTime(SheetUtil.SHEET_CHI_TIET_MA, "J2");
   Logger.log("Hàm layThongTinChiTietMa chạy thành công");
 }
-
 
 function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa: string): void {
   const fromDate: string = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F2");
@@ -129,13 +129,13 @@ function layThongTinCoTuc(tenMa: string): void {
     headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
-     },
+    },
     payload: JSON.stringify({
-        "tickers": [`${tenMa}`],
-        "page": 0,
-        "size": 10
+      "tickers": [`${tenMa}`],
+      "page": 0,
+      "size": 10
     })
-};
+  };
   const URL: string = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
   const response = SheetHttp.sendRequest(URL, OPTIONS_CO_TUC);
 
@@ -143,13 +143,11 @@ function layThongTinCoTuc(tenMa: string): void {
   for (const element of datas) {
     const content: string = element.content ?? "____";
     const date: string = element.date ?? "____";
-    mangDuLieuChinh.push([content, "",date]);
+    mangDuLieuChinh.push([content, "", date]);
   }
 
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 18, "AO");
 }
-
-
 
 function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {
   const market = 'HOSE';
@@ -167,6 +165,23 @@ function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {
   const mangDuLieuChinh: Array<[string]> = [];
   mangDuLieuChinh.push([object.data[0].RepeatedInfo[0].ListedShare]);
   SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_CHI_TIET_MA, 68, "G");
+}
+
+function layHeSoBetaVaFreeFloat(tenMa: string = 'FRT') {
+  const fromDate: string = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F2");
+  const URL = `https://finfo-api.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
+  const response = SheetHttp.sendGetRequest(URL);
+  const datas = response.data;
+  for (const element of datas) {
+    if (element.ratioCode === 'BETA') {
+      const value = element.value;
+      SheetUtil.ghiDuLieuVaoO(value, SheetUtil.SHEET_CHI_TIET_MA, "E18");
+    }
+    if (element.ratioCode === 'FREEFLOAT') {
+      const value = element.value;
+      SheetUtil.ghiDuLieuVaoO(value, SheetUtil.SHEET_CHI_TIET_MA, "J16");
+    }
+  }
 }
 
 function batSukienSuaThongTinO(e: any) {
