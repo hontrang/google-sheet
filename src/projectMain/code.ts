@@ -164,7 +164,7 @@ function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {
   const object = SheetHttp.sendRequest(URL, OPTION);
   const mangDuLieuChinh: Array<[string]> = [];
   mangDuLieuChinh.push([object.data[0].RepeatedInfo[0].ListedShare]);
-  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_CHI_TIET_MA, 68, "G");
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_CHI_TIET_MA, 18, "H");
 }
 
 function layHeSoBetaVaFreeFloat(tenMa: string = 'FRT') {
