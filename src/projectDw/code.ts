@@ -20,7 +20,7 @@ function layChiSoVnIndex(): void {
 }
 
 function layTyGiaUSDVND() {
-    const tyGiaHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_DU_LIEU, "O2");
+    const tyGiaHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_DU_LIEU, "K2");
     const ngayHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "A1");
     const duLieuNgayMoiNhat = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_TY_GIA, "A1");
     if (duLieuNgayMoiNhat !== ngayHomNay) {
