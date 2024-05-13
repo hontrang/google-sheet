@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 
 export function renderClasp() {
     // copy clasp
-    let sourcePath = upath.resolve(__dirname, '../src/clasp/main');
+    let sourcePath = upath.resolve(__dirname, '/Users/hontrang/code/clasp/main');
     let destPath = upath.resolve(__dirname, '../dist');
     console.log("Sao chép files trong folder clasp vào dist");
     // Lấy tất cả file trong thư mục nguồn, bao gồm cả file ẩn
