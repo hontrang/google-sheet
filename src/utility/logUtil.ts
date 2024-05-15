@@ -1,7 +1,7 @@
-namespace SheetLog {
-    export function logDebug(content: string): boolean {
+class SheetLog {
+    static logDebug(content: string): boolean {
         const data: [string, string][] = [
-            [moment().format("YYYY/MM/DD HH:mm:ss"), content.toString()]
+            [moment().format("YYYY/MM/DD HH:mm:ss"), content]
         ];
         Logger.log(content);
         const sheet = SpreadsheetApp.getActive().getSheetByName(SheetUtil.SHEET_DEBUG);
@@ -12,9 +12,8 @@ namespace SheetLog {
         }
     }
 
-    export function logTime(sheetName: string, cell: string): boolean {
-        const sheet = SpreadsheetApp.getActive()
-            .getSheetByName(sheetName);
+    static logTime(sheetName: string, cell: string): boolean {
+        const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) return false;
         else {
             sheet.getRange(cell).setValue(moment().format("YYYY/MM/DD HH:mm:ss"));
@@ -22,9 +21,8 @@ namespace SheetLog {
         }
     }
 
-    export function logStart(sheetName: string, cell: string): boolean {
-        const sheet = SpreadsheetApp.getActive()
-            .getSheetByName(sheetName);
+    static logStart(sheetName: string, cell: string): boolean {
+        const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) return false;
         else {
             sheet.getRange(cell).setValue("...");
