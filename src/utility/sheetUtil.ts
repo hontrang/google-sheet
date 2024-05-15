@@ -1,19 +1,19 @@
-namespace SheetUtil {
-    export const SHEET_THAM_CHIEU = "tham chiếu";
-    export const SHEET_BANG_THONG_TIN = "bảng thông tin";
-    export const SHEET_DU_LIEU = "dữ liệu";
-    export const SHEET_CHI_TIET_MA = "chi tiết mã";
-    export const SHEET_CAU_HINH = "cấu hình";
-    export const SHEET_DEBUG = "debug";
-    export const KICH_THUOC_MANG_PHU = 10;
-    export const SHEET_HOSE = "HOSE";
-    export const SHEET_GIA = "Giá";
-    export const SHEET_KHOI_LUONG = "Khối Lượng";
-    export const SHEET_KHOI_NGOAI_MUA = "KN Mua";
-    export const SHEET_KHOI_NGOAI_BAN = "KN Bán";
-    export const SHEET_TY_GIA = "Tỷ Giá USD/VND";
+class SheetUtil {
+    static SHEET_THAM_CHIEU = "tham chiếu";
+    static SHEET_BANG_THONG_TIN = "bảng thông tin";
+    static SHEET_DU_LIEU = "dữ liệu";
+    static SHEET_CHI_TIET_MA = "chi tiết mã";
+    static SHEET_CAU_HINH = "cấu hình";
+    static SHEET_DEBUG = "debug";
+    static KICH_THUOC_MANG_PHU = 10;
+    static SHEET_HOSE = "HOSE";
+    static SHEET_GIA = "Giá";
+    static SHEET_KHOI_LUONG = "Khối Lượng";
+    static SHEET_KHOI_NGOAI_MUA = "KN Mua";
+    static SHEET_KHOI_NGOAI_BAN = "KN Bán";
+    static SHEET_TY_GIA = "Tỷ Giá USD/VND";
 
-    export function ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
+    static ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) {
             console.log("Sheet không tồn tại");
@@ -23,14 +23,14 @@ namespace SheetUtil {
         sheet.getRange(row, column, data.length, data[0].length).setValues(data);
     }
 
-    export function ghiDuLieuVaoDayTheoTen(data: any[][], sheetName: string, rowNumber: number, columnName: string): void {
+    static ghiDuLieuVaoDayTheoTen(data: any[][], sheetName: string, rowNumber: number, columnName: string): void {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) {
             console.log("Sheet không tồn tại");
             return;
         }
         const rowIndex = rowNumber - 1;
-        const columnIndex = doiTenCotThanhChiSo(columnName) - 1;
+        const columnIndex = SheetUtil.doiTenCotThanhChiSo(columnName) - 1;
 
         sheet.getRange(rowIndex + 1, columnIndex + 1, data.length, data[0].length).clearContent();
         try {
@@ -39,8 +39,8 @@ namespace SheetUtil {
             console.error(e);
         }
     }
-    
-    export function ghiDuLieuVaoDayTheoTenThamChieu(data: any, sheetName: string, cotGhiDuLieu: string, cotThamChieu: string, hangBatDau: number, tenMa: string): void {
+
+    static ghiDuLieuVaoDayTheoTenThamChieu(data: any, sheetName: string, cotGhiDuLieu: string, cotThamChieu: string, hangBatDau: number, tenMa: string): void {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         let vitri = -1;
         if (!sheet) {
@@ -54,26 +54,26 @@ namespace SheetUtil {
         SheetUtil.ghiDuLieuVaoO(data, sheetName, cotGhiDuLieu + vitri);
     }
 
-    export function ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
+    static ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) return false;
         sheet.getRange(cell).setValue(data);
         return true;
     }
 
-    export function layDuLieuTrongOTheoTen(sheetName: string, cell: string): string {
+    static layDuLieuTrongOTheoTen(sheetName: string, cell: string): string {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) return "invalid sheet name";
         return sheet.getRange(cell).getValue();
     }
 
-    export function layDuLieuTrongO(sheetName: string, cell: string): string {
+    static layDuLieuTrongO(sheetName: string, cell: string): string {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) return "";
         return sheet.getRange(cell).getValue();
     }
 
-    export function layDuLieuTrongCot(sheetName: string, column: string): string[] {
+    static layDuLieuTrongCot(sheetName: string, column: string): string[] {
         const dataArray: string[] = [];
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) return dataArray;
@@ -85,27 +85,27 @@ namespace SheetUtil {
                 dataArray.push(value);
             }
         }
-        dataArray.shift();
+        dataArray.shift();  // Xóa phần tử đầu tiên nếu cần bỏ qua tiêu đề
         return dataArray;
     }
 
-    export function laySoHangTrongSheet(sheetName: string): number {
+    static laySoHangTrongSheet(sheetName: string): number {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) return -1;
         return sheet.getLastRow();
     }
 
-    export function doiTenCotThanhChiSo(columnName: string): number {
+    static doiTenCotThanhChiSo(columnName: string): number {
         let index = 0;
         const length = columnName.length;
         for (let i = 0; i < length; i++) {
             const charCode = columnName.toUpperCase().charCodeAt(i) - 64;
-            index += (charCode * Math.pow(26, length - i - 1));
+            index += charCode * Math.pow(26, length - i - 1);
         }
         return index;
     }
 
-    export function layDuLieuTrongHang(sheetName: string, rowIndex: number): string[] {
+    static layDuLieuTrongHang(sheetName: string, rowIndex: number): string[] {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) return [];
         // Lấy số lượng cột trong Sheet
@@ -119,7 +119,7 @@ namespace SheetUtil {
         return rowData[0];
     }
 
-    export function chen1HangVaoDauSheet(sheetName: string): boolean {
+    static chen1HangVaoDauSheet(sheetName: string): boolean {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) {
             console.log("Sheet không tồn tại");
@@ -129,8 +129,8 @@ namespace SheetUtil {
         return true;
     }
 
-    // xóa cột và dời dữ liệu cột sau đó về trước
-    export function xoaCot(sheetName: string, column: string, numOfCol: number): boolean {
+    // Xóa cột và dời dữ liệu cột sau đó về trước
+    static xoaCot(sheetName: string, column: string, numOfCol: number): boolean {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) {
             console.log("Sheet không tồn tại");
@@ -140,7 +140,7 @@ namespace SheetUtil {
         return true;
     }
 
-    export function xoaDuLieuTrongCot(sheetName: string, column: string, numOfCol: number, startRow: number): boolean {
+    static xoaDuLieuTrongCot(sheetName: string, column: string, numOfCol: number, startRow: number): boolean {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) {
             console.log("Sheet không tồn tại");

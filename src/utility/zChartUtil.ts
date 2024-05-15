@@ -1,7 +1,7 @@
-namespace ZChartUtil {
-    export const CHART_ID = 911649750;
+class ZChartUtil {
+    static CHART_ID = 911649750;
 
-    export function updateChart(): void {
+    static updateChart(): void {
         const label: string = `${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F1")} - ${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "G1")}`;
         const tenMa: string = `${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, "F1")}`;
         const HIGH_MA: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, "B5");
@@ -10,7 +10,8 @@ namespace ZChartUtil {
         const HIGH_VNI: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, "C5");
         const LOW_VNI: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, "C4");
         const ABS_VNI: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, "C3");
-        const chart = getChartById(CHART_ID, SheetUtil.SHEET_CHI_TIET_MA);
+
+        const chart = ZChartUtil.getChartById(ZChartUtil.CHART_ID, SheetUtil.SHEET_CHI_TIET_MA);
         const sheet = SpreadsheetApp.getActive().getSheetByName(SheetUtil.SHEET_CHI_TIET_MA);
 
         if (!sheet || !chart) {
@@ -32,10 +33,9 @@ namespace ZChartUtil {
             }).build();
 
         sheet.updateChart(updatedChart);
-
     }
 
-    export function createChart(): void {
+    static createChart(): void {
         const sheet = SpreadsheetApp.getActive().getSheetByName(SheetUtil.SHEET_CHI_TIET_MA);
         if (!sheet) {
             console.error('Không tìm thấy sheet.');
@@ -54,7 +54,7 @@ namespace ZChartUtil {
         console.log(chart.getChartId());
     }
 
-    export function getChartById(chartId: number, sheetName: string) {
+    static getChartById(chartId: number, sheetName: string) {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) {
             console.error(`Sheet ${sheetName} không tồn tại.`);
@@ -72,8 +72,8 @@ namespace ZChartUtil {
         return null;
     }
 
-    export function removeChartByID(): void {
-        const chart = getChartById(CHART_ID, SheetUtil.SHEET_CHI_TIET_MA);
+    static removeChartByID(): void {
+        const chart = ZChartUtil.getChartById(ZChartUtil.CHART_ID, SheetUtil.SHEET_CHI_TIET_MA);
         if (!chart) {
             console.error('Biểu đồ không tồn tại.');
             return;
@@ -88,7 +88,7 @@ namespace ZChartUtil {
         sheet.removeChart(chart);
     }
 
-    export function inRaThongTinChart(): void {
+    static inRaThongTinChart(): void {
         const spreadsheetId: string = SpreadsheetApp.getActiveSpreadsheet().getId();
 
         const chartsInfo = Sheets.Spreadsheets?.get(spreadsheetId, {
