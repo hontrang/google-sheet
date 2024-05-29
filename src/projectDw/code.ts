@@ -336,7 +336,40 @@ function layDanhSachMa(): void {
     SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "A");
 }
 
+/**
+ * @customfunction
+*/
+function LAY_THONG_TIN_DANH_MUC_DC(url: string) {
+  const result: any = [];
+  const response = SheetHttp.sendRequest(url);
+  const data = response.ffs_holding;
+  console.log(response);
+  data.forEach((element: any) => {
+    const tenMa = element.stock ?? '_';
+    const nhomNganh = element.sector_vi ?? '_';
+    const tyLe = element.per_nav ?? '_';
+    const capNhatLuc = element.modified ?? '-';
+    result.push([tenMa, nhomNganh, tyLe, capNhatLuc]);
+  })
+  return result;
+}
 
+/**
+ * @customfunction
+*/
+function LAY_THONG_TIN_TAI_SAN_DC(url: string) {
+  const result: any = [];
+  const response = SheetHttp.sendRequest(url);
+  const data = response.ffs_asset;
+  console.log(response);
+  data.forEach((element: any) => {
+    const tenTaiSan = element.name_vi ?? '_';
+    const tyLe = element.weight ?? '_';
+    const capNhatLuc = element.modified ?? '-';
+    result.push([tenTaiSan, tyLe, capNhatLuc]);
+  })
+  return result;
+}
 // function doGet(e) {
 //   if (e.parameter.chucnang === 'chiTietMa') {
 //     layThongTinChiTietMa(e.parameter.ma);
