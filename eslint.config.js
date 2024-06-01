@@ -13,27 +13,27 @@ export default tseslint.config(
     {
         languageOptions: {
             parserOptions: {
-                project: true,
-            },
-        },
+                project: true
+            }
+        }
     },
     {
         files: ['**/*.ts'],
-        ...tseslint.configs.disableTypeChecked,
+        ...tseslint.configs.disableTypeChecked
     },
     {
         languageOptions: {
             parserOptions: {
                 project: true,
-                tsconfigRootDir: import.meta.dirname,
-            },
-        },
+                tsconfigRootDir: import.meta.dirname
+            }
+        }
     },
     {
         rules: {
-            "@typescript-eslint/array-type": "off",
-            "@typescript-eslint/no-namespace": "off",
-            "@typescript-eslint/naming-convention": "error"
+            '@typescript-eslint/array-type': 'off',
+            '@typescript-eslint/no-namespace': 'off',
+            '@typescript-eslint/naming-convention': 'error'
         }
     }
 );
