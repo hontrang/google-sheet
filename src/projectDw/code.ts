@@ -336,74 +336,37 @@ function layDanhSachMa(): void {
     SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "A");
 }
 
+/**
+ * @customfunction
+*/
+function LAY_THONG_TIN_DANH_MUC_DC(url: string) {
+    const result: any = [];
+    const response = SheetHttp.sendRequest(url);
+    const data = response.ffs_holding;
+    console.log(response);
+    data.forEach((element: any) => {
+        const tenMa = element.stock ?? '_';
+        const nhomNganh = element.sector_vi ?? '_';
+        const tyLe = element.per_nav ?? '_';
+        const capNhatLuc = element.modified ?? '-';
+        result.push([tenMa, nhomNganh, tyLe, capNhatLuc]);
+    })
+    return result;
+}
 
-// function doGet(e) {
-//   if (e.parameter.chucnang === 'chiTietMa') {
-//     layThongTinChiTietMa(e.parameter.ma);
-//     return HtmlService.createHtmlOutput("Thành công");
-//   } else {
-//     return HtmlService.createHtmlOutput("Chức năng không đúng");
-//   }
-// }
-
-
-// function layThongTinPB(danhSachMa) {
-//   const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
-//   const mang_du_lieu_chinh = [];
-//   for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
-//     const url = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-//     const object = SheetHttp.sendGetRequest(url);
-
-//     object.data.forEach((element) => {
-//       const value = element.value || 0;
-//       mang_du_lieu_chinh.push([value]);
-//     });
-//   }
-
-//   SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(mang_du_lieu_chinh, SheetUtil.SHEET_DU_LIEU, "E", "A", tenMa);
-// }
-
-// function layThongTinPE(danhSachMa) {
-//   const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
-//   const mang_du_lieu_chinh = [];
-//   for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
-//     const url = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-//     const object = SheetHttp.sendGetRequest(url);
-
-//     object.data.forEach((element) => {
-//       const value = element.value || 0;
-//       mang_du_lieu_chinh.push([value]);
-//     });
-//   }
-//   SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(mang_du_lieu_chinh, SheetUtil.SHEET_DU_LIEU, "F", "A", tenMa);
-// }
-
-// function layThongTinRoomNuocNgoai(danhSachMa) {
-//   const QUERY_API = "https://finfo-api.vndirect.com.vn/v4";
-//   const mang_du_lieu_chinh = [];
-//   for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
-//     const url = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-//     const object = SheetHttp.sendGetRequest(url);
-
-//     object.data.forEach((element) => {
-//       mang_du_lieu_chinh.push([element.totalRoom, element.currentRoom]);
-//     });
-//   }
-//   SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(mang_du_lieu_chinh, SheetUtil.SHEET_DU_LIEU, "G", "A", tenMa);
-// }
-
-// function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa) {
-//   const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
-//   const mang_du_lieu_chinh = [];
-
-//   for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
-//     const url = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-//     const object = SheetHttp.sendGetRequest(url);
-
-//     object.data.forEach((element) => {
-//       const value = element.value || 0;
-//       mang_du_lieu_chinh.push([value]);
-//     });
-//   }
-//   SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(mang_du_lieu_chinh, SheetUtil.SHEET_DU_LIEU, "I", "A", tenMa);
-// }
+/**
+ * @customfunction
+*/
+function LAY_THONG_TIN_TAI_SAN_DC(url: string) {
+    const result: any = [];
+    const response = SheetHttp.sendRequest(url);
+    const data = response.ffs_asset;
+    console.log(response);
+    data.forEach((element: any) => {
+        const tenTaiSan = element.name_vi ?? '_';
+        const tyLe = element.weight ?? '_';
+        const capNhatLuc = element.modified ?? '-';
+        result.push([tenTaiSan, tyLe, capNhatLuc]);
+    })
+    return result;
+}
