@@ -273,41 +273,41 @@ function layKhoiLuongHangNgay(): void {
 }
 
 function layGiaHangNgay(): void {
-    const danhSachMa: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
     const date: string = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "A1");
+    const fromDate: string = DateUtil.changeFormatDate(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
+    const toDate: string = DateUtil.changeFormatDate(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
     const hangCuoi: number = SheetUtil.laySoHangTrongSheet(SheetUtil.SHEET_GIA);
     const duLieuNgayMoiNhat: string = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_GIA, "A" + hangCuoi);
+    const market = 'HOSE';
 
     if (duLieuNgayMoiNhat !== date) {
-        while (danhSachMa.length > 0) {
-            const MANG_PHU: string[] = danhSachMa.splice(0, 400);
-            const URL: string = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${MANG_PHU.join(",")}~date:gte:${date}~date:lte:${date}`;
-            const object: any = SheetHttp.sendGetRequest(URL); // Nên thay `any` bằng kiểu dữ liệu cụ thể nếu có thể.
-
-            if (object?.data.length > 0) {
-                const header: string[] = SheetUtil.layDuLieuTrongHang(SheetUtil.SHEET_GIA, 1);
-                SheetUtil.ghiDuLieuVaoDay([["'" + date]], SheetUtil.SHEET_GIA, hangCuoi + 1, 1);
-                object.data.map((item: any) => { // Khuyến khích thay `any` bằng kiểu dữ liệu cụ thể của `item`.
-                    for (let i = 0; i < header.length; i++) {
-                        if (header[i] === item.code) {
-                            SheetUtil.ghiDuLieuVaoDay([[item.close * 1000]], SheetUtil.SHEET_GIA, hangCuoi + 1, i + 1);
-                        }
-                    }
-                });
+        const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.market=${market}`;
+        const token = SheetHttp.getToken();
+        const OPTION: URLFetchRequestOptions = {
+            method: "get",
+            headers: {
+                "Authorization": token,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
-            console.log("Lấy giá hàng ngày thành công");
         }
+        const object = SheetHttp.sendRequest(URL, OPTION);
+
+        if (object?.data.length > 0) {
+            const header: string[] = SheetUtil.layDuLieuTrongHang(SheetUtil.SHEET_GIA, 1);
+            SheetUtil.ghiDuLieuVaoDay([["'" + date]], SheetUtil.SHEET_GIA, hangCuoi + 1, 1);
+            object.data.map((item: any) => {
+                for (let i = 0; i < header.length; i++) {
+                    if (header[i] === item.Symbol) {
+                        SheetUtil.ghiDuLieuVaoDay([[item.ClosePrice]], SheetUtil.SHEET_GIA, hangCuoi + 1, i + 1);
+                    }
+                }
+            });
+        }
+        console.log("Lấy giá hàng ngày thành công");
     } else {
         console.log("done");
     }
-}
-
-function taoMang2D<T>(data: T[]): T[][] {
-    const values: T[][] = [];
-    for (const element of data) {
-        values.push([element]);
-    }
-    return values;
 }
 
 function layDanhSachMa(): void {
