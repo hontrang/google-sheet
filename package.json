@@ -15,7 +15,7 @@
     "cpDW": "copyfiles -u 1 -f -E build/src/utility/*.js build/src/projectDw/*.js dist",
     "deploy": "cd dist && clasp push && clasp open",
     "compile": "tsc",
-    "test": "jest -c",
+    "test": "npm run clean && jest -c",
     "lint": "eslint ."
   },
   "description": "Quản lý chứng khoán bằng google sheet",
