@@ -62,7 +62,7 @@ Dưới dây là các công nghệ hiện có trong dự án.
 Đây là một ví dụ về cách bạn có thể đưa ra hướng dẫn để thiết lập dự án của mình một cách cục bộ.
 Để có một bản sao cục bộ hoạt động, hãy làm theo những bước ví dụ đơn giản sau.
 
-### CHUẨN BỊ
+## CHUẨN BỊ
 
 Cài đặt các gói thư viện nodejs, thông tin thư viện đã được liệt kê sẵn trong file package.json
 * npm
@@ -70,15 +70,15 @@ Cài đặt các gói thư viện nodejs, thông tin thư viện đã được l
   npm i
   ```
 
-### CÀI ĐẶT
+## CÀI ĐẶT
 
 Thực hiện các bước sau đây để cài đặt ứng dụng
 
-1. Clone the repo
+## 1. Clone the repo
    ```sh
    git clone git@github.com:hontrang/google-sheet.git
    ```
-2. Install NPM packages
+## 2. Cài đặt thư viện NPM
    ```sh
    npm install
    ```
@@ -87,20 +87,21 @@ Thực hiện các bước sau đây để cài đặt ứng dụng
 <!-- USAGE EXAMPLES -->
 ## 3. SỬ DỤNG
 
-1. Build Dashboard
+### 1. Build Dashboard
   ```sh
    npm run build:main
    ```
 
-2. Build Data warehouse
+### 2. Build Data warehouse
   ```sh
    npm run build:dw
    ```
-3. Deploy dự án lên Google Apps Script (gas)
+### 3. Deploy dự án lên Google Apps Script (gas)
   ```sh
    npm run deploy
    ```
-3. Test
+### 4. Test
+  Mở file config.ts, đổi thông tin consumerID và consumerSecret bằng key lấy từ SSI.
   ```sh
    npm run test
    ```
