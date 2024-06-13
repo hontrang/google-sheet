@@ -19,6 +19,9 @@ jobs:
         run: npm install
       - name: Run Test
         run: npm test
+        env:
+          CONSUMERID: ${{ secrets.CONSUMERID }}
+          CONSUMERSECRET: ${{ secrets.CONSUMERSECRET }}
 
   publish-npm:
     needs: build
