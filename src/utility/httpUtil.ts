@@ -1,27 +1,29 @@
-import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions
+import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
 
-namespace SheetHttp {
-    export const URL_GRAPHQL_CAFEF = "https://msh-data.cafef.vn/graphql";
+class SheetHttp {
+    static URL_GRAPHQL_CAFEF = "https://msh-data.cafef.vn/graphql";
+    static TOKEN: string | undefined;
 
-    export const OPTIONS_POST: URLFetchRequestOptions = {
+    static OPTIONS_POST: URLFetchRequestOptions = {
         method: "post",
         headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+            "Accept": "application/json",
         }
     };
 
-    export const OPTIONS_GET: URLFetchRequestOptions = {
+    static OPTIONS_GET: URLFetchRequestOptions = {
         method: "get",
         headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
+            "Accept": "application/json",
         }
     };
 
-    export function sendRequest(url: string): any {
+    static sendRequest(url: string, option?: URLFetchRequestOptions): any {
         try {
-            const response = UrlFetchApp.fetch(url);
+            const appliedOption = option || SheetHttp.OPTIONS_GET;
+            const response = UrlFetchApp.fetch(url, appliedOption);
             return JSON.parse(response.getContentText());
         } catch (e) {
             SheetLog.logDebug(`error: ${e}`);
@@ -29,9 +31,9 @@ namespace SheetHttp {
         }
     }
 
-    export function sendPostRequest(url: string, options?: URLFetchRequestOptions): any {
+    static sendPostRequest(url: string, options?: URLFetchRequestOptions): any {
         try {
-            const effectiveOptions = options || OPTIONS_POST;
+            const effectiveOptions = options || SheetHttp.OPTIONS_POST;
             const response = UrlFetchApp.fetch(url, effectiveOptions);
             return JSON.parse(response.getContentText());
         } catch (e) {
@@ -39,11 +41,10 @@ namespace SheetHttp {
             return null;
         }
     }
-    
 
-    export function sendGetRequest(url: string): any {
+    static sendGetRequest(url: string): any {
         try {
-            const response = UrlFetchApp.fetch(url, OPTIONS_GET);
+            const response = UrlFetchApp.fetch(url, SheetHttp.OPTIONS_GET);
             return JSON.parse(response.getContentText());
         } catch (e) {
             SheetLog.logDebug(`error: ${e}`);
@@ -51,7 +52,7 @@ namespace SheetHttp {
         }
     }
 
-    export function sendGraphQLRequest(url: string, query: string, variables?: any): any {
+    static sendGraphQLRequest(url: string, query: string, variables?: any): any {
         const PAYLOAD = JSON.stringify({
             query: query,
             variables: variables
@@ -59,7 +60,30 @@ namespace SheetHttp {
         const OPTIONS: URLFetchRequestOptions = {
             method: "post",
             payload: PAYLOAD
+        };
+        return SheetHttp.sendPostRequest(url, OPTIONS);
+    }
+
+    static getToken(): string {
+        if (SheetHttp.TOKEN !== undefined) return SheetHttp.TOKEN;
+        else {
+            const consumerID = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, 'B7');
+            const consumerSecret = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, 'B8');
+            const OPTIONS_POST_TOKEN_SSI: URLFetchRequestOptions = {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
+                payload: JSON.stringify({
+                    "consumerID": consumerID,
+                    "consumerSecret": consumerSecret
+                })
+            };
+            const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
+            const response = SheetHttp.sendPostRequest(URL, OPTIONS_POST_TOKEN_SSI);
+            SheetHttp.TOKEN = "Bearer " + response.data.accessToken;
+            return SheetHttp.TOKEN;
         }
-        return sendPostRequest(url, OPTIONS); // Sửa lại để gọi sendPostRequest với url và options đã chỉnh sửa
     }
 }

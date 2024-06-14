@@ -1,3 +1,6 @@
 dist/*
 build/*
 node_modules/*
+html-report/*
+**/config.ts
+.DS_Store

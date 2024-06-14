@@ -1,0 +1,12 @@
+{
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": false
+    },
+    "eslint.validate": ["typescript"],
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "[typescript]": {
+      "editor.formatOnPaste": true,
+      "editor.formatOnSave": true
+    }
+  }
