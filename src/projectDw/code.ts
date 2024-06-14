@@ -7,8 +7,6 @@ function layChiSoVnIndex(): void {
     const object = SheetHttp.sendPostRequest(url);
     const duLieuNhanVe = object[1];
     const thanhKhoan: number = parseFloat(duLieuNhanVe.value.replace(/,/g, '')) * 1000000000;
-    console.log(duLieuNgayMoiNhat !== ngayHienTai);
-    console.log(thanhKhoan !== thanhKhoanMoiNhat);
     if (duLieuNgayMoiNhat === ngayHienTai && thanhKhoan !== thanhKhoanMoiNhat) {
         const mangDuLieuChinh: [[string, number, number, number]] = [[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]];
         SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_HOSE, 1, "A");
@@ -22,13 +20,14 @@ function layChiSoVnIndex(): void {
 }
 
 function layTyGiaUSDVND() {
-    const tyGiaHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_DU_LIEU, "O2");
+    const tyGiaHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_DU_LIEU, "K2");
     const ngayHomNay = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "A1");
-    const duLieuNgayMoiNhat = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_TY_GIA, "A2");
+    const duLieuNgayMoiNhat = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_TY_GIA, "A1");
     if (duLieuNgayMoiNhat !== ngayHomNay) {
-        SheetUtil.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetUtil.SHEET_TY_GIA, 2, "A");
-    }else {
-        console.log("No action required");
+        SheetUtil.chen1HangVaoDauSheet(SheetUtil.SHEET_TY_GIA);
+        SheetUtil.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetUtil.SHEET_TY_GIA, 1, "A");
+    } else {
+        SheetUtil.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetUtil.SHEET_TY_GIA, 1, "A");
     }
 }
 
@@ -38,7 +37,6 @@ function layThongTinCoBan(): void {
     layThongTinPE(danhSachMa);
     layThongTinRoomNuocNgoai(danhSachMa);
     layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa);
-    layTyGiaUSDVND();
 }
 
 // Hàm lấy giá, khối lượng và thông tin mua bán của khối ngoại hàng ngày
@@ -51,34 +49,40 @@ function layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay(): void {
 }
 
 function layGiaThamChieu(): void {
-    const danhSachMa: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
-    const date: string = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_CAU_HINH, "B1");
-    const data: [string, number][] = [];
-    while (danhSachMa.length > 0) {
-        const MANG_PHU: string[] = danhSachMa.splice(0, 400);
-        const URL: string = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${MANG_PHU.join(",")}~date:gte:${date}~date:lte:${date}`;
-        const object = SheetHttp.sendGetRequest(URL);
+    const DEFAULT_FORMAT = "YYYY-MM-DD";
+    const DANH_SACH_MA: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
+    const date: string = DateUtil.changeFormatDate(SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_CAU_HINH, "B1"), DEFAULT_FORMAT, "DD/MM/YYYY");
+    const market = "HOSE";
+    const mangDuLieuChinh: Array<[string]> = [];
 
-        if (object?.data.length > 0) {
-            object.data.forEach((item: { code?: string, close?: number }) => {
-                const code: string = item.code ?? "___";
-                const close: number = item.close ?? 0;
-                console.log(code);
-                data.push([code, close * 1000]);
-                SheetUtil.ghiDuLieuVaoDayTheoTen(data, SheetUtil.SHEET_DU_LIEU, 2, "K");
-            });
+    const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${date}&lookupRequest.toDate=${date}&lookupRequest.market=${market}`;
+    const token = SheetHttp.getToken();
+    const OPTION: URLFetchRequestOptions = {
+        method: "get",
+        headers: {
+            "Authorization": token,
+            "Content-Type": "application/json",
+            "Accept": "application/json"
         }
     }
+    const object = SheetHttp.sendRequest(URL, OPTION);
+    const datas = object.data;
+
+    for (const element of DANH_SACH_MA) {
+        const price = datas.filter((object: { Symbol: string; }) => object.Symbol === element && object.Symbol.length == 3).map((object: { ClosePrice: number; }) => object.ClosePrice);
+        mangDuLieuChinh.push([price]);
+    }
+    SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "C");
 }
 
 
 function layThongTinPB(danhSachMa: string[]): void {
-    const QUERY_API: string = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
+    const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
     const mangDuLieuChinh: number[][] = []; // Sử dụng kiểu mảng số để lưu giá trị
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
-        const url: string = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-        const object: any = SheetHttp.sendGetRequest(url); // Sử dụng kiểu `any` cho đối tượng trả về; tốt hơn là định nghĩa kiểu cụ thể nếu có thể
+        const URL = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
+        const object: any = SheetHttp.sendGetRequest(URL);
 
         object.data.forEach((element: { value?: number }) => {
             const value: number = element.value ?? 0;
@@ -95,10 +99,9 @@ function layThongTinPE(danhSachMa: string[]): void {
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-        const object: any = SheetHttp.sendGetRequest(url); // Sử dụng `any` cho object; tốt hơn nếu có interface cụ thể
-
+        const object: any = SheetHttp.sendGetRequest(url);
         object.data.forEach((element: { value?: number }) => {
-            const value: number = element.value ?? 0; // Sử dụng nullish coalescing operator (??) thay vì OR (||) để xử lý 0 một cách chính xác
+            const value: number = element.value ?? 0;
             mangDuLieuChinh.push([value]);
         });
     }
@@ -117,11 +120,11 @@ interface VolumnData {
 
 function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
     const QUERY_API: string = "https://finfo-api.vndirect.com.vn/v4";
-    const mangDuLieuChinh: [number, number][] = []; // Kiểu mảng của cặp số
+    const mangDuLieuChinh: [number, number][] = [];
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-        const object: any = SheetHttp.sendGetRequest(url); // Khuyến khích định nghĩa kiểu cụ thể thay vì sử dụng `any`
+        const object: any = SheetHttp.sendGetRequest(url);
         const datas = Array.from(object.data) as RoomData[];
         datas.forEach((element: { totalRoom?: number, currentRoom?: number }) => {
             const totalRoom: number = element.totalRoom ?? 0;
@@ -135,7 +138,7 @@ function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
 
 function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
     const QUERY_API: string = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
-    const mangDuLieuChinh: number[][] = []; // Kiểu mảng của mảng số để lưu trữ các giá trị
+    const mangDuLieuChinh: number[][] = [];
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
@@ -146,14 +149,14 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
             mangDuLieuChinh.push([value]);
         });
     }
-    
+
 
     SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "I");
 }
 
 function duLieuTam(): void {
     SheetUtil.layDuLieuTrongCot("TRUY VAN", "A").forEach((date: string) => {
-        let danhSachMa: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
+        const danhSachMa: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
 
         while (danhSachMa.length > 0) {
             const MANG_PHU: string[] = danhSachMa.splice(0, 400);
@@ -270,111 +273,100 @@ function layKhoiLuongHangNgay(): void {
 }
 
 function layGiaHangNgay(): void {
-    const danhSachMa: string[] = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
     const date: string = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "A1");
+    const fromDate: string = DateUtil.changeFormatDate(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
+    const toDate: string = DateUtil.changeFormatDate(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
     const hangCuoi: number = SheetUtil.laySoHangTrongSheet(SheetUtil.SHEET_GIA);
     const duLieuNgayMoiNhat: string = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_GIA, "A" + hangCuoi);
+    const market = 'HOSE';
 
     if (duLieuNgayMoiNhat !== date) {
-        while (danhSachMa.length > 0) {
-            const MANG_PHU: string[] = danhSachMa.splice(0, 400);
-            const URL: string = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${MANG_PHU.join(",")}~date:gte:${date}~date:lte:${date}`;
-            const object: any = SheetHttp.sendGetRequest(URL); // Nên thay `any` bằng kiểu dữ liệu cụ thể nếu có thể.
-
-            if (object?.data.length > 0) {
-                const header: string[] = SheetUtil.layDuLieuTrongHang(SheetUtil.SHEET_GIA, 1);
-                SheetUtil.ghiDuLieuVaoDay([["'" + date]], SheetUtil.SHEET_GIA, hangCuoi + 1, 1);
-                object.data.map((item: any) => { // Khuyến khích thay `any` bằng kiểu dữ liệu cụ thể của `item`.
-                    for (let i = 0; i < header.length; i++) {
-                        if (header[i] === item.code) {
-                            SheetUtil.ghiDuLieuVaoDay([[item.close * 1000]], SheetUtil.SHEET_GIA, hangCuoi + 1, i + 1);
-                        }
-                    }
-                });
+        const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.market=${market}`;
+        const token = SheetHttp.getToken();
+        const OPTION: URLFetchRequestOptions = {
+            method: "get",
+            headers: {
+                "Authorization": token,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
-            console.log("Lấy giá hàng ngày thành công");
         }
+        const object = SheetHttp.sendRequest(URL, OPTION);
+
+        if (object?.data.length > 0) {
+            const header: string[] = SheetUtil.layDuLieuTrongHang(SheetUtil.SHEET_GIA, 1);
+            SheetUtil.ghiDuLieuVaoDay([["'" + date]], SheetUtil.SHEET_GIA, hangCuoi + 1, 1);
+            object.data.map((item: any) => {
+                for (let i = 0; i < header.length; i++) {
+                    if (header[i] === item.Symbol) {
+                        SheetUtil.ghiDuLieuVaoDay([[item.ClosePrice]], SheetUtil.SHEET_GIA, hangCuoi + 1, i + 1);
+                    }
+                }
+            });
+        }
+        console.log("Lấy giá hàng ngày thành công");
     } else {
         console.log("done");
     }
 }
 
-function taoMang2D<T>(data: T[]): T[][] {
-    const values: T[][] = [];
-    for (const element of data) {
-        values.push([element]);
+function layDanhSachMa(): void {
+    const market = 'HOSE';
+    const pageIndex = 1;
+    const pageSize = 1000;
+    const token = SheetHttp.getToken();
+    const URL = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
+    const OPTION: URLFetchRequestOptions = {
+        method: "get",
+        headers: {
+            "Authorization": token,
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        }
     }
-    return values;
+    const mangDuLieuChinh: Array<[string, string]> = [];
+    const response = SheetHttp.sendRequest(URL, OPTION);
+    const datas = response.data;
+    SheetUtil.xoaDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A", 2, 2);
+    for (const element of datas) {
+        if (element.Symbol.length == 3) {
+            mangDuLieuChinh.push([element.Symbol, element.StockName]);
+        }
+    }
+    SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "A");
 }
 
+/**
+ * @customfunction
+*/
+function LAY_THONG_TIN_DANH_MUC_DC(url: string) {
+    const result: any = [];
+    const response = SheetHttp.sendRequest(url);
+    const data = response.ffs_holding;
+    console.log(response);
+    data.forEach((element: any) => {
+        const tenMa = element.stock ?? '_';
+        const nhomNganh = element.sector_vi ?? '_';
+        const tyLe = element.per_nav ?? '_';
+        const capNhatLuc = element.modified ?? '-';
+        result.push([tenMa, nhomNganh, tyLe, capNhatLuc]);
+    })
+    return result;
+}
 
-// function doGet(e) {
-//   if (e.parameter.chucnang === 'chiTietMa') {
-//     layThongTinChiTietMa(e.parameter.ma);
-//     return HtmlService.createHtmlOutput("Thành công");
-//   } else {
-//     return HtmlService.createHtmlOutput("Chức năng không đúng");
-//   }
-// }
-
-
-// function layThongTinPB(danhSachMa) {
-//   const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
-//   const mang_du_lieu_chinh = [];
-//   for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
-//     const url = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-//     const object = SheetHttp.sendGetRequest(url);
-
-//     object.data.forEach((element) => {
-//       const value = element.value || 0;
-//       mang_du_lieu_chinh.push([value]);
-//     });
-//   }
-
-//   SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(mang_du_lieu_chinh, SheetUtil.SHEET_DU_LIEU, "E", "A", tenMa);
-// }
-
-// function layThongTinPE(danhSachMa) {
-//   const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
-//   const mang_du_lieu_chinh = [];
-//   for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
-//     const url = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-//     const object = SheetHttp.sendGetRequest(url);
-
-//     object.data.forEach((element) => {
-//       const value = element.value || 0;
-//       mang_du_lieu_chinh.push([value]);
-//     });
-//   }
-//   SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(mang_du_lieu_chinh, SheetUtil.SHEET_DU_LIEU, "F", "A", tenMa);
-// }
-
-// function layThongTinRoomNuocNgoai(danhSachMa) {
-//   const QUERY_API = "https://finfo-api.vndirect.com.vn/v4";
-//   const mang_du_lieu_chinh = [];
-//   for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
-//     const url = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-//     const object = SheetHttp.sendGetRequest(url);
-
-//     object.data.forEach((element) => {
-//       mang_du_lieu_chinh.push([element.totalRoom, element.currentRoom]);
-//     });
-//   }
-//   SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(mang_du_lieu_chinh, SheetUtil.SHEET_DU_LIEU, "G", "A", tenMa);
-// }
-
-// function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa) {
-//   const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
-//   const mang_du_lieu_chinh = [];
-
-//   for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
-//     const url = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
-//     const object = SheetHttp.sendGetRequest(url);
-
-//     object.data.forEach((element) => {
-//       const value = element.value || 0;
-//       mang_du_lieu_chinh.push([value]);
-//     });
-//   }
-//   SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(mang_du_lieu_chinh, SheetUtil.SHEET_DU_LIEU, "I", "A", tenMa);
-// }
+/**
+ * @customfunction
+*/
+function LAY_THONG_TIN_TAI_SAN_DC(url: string) {
+    const result: any = [];
+    const response = SheetHttp.sendRequest(url);
+    const data = response.ffs_asset;
+    console.log(response);
+    data.forEach((element: any) => {
+        const tenTaiSan = element.name_vi ?? '_';
+        const tyLe = element.weight ?? '_';
+        const capNhatLuc = element.modified ?? '-';
+        result.push([tenTaiSan, tyLe, capNhatLuc]);
+    })
+    return result;
+}
