@@ -1,13 +1,12 @@
 # This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
 # For more information see: https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
 
-name: Node.js Package
+name: google sheet build
 
 on:
-  pull_request:
-    branches: [main]
-  release:
-    types: [created]
+  push:
+    tags:
+      - 'v1.*.*'
 
 jobs:
   build:
@@ -19,8 +18,22 @@ jobs:
           node-version: 16
       - name: Install dependencies
         run: npm install
-      - name: Run Test
+      
+      - name: Run Test with Jest
         run: npm test
         env:
           CONSUMERID: ${{ secrets.CONSUMERID }}
           CONSUMERSECRET: ${{ secrets.CONSUMERSECRET }}
+      
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+      
