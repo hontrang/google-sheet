@@ -348,8 +348,9 @@ function LAY_THONG_TIN_DANH_MUC_DC(url: string) {
         const tenMa = element.stock ?? '_';
         const nhomNganh = element.sector_vi ?? '_';
         const tyLe = element.per_nav ?? '_';
+        const sanGD = element.bourse_en ?? '_';
         const capNhatLuc = element.modified ?? '-';
-        result.push([tenMa, nhomNganh, tyLe, capNhatLuc]);
+        result.push([tenMa, nhomNganh, sanGD, tyLe, capNhatLuc]);
     })
     return result;
 }
