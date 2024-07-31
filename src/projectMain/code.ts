@@ -26,7 +26,7 @@ function layTinTucSheetBangThongTin(): void {
       mangDuLieuChinh.push([tenMa, title, "", link, "", date]);
     });
   });
-  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_BANG_THONG_TIN, 31, "A");
+  SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_BANG_THONG_TIN, 35, "A");
 }
 
 function layThongTinChiTietMa(): void {
