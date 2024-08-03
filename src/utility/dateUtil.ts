@@ -6,4 +6,7 @@ class DateUtil {
     static changeFormatDate(date: string, formatFrom: string, formatTo: string): string {
         return moment(date, formatFrom, true).format(formatTo);
     }
+    static layNgayHienTai(format: string){
+        return moment().format(format);
+    }
 }

@@ -1,5 +1,6 @@
+import * as Cheerio from 'cheerio';
 function layChiSoVnIndex(): void {
-    const ngayHienTai: string = moment().format("YYYY-MM-DD");
+    const ngayHienTai: string = DateUtil.layNgayHienTai("YYYY-MM-DD");
     const duLieuNgayMoiNhat: string = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "A1");
     const thanhKhoanMoiNhat: number = parseFloat(SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "D1"));
     const url: string = "https://banggia.cafef.vn/stockhandler.ashx?index=true";
@@ -120,20 +121,20 @@ interface VolumnData {
 
 function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
     const QUERY_API: string = "https://finfo-api.vndirect.com.vn/v4";
-    const mangDuLieuChinh: [number, number][] = [];
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
         const object: any = SheetHttp.sendGetRequest(url);
         const datas = Array.from(object.data) as RoomData[];
-        datas.forEach((element: { totalRoom?: number, currentRoom?: number }) => {
+        datas.forEach((element: { totalRoom?: number, currentRoom?: number, code? : string }) => {
             const totalRoom: number = element.totalRoom ?? 0;
             const currentRoom: number = element.currentRoom ?? 0;
-            mangDuLieuChinh.push([totalRoom, currentRoom]);
+            const tenMa: string = element.code ?? '_'; 
+            SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(totalRoom, SheetUtil.SHEET_DU_LIEU, "G", "A", 2, tenMa);
+            SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(currentRoom, SheetUtil.SHEET_DU_LIEU, "H", "A", 2, tenMa);
         });
     }
 
-    SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "G");
 }
 
 function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
@@ -149,8 +150,6 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
             mangDuLieuChinh.push([value]);
         });
     }
-
-
     SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "I");
 }
 
@@ -370,4 +369,34 @@ function LAY_THONG_TIN_TAI_SAN_DC(url: string) {
         result.push([tenTaiSan, tyLe, capNhatLuc]);
     })
     return result;
+}
+
+/**
+ * @customfunction
+*/
+function LAY_SU_KIEN() {
+  const result: any = [];
+  const content = UrlFetchApp.fetch(`https://hontrang.github.io/tradingeconomics/`).getContentText();
+  const $ = Cheerio.load(content);
+  console.log($("table#calendar>thead.table-header,table#calendar>tbody").length);
+  let date: string;
+  $("table#calendar>thead.table-header,table#calendar>tbody").each(function (this: any)  {
+    if ($(this).attr("class") !== undefined) {
+      date = $(this).find("tr>th:nth-child(1)").text().trim();
+    } else {
+      $(this).children("tr").each(function (this: any) {
+        const timeValue = $(this).find("td:nth-child(1)").text().trim() || "00:00 AM";
+        const thoigian = `${date} ${timeValue}`;
+        const currency = $(this).find("td:nth-child(2) td.calendar-iso").text().trim();
+        const name = $(this).find("td:nth-child(3)").text().trim();
+        const actual = $(this).find("td:nth-child(4)").text().trim();
+        const previous = $(this).find("td:nth-child(5)").text().trim();
+        const forecast = $(this).find("td:nth-child(6)").text().trim();
+        if (currency === "US") {
+          result.push([thoigian, currency, name, actual, forecast, previous]);
+        }
+      });
+    }
+  });
+  return result;
 }
