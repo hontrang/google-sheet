@@ -1,29 +1,32 @@
-import type { JestConfigWithTsJest } from "ts-jest";
+import type { JestConfigWithTsJest } from 'ts-jest';
 
 const config: JestConfigWithTsJest = {
   verbose: true,
   transform: {
-    "^.+\\.ts?$": [
-      "ts-jest",
+    '^.+\\.ts?$': [
+      'ts-jest',
       {
-        useESM: true,
-      },
-    ],
+        useESM: true
+      }
+    ]
   },
-  extensionsToTreatAsEsm: [".ts"],
+  extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
-    "^(\\.{1,2}/.*)\\.js$": "$1",
+    '^(\\.{1,2}/.*)\\.js$': '$1'
   },
-  "reporters": [
-    "default",
-    ["jest-html-reporters", {
-      "publicPath": "./html-report",
-      "filename": "report.html",
-      "openReport": true,
-      "pageTitle": "Report API chứng khoán VN",
-      "includeConsoleLog": true,
-      "darkTheme": true
-    }]
+  reporters: [
+    'default',
+    [
+      'jest-html-reporters',
+      {
+        publicPath: './html-report',
+        filename: 'report.html',
+        openReport: true,
+        pageTitle: 'Report API chứng khoán VN',
+        includeConsoleLog: true,
+        darkTheme: true
+      }
+    ]
   ],
   testTimeout: 10000
 };
