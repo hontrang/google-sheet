@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace SheetHelper {
   export const SHEET_THAM_CHIEU = 'tham chiếu';
   export const SHEET_BANG_THONG_TIN = 'bảng thông tin';

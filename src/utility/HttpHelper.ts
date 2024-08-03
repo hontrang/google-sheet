@@ -1,23 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace HttpHelper {
   export const URL_GRAPHQL_CAFEF = 'https://msh-data.cafef.vn/graphql';
   export let TOKEN: string | undefined;
 
   export const OPTIONS_POST: URLFetchRequestOptions = {
     method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
   };
 
   export const OPTIONS_GET: URLFetchRequestOptions = {
     method: 'get',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
   };
 
   export function sendRequest(url: string, option?: URLFetchRequestOptions): any {
@@ -71,10 +68,8 @@ namespace HttpHelper {
       const consumerSecret = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B8');
       const OPTIONS_POST_TOKEN_SSI: URLFetchRequestOptions = {
         method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         payload: JSON.stringify({
           consumerID: consumerID,
           consumerSecret: consumerSecret

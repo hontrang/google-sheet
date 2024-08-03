@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace ZChartHelper {
   export const CHART_ID = 911649750;
 
@@ -23,10 +24,9 @@ namespace ZChartHelper {
       .setOption('title', label)
       .setOption('vAxis.minValue', LOW_MA - ABS_MA * 2)
       .setOption('vAxis.maxValue', HIGH_MA + ABS_MA * 2)
-      .setOption('series', {
-        0: { labelInLegend: tenMa },
-        1: { labelInLegend: 'VN-INDEX' }
-      })
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      .setOption('series', { 0: { labelInLegend: tenMa }, 1: { labelInLegend: 'VN-INDEX' } })
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       .setOption('vAxes', {
         0: { viewWindow: { min: LOW_MA - ABS_MA * 2, max: HIGH_MA + ABS_MA * 2 } },
         1: { viewWindow: { min: LOW_VNI - ABS_VNI * 2, max: HIGH_VNI + ABS_VNI * 2 } }

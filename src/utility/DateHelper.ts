@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace DateHelper {
   export function getDate(num: string): string {
     const date: Date = new Date(num);
