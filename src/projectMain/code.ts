@@ -17,13 +17,14 @@ function getDataHose(): void {
 function layTinTucSheetBangThongTin(): void {
   const mangDuLieuChinh: Array<[string, string, string, string, string, string]> = [];
   const danhSachMa: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_CAU_HINH, 'E');
+  const baseUrl = 'https://s.cafef.vn';
   danhSachMa.forEach((tenMa: string) => {
-    const url = `https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
+    const url = `${baseUrl}/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
     const content: string = UrlFetchApp.fetch(url).getContentText();
     const $ = Cheerio.load(content);
     $('a').each(function (this: any) {
       const title: string = $(this).attr('title') ?? '';
-      const link: string = 'https://s.cafef.vn' + ($(this).attr('href') ?? '');
+      const link: string = baseUrl + ($(this).attr('href') ?? '');
       const date: string = $(this).siblings('span').text().substring(0, 10);
       mangDuLieuChinh.push([tenMa, title, '', link, '', date]);
     });
@@ -65,9 +66,9 @@ function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa: string): void {
 }
 
 function layTinTucSheetChiTietMa(tenMa: string): void {
-  const baseUrl = 'https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx';
+  const baseUrl = 'https://s.cafef.vn';
   const mangDuLieuChinh: Array<[string, string, string, string]> = [];
-  const queryUrl = `${baseUrl}?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
+  const queryUrl = `${baseUrl}/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
   const content: string = UrlFetchApp.fetch(queryUrl).getContentText();
   const $ = Cheerio.load(content);
   $('a').each(function (this: any) {
