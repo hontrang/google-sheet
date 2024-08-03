@@ -1,8 +1,8 @@
-namespace SheetLog {
+namespace LogHelper {
   export function logDebug(content: string): boolean {
     const data: [string, string][] = [[moment().format('YYYY/MM/DD HH:mm:ss'), content.toString()]];
     Logger.log(content);
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetUtil.SHEET_DEBUG);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SHEET_DEBUG);
     if (!sheet) return false;
     else {
       sheet.getRange(sheet.getLastRow() + 1, 1, data.length, data[0].length).setValues(data);
