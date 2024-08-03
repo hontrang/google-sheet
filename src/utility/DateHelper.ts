@@ -5,7 +5,7 @@ namespace DateHelper {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
 
-  export function changeFormatDate(date: string, formatFrom: string, formatTo: string): string {
+  export function doiDinhDangNgay(date: string, formatFrom: string, formatTo: string): string {
     return moment(date, formatFrom, true).format(formatTo);
   }
   export function layNgayHienTai(format: string) {
