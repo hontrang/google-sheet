@@ -129,10 +129,8 @@ function layThongTinCoTuc(tenMa: string): void {
 
   const OPTIONS_CO_TUC: URLFetchRequestOptions = {
     method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    },
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     payload: JSON.stringify({
       tickers: [`${tenMa}`],
       page: 0,
@@ -158,11 +156,8 @@ function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {
   const token = HttpHelper.getToken();
   const OPTION: URLFetchRequestOptions = {
     method: 'get',
-    headers: {
-      Authorization: token,
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
   };
   const object = HttpHelper.sendRequest(url, OPTION);
   const mangDuLieuChinh: Array<[string]> = [];

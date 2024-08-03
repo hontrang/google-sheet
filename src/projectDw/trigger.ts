@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * All triggers are executed manually or via clasp
  */
@@ -6,7 +7,7 @@
  * Creates two time-driven triggers.
  * @see https://developers.google.com/apps-script/guides/triggers/installable#time-driven_triggers
  */
-function dw_createTriggers() {
+function dwCreateTriggers() {
   // Tạo trigger chạy theo thời gian
   ScriptApp.newTrigger('layChiSoVnIndex').timeBased().everyMinutes(1).create();
 
@@ -24,7 +25,7 @@ function dw_createTriggers() {
  * @param {string} triggerId The Trigger ID.
  * @see https://developers.google.com/apps-script/guides/triggers/installable
  */
-function dw_deleteTrigger() {
+function dwDeleteTrigger() {
   // Loop over all triggers.
   const allTriggers = ScriptApp.getProjectTriggers();
   for (const element of allTriggers) {

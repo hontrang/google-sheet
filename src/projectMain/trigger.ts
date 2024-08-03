@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * All triggers are executed manually or via clasp
  */
@@ -6,7 +7,7 @@
  * Creates two time-driven triggers.
  * @see https://developers.google.com/apps-script/guides/triggers/installable#time-driven_triggers
  */
-function main_createTriggers(): void {
+function mainCreateTriggers(): void {
   // Tạo trigger chạy theo thời gian
   ScriptApp.newTrigger('getDataHose').timeBased().everyHours(1).create();
 
@@ -23,7 +24,7 @@ function main_createTriggers(): void {
  * Deletes all triggers in the project.
  * @see https://developers.google.com/apps-script/guides/triggers/installable
  */
-function main_deleteTrigger(): void {
+function mainDeleteTrigger(): void {
   // Lấy tất cả triggers trong dự án
   const allTriggers: GoogleAppsScript.Script.Trigger[] = ScriptApp.getProjectTriggers();
 

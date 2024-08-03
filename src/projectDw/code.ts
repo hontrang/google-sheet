@@ -70,11 +70,8 @@ function layGiaThamChieu(): void {
   const token = HttpHelper.getToken();
   const OPTION: URLFetchRequestOptions = {
     method: 'get',
-    headers: {
-      Authorization: token,
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
   };
   const object = HttpHelper.sendRequest(URL, OPTION);
   const datas = object.data;
@@ -287,11 +284,8 @@ function layGiaHangNgay(): void {
     const token = HttpHelper.getToken();
     const OPTION: URLFetchRequestOptions = {
       method: 'get',
-      headers: {
-        Authorization: token,
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      }
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
     };
     const object = HttpHelper.sendRequest(url, OPTION);
 
@@ -320,11 +314,8 @@ function layDanhSachMa(): void {
   const url = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
   const OPTION: URLFetchRequestOptions = {
     method: 'get',
-    headers: {
-      Authorization: token,
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
   };
   const mangDuLieuChinh: Array<[string, string]> = [];
   const response = HttpHelper.sendRequest(url, OPTION);

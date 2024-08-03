@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace LogHelper {
   export function logDebug(content: string): boolean {
     const data: [string, string][] = [[moment().format('YYYY/MM/DD HH:mm:ss'), content.toString()]];
