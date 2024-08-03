@@ -23,6 +23,16 @@ namespace SheetUtil {
         sheet.getRange(row, column, data.length, data[0].length).setValues(data);
     }
 
+    export function ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {
+        const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+        if (!sheet) {
+            console.log("Sheet không tồn tại");
+            return;
+        }
+        sheet.getRange(range).clearContent();
+        sheet.getRange(range).setValues(data);
+    }
+
     export function ghiDuLieuVaoDayTheoTen(data: any[][], sheetName: string, rowNumber: number, columnName: string): void {
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         if (!sheet) {
@@ -40,18 +50,29 @@ namespace SheetUtil {
         }
     }
     
-    export function ghiDuLieuVaoDayTheoTenThamChieu(data: any, sheetName: string, cotGhiDuLieu: string, cotThamChieu: string, hangBatDau: number, tenMa: string): void {
+    export function ghiDuLieuVaoDayTheoTenThamChieu(data: any, sheetName: string, vungDuLieu: string, cotThamChieu: string, hangBatDau: number, tenMa: string): void {
+        SheetUtil.ghiDuLieuVaoDayTheoVung(data, sheetName, vungDuLieu);
+    }
+    
+    /**
+     * 
+     * @param tenMa Tìm trong duLieuCotThamChieu vị trí của TenMa, trả về vị trí cuối cùng tìm thấy
+     * @param sheetName 
+     * @param duLieuCotThamChieu 
+     * @param hangBatDau 
+     * @returns 
+     */
+    export function layViTriCotThamChieu(tenMa: string,sheetName: string, duLieuCotThamChieu: string[], hangBatDau: number): number{
         const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
         let vitri = -1;
         if (!sheet) {
             console.log("Sheet không tồn tại");
-            return;
+            return vitri;
         }
-        const duLieuCotThamChieu: string[] = SheetUtil.layDuLieuTrongCot(sheetName, cotThamChieu);
         for (let i = 0; i < duLieuCotThamChieu.length; i++) {
             if (duLieuCotThamChieu[i] === tenMa) vitri = i + hangBatDau;
         }
-        SheetUtil.ghiDuLieuVaoO(data, sheetName, cotGhiDuLieu + vitri);
+        return vitri;
     }
 
     export function ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {

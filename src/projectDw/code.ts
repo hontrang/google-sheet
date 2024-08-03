@@ -1,4 +1,12 @@
 import * as Cheerio from 'cheerio';
+interface RoomData {
+    totalRoom?: number;
+    currentRoom?: number;
+}
+
+interface VolumnData {
+    value?: number;
+}
 function layChiSoVnIndex(): void {
     const ngayHienTai: string = DateUtil.layNgayHienTai("YYYY-MM-DD");
     const duLieuNgayMoiNhat: string = SheetUtil.layDuLieuTrongOTheoTen(SheetUtil.SHEET_HOSE, "A1");
@@ -79,48 +87,40 @@ function layGiaThamChieu(): void {
 
 function layThongTinPB(danhSachMa: string[]): void {
     const QUERY_API = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
-    const mangDuLieuChinh: number[][] = []; // Sử dụng kiểu mảng số để lưu giá trị
+    const duLieuCotThamChieu = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const URL = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
         const object: any = SheetHttp.sendGetRequest(URL);
 
-        object.data.forEach((element: { value?: number }) => {
+        object.data.forEach((element: {code?: string, value?: number }) => {
             const value: number = element.value ?? 0;
-            mangDuLieuChinh.push([value]);
+            const tenMa: string = element.code ?? '_';
+            const vitri = SheetUtil.layViTriCotThamChieu(tenMa, SheetUtil.SHEET_DU_LIEU, duLieuCotThamChieu, 2);
+            SheetUtil.ghiDuLieuVaoDayTheoVung([[value]], SheetUtil.SHEET_DU_LIEU, `E${vitri}:E${vitri}`);
         });
     }
-
-    SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "E");
 }
 
 function layThongTinPE(danhSachMa: string[]): void {
     const QUERY_API: string = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
-    const mangDuLieuChinh: number[][] = []; // Kiểu mảng của mảng số để lưu trữ các giá trị
+     const duLieuCotThamChieu = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
         const object: any = SheetHttp.sendGetRequest(url);
-        object.data.forEach((element: { value?: number }) => {
+        object.data.forEach((element: { code?: string, value?: number }) => {
             const value: number = element.value ?? 0;
-            mangDuLieuChinh.push([value]);
+            const tenMa: string = element.code ?? '_';
+            const vitri = SheetUtil.layViTriCotThamChieu(tenMa, SheetUtil.SHEET_DU_LIEU, duLieuCotThamChieu, 2);
+            SheetUtil.ghiDuLieuVaoDayTheoVung([[value]], SheetUtil.SHEET_DU_LIEU, `F${vitri}:F${vitri}`);
         });
     }
-
-    SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "F");
-}
-
-interface RoomData {
-    totalRoom?: number;
-    currentRoom?: number;
-}
-
-interface VolumnData {
-    value?: number;
 }
 
 function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
     const QUERY_API: string = "https://finfo-api.vndirect.com.vn/v4";
+    const duLieuCotThamChieu = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
@@ -129,28 +129,28 @@ function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
         datas.forEach((element: { totalRoom?: number, currentRoom?: number, code? : string }) => {
             const totalRoom: number = element.totalRoom ?? 0;
             const currentRoom: number = element.currentRoom ?? 0;
-            const tenMa: string = element.code ?? '_'; 
-            SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(totalRoom, SheetUtil.SHEET_DU_LIEU, "G", "A", 2, tenMa);
-            SheetUtil.ghiDuLieuVaoDayTheoTenThamChieu(currentRoom, SheetUtil.SHEET_DU_LIEU, "H", "A", 2, tenMa);
+            const tenMa: string = element.code ?? '_';
+            const vitri = SheetUtil.layViTriCotThamChieu(tenMa, SheetUtil.SHEET_DU_LIEU, duLieuCotThamChieu, 2);
+            SheetUtil.ghiDuLieuVaoDayTheoVung([[totalRoom, currentRoom]], SheetUtil.SHEET_DU_LIEU, `G${vitri}:H${vitri}`);
         });
     }
-
 }
 
 function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
     const QUERY_API: string = "https://api-finfo.vndirect.com.vn/v4/ratios/latest";
-    const mangDuLieuChinh: number[][] = [];
+    const duLieuCotThamChieu = SheetUtil.layDuLieuTrongCot(SheetUtil.SHEET_DU_LIEU, "A");
 
     for (let i = 0; i < danhSachMa.length; i += SheetUtil.KICH_THUOC_MANG_PHU) {
         const url: string = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetUtil.KICH_THUOC_MANG_PHU).join(",")}`;
         const object: any = SheetHttp.sendGetRequest(url);
         const datas = Array.from(object.data) as VolumnData[];
-        datas.forEach((element: { value?: number }) => {
+        datas.forEach((element: { code?: string, value?: number }) => {
             const value: number = element.value ?? 0;
-            mangDuLieuChinh.push([value]);
+            const tenMa: string = element.code ?? '_';
+            const vitri = SheetUtil.layViTriCotThamChieu(tenMa, SheetUtil.SHEET_DU_LIEU, duLieuCotThamChieu, 2);
+            SheetUtil.ghiDuLieuVaoDayTheoVung([[value]], SheetUtil.SHEET_DU_LIEU, `I${vitri}:I${vitri}`);
         });
     }
-    SheetUtil.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetUtil.SHEET_DU_LIEU, 2, "I");
 }
 
 function duLieuTam(): void {
