@@ -60,9 +60,9 @@ function layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay(): void {
 }
 
 function layGiaThamChieu(): void {
-  const DEFAULT_FORMAT = 'YYYY-MM-DD';
+  const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B6');
   const DANH_SACH_MA: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
-  const date: string = DateHelper.changeFormatDate(SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_CAU_HINH, 'B1'), DEFAULT_FORMAT, 'DD/MM/YYYY');
+  const date: string = DateHelper.doiDinhDangNgay(SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_CAU_HINH, 'B1'), DEFAULT_FORMAT, 'DD/MM/YYYY');
   const market = 'HOSE';
   const mangDuLieuChinh: Array<[string]> = [];
 
@@ -195,7 +195,6 @@ function layKhoiNgoaiBanHangNgay(): void {
         const header: string[] = SheetHelper.layDuLieuTrongHang(SheetHelper.SHEET_KHOI_NGOAI_BAN, 1);
         SheetHelper.ghiDuLieuVaoDay([["'" + date]], SheetHelper.SHEET_KHOI_NGOAI_BAN, hangCuoi + 1, 1);
         object.data.map((item: any) => {
-          // Nên thay `any` bằng kiểu dữ liệu cụ thể của `item`.
           for (let i = 0; i < header.length; i++) {
             if (header[i] === item.code) {
               SheetHelper.ghiDuLieuVaoDay([[item.sellVol]], SheetHelper.SHEET_KHOI_NGOAI_BAN, hangCuoi + 1, i + 1);
@@ -251,7 +250,7 @@ function layKhoiLuongHangNgay(): void {
     while (danhSachMa.length > 0) {
       const MANG_PHU: string[] = danhSachMa.splice(0, 400);
       const url = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${MANG_PHU.join(',')}~date:gte:${date}~date:lte:${date}`;
-      const object: any = HttpHelper.sendGetRequest(url); // Nên thay thế `any` bằng kiểu dữ liệu cụ thể nếu có thể.
+      const object: any = HttpHelper.sendGetRequest(url);
 
       if (object?.data.length > 0) {
         const header: string[] = SheetHelper.layDuLieuTrongHang(SheetHelper.SHEET_KHOI_LUONG, 1);
@@ -273,8 +272,8 @@ function layKhoiLuongHangNgay(): void {
 
 function layGiaHangNgay(): void {
   const date: string = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1');
-  const fromDate: string = DateHelper.changeFormatDate(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
-  const toDate: string = DateHelper.changeFormatDate(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
+  const fromDate: string = DateHelper.doiDinhDangNgay(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
+  const toDate: string = DateHelper.doiDinhDangNgay(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
   const hangCuoi: number = SheetHelper.laySoHangTrongSheet(SheetHelper.SHEET_GIA);
   const duLieuNgayMoiNhat: string = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_GIA, 'A' + hangCuoi);
   const market = 'HOSE';
@@ -337,7 +336,6 @@ function LAY_THONG_TIN_DANH_MUC_DC(url: string) {
   const result: any = [];
   const response = HttpHelper.sendRequest(url);
   const data = response.ffs_holding;
-  console.log(response);
   data.forEach((element: any) => {
     const tenMa = element.stock ?? '_';
     const nhomNganh = element.sector_vi ?? '_';
