@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
-namespace SheetHttp {
+namespace HttpHelper {
   export const URL_GRAPHQL_CAFEF = 'https://msh-data.cafef.vn/graphql';
   export let TOKEN: string | undefined;
 
@@ -25,7 +26,7 @@ namespace SheetHttp {
       const response = UrlFetchApp.fetch(url, appliedOption);
       return JSON.parse(response.getContentText());
     } catch (e) {
-      SheetLog.logDebug(`error: ${e}`);
+      LogHelper.logDebug(`error: ${e}`);
       return null;
     }
   }
@@ -36,7 +37,7 @@ namespace SheetHttp {
       const response = UrlFetchApp.fetch(url, effectiveOptions);
       return JSON.parse(response.getContentText());
     } catch (e) {
-      SheetLog.logDebug(`error: ${e}`);
+      LogHelper.logDebug(`error: ${e}`);
       return null;
     }
   }
@@ -46,7 +47,7 @@ namespace SheetHttp {
       const response = UrlFetchApp.fetch(url, OPTIONS_GET);
       return JSON.parse(response.getContentText());
     } catch (e) {
-      SheetLog.logDebug(`error: ${e}`);
+      LogHelper.logDebug(`error: ${e}`);
       return null;
     }
   }
@@ -66,8 +67,8 @@ namespace SheetHttp {
   export function getToken(): string {
     if (TOKEN !== undefined) return TOKEN;
     else {
-      const consumerID = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, 'B7');
-      const consumerSecret = SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, 'B8');
+      const consumerID = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B7');
+      const consumerSecret = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B8');
       const OPTIONS_POST_TOKEN_SSI: URLFetchRequestOptions = {
         method: 'post',
         headers: {

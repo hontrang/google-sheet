@@ -1,17 +1,17 @@
-namespace ZChartUtil {
+namespace ZChartHelper {
   export const CHART_ID = 911649750;
 
   export function updateChart(): void {
-    const label: string = `${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, 'F1')} - ${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, 'G1')}`;
-    const tenMa: string = `${SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CHI_TIET_MA, 'F1')}`;
-    const HIGH_MA: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, 'B5');
-    const LOW_MA: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, 'B4');
-    const ABS_MA: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, 'B3');
-    const HIGH_VNI: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, 'C5');
-    const LOW_VNI: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, 'C4');
-    const ABS_VNI: number = +SheetUtil.layDuLieuTrongO(SheetUtil.SHEET_CAU_HINH, 'C3');
-    const chart = getChartById(CHART_ID, SheetUtil.SHEET_CHI_TIET_MA);
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetUtil.SHEET_CHI_TIET_MA);
+    const label = `${SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CHI_TIET_MA, 'F1')} - ${SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CHI_TIET_MA, 'G1')}`;
+    const tenMa = `${SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CHI_TIET_MA, 'F1')}`;
+    const HIGH_MA: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B5');
+    const LOW_MA: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B4');
+    const ABS_MA: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B3');
+    const HIGH_VNI: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'C5');
+    const LOW_VNI: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'C4');
+    const ABS_VNI: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'C3');
+    const chart = getChartById(CHART_ID, SheetHelper.SHEET_CHI_TIET_MA);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SHEET_CHI_TIET_MA);
 
     if (!sheet || !chart) {
       console.error(`Sheet hoặc biểu đồ không tồn tại.`);
@@ -37,7 +37,7 @@ namespace ZChartUtil {
   }
 
   export function createChart(): void {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetUtil.SHEET_CHI_TIET_MA);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SHEET_CHI_TIET_MA);
     if (!sheet) {
       console.error('Không tìm thấy sheet.');
       return;
@@ -70,15 +70,15 @@ namespace ZChartUtil {
   }
 
   export function removeChartByID(): void {
-    const chart = getChartById(CHART_ID, SheetUtil.SHEET_CHI_TIET_MA);
+    const chart = getChartById(CHART_ID, SheetHelper.SHEET_CHI_TIET_MA);
     if (!chart) {
       console.error('Biểu đồ không tồn tại.');
       return;
     }
 
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetUtil.SHEET_CHI_TIET_MA);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SHEET_CHI_TIET_MA);
     if (!sheet) {
-      console.error(`Sheet ${SheetUtil.SHEET_CHI_TIET_MA} không tồn tại.`);
+      console.error(`Sheet ${SheetHelper.SHEET_CHI_TIET_MA} không tồn tại.`);
       return;
     }
 
@@ -95,13 +95,13 @@ namespace ZChartUtil {
     });
 
     for (const sheet of chartsInfo?.sheets || []) {
-      if (sheet.properties?.title === SheetUtil.SHEET_CHI_TIET_MA) {
+      if (sheet.properties?.title === SheetHelper.SHEET_CHI_TIET_MA) {
         if (sheet.charts && sheet.charts.length > 0) {
           for (const chart of sheet.charts) {
             Logger.log(JSON.stringify(chart));
           }
         } else {
-          Logger.log(`Không tìm thấy biểu đồ nào trên bảng ${SheetUtil.SHEET_CHI_TIET_MA}.`);
+          Logger.log(`Không tìm thấy biểu đồ nào trên bảng ${SheetHelper.SHEET_CHI_TIET_MA}.`);
         }
         break;
       }

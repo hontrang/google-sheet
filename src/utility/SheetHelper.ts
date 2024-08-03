@@ -1,4 +1,5 @@
-namespace SheetUtil {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+namespace SheetHelper {
   export const SHEET_THAM_CHIEU = 'tham chiếu';
   export const SHEET_BANG_THONG_TIN = 'bảng thông tin';
   export const SHEET_DU_LIEU = 'dữ liệu';
@@ -152,7 +153,7 @@ namespace SheetUtil {
       console.log('Sheet không tồn tại');
       return false;
     }
-    sheet.deleteColumns(SheetUtil.doiTenCotThanhChiSo(column), numOfCol);
+    sheet.deleteColumns(SheetHelper.doiTenCotThanhChiSo(column), numOfCol);
     return true;
   }
 
@@ -163,7 +164,7 @@ namespace SheetUtil {
       return false;
     }
     const numRows = sheet.getLastRow() - startRow + 1;
-    const range = sheet.getRange(startRow, SheetUtil.doiTenCotThanhChiSo(column), numRows, numOfCol);
+    const range = sheet.getRange(startRow, SheetHelper.doiTenCotThanhChiSo(column), numRows, numOfCol);
     range.clear();
     return true;
   }

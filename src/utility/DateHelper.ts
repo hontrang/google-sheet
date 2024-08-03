@@ -1,4 +1,4 @@
-namespace DateUtil {
+namespace DateHelper {
   export function getDate(num: string): string {
     const date: Date = new Date(num);
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
