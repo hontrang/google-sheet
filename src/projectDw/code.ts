@@ -225,7 +225,6 @@ function layKhoiNgoaiMuaHangNgay(): void {
         const header: string[] = SheetHelper.layDuLieuTrongHang(SheetHelper.SHEET_KHOI_NGOAI_MUA, 1);
         SheetHelper.ghiDuLieuVaoDay([["'" + date]], SheetHelper.SHEET_KHOI_NGOAI_MUA, hangCuoi + 1, 1);
         object.data.map((item: any) => {
-          // Khuyến khích thay `any` bằng kiểu dữ liệu cụ thể của `item`.
           for (let i = 0; i < header.length; i++) {
             if (header[i] === item.code) {
               SheetHelper.ghiDuLieuVaoDay([[item.buyVol]], SheetHelper.SHEET_KHOI_NGOAI_MUA, hangCuoi + 1, i + 1);
