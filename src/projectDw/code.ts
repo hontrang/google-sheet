@@ -19,28 +19,26 @@ function layChiSoVnIndex(): void {
   const duLieuNhanVe = object[1];
   const thanhKhoan: number = parseFloat(duLieuNhanVe.value.replace(/,/g, '')) * 1000000000;
   if (duLieuNgayMoiNhat === ngayHienTai && thanhKhoan !== thanhKhoanMoiNhat) {
-    const mangDuLieuChinh: [[string, number, number, number]] = [[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]];
-    SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_HOSE, 1, 'A');
+    SheetHelper.ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SheetHelper.SHEET_HOSE, 'A1:D1');
   } else if (thanhKhoan !== thanhKhoanMoiNhat) {
     SheetHelper.chen1HangVaoDauSheet(SheetHelper.SHEET_HOSE);
-    const mangDuLieuChinh: [[string, number, number, number]] = [[ngayHienTai, duLieuNhanVe.indexValue, duLieuNhanVe.percent / 100, thanhKhoan]];
-    SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_HOSE, 1, 'A');
+    SheetHelper.ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SheetHelper.SHEET_HOSE, 'A1:D1');
   } else {
     console.log('No action required');
   }
 }
 
-function layTyGiaUSDVND() {
-  const tyGiaHomNay = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_DU_LIEU, 'K2');
-  const ngayHomNay = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1');
-  const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_TY_GIA, 'A1');
-  if (duLieuNgayMoiNhat !== ngayHomNay) {
-    SheetHelper.chen1HangVaoDauSheet(SheetHelper.SHEET_TY_GIA);
-    SheetHelper.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetHelper.SHEET_TY_GIA, 1, 'A');
-  } else {
-    SheetHelper.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetHelper.SHEET_TY_GIA, 1, 'A');
-  }
-}
+// function layTyGiaUSDVND() {
+//   const tyGiaHomNay = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_DU_LIEU, 'K2');
+//   const ngayHomNay = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1');
+//   const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_TY_GIA, 'A1');
+//   if (duLieuNgayMoiNhat !== ngayHomNay) {
+//     SheetHelper.chen1HangVaoDauSheet(SheetHelper.SHEET_TY_GIA);
+//     SheetHelper.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetHelper.SHEET_TY_GIA, 1, 'A');
+//   } else {
+//     SheetHelper.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetHelper.SHEET_TY_GIA, 1, 'A');
+//   }
+// }
 
 function layThongTinCoBan(): void {
   const danhSachMa: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
@@ -64,8 +62,7 @@ function layGiaThamChieu(): void {
   const DANH_SACH_MA: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
   const date: string = DateHelper.doiDinhDangNgay(SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_CAU_HINH, 'B1'), DEFAULT_FORMAT, 'DD/MM/YYYY');
   const market = 'HOSE';
-  const mangDuLieuChinh: Array<[string]> = [];
-
+  let index = 2;
   const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${date}&lookupRequest.toDate=${date}&lookupRequest.market=${market}`;
   const token = HttpHelper.getToken();
   const OPTION: URLFetchRequestOptions = {
@@ -78,9 +75,10 @@ function layGiaThamChieu(): void {
 
   for (const element of DANH_SACH_MA) {
     const price = datas.filter((object: { Symbol: string }) => object.Symbol === element && object.Symbol.length == 3).map((object: { ClosePrice: number }) => object.ClosePrice);
-    mangDuLieuChinh.push([price]);
+    const vitri = SheetHelper.layViTriCotThamChieu(element, DANH_SACH_MA, 2);
+    SheetHelper.ghiDuLieuVaoDayTheoVung([[price]], SheetHelper.SHEET_DU_LIEU, `C${vitri}:C${vitri}`);
+    index++;
   }
-  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_DU_LIEU, 2, 'C');
 }
 
 function layThongTinPB(danhSachMa: string[]): void {
@@ -94,7 +92,7 @@ function layThongTinPB(danhSachMa: string[]): void {
     object.data.forEach((element: { code?: string; value?: number }) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
-      const vitri = SheetHelper.layViTriCotThamChieu(tenMa, SheetHelper.SHEET_DU_LIEU, duLieuCotThamChieu, 2);
+      const vitri = SheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
       SheetHelper.ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SHEET_DU_LIEU, `E${vitri}:E${vitri}`);
     });
   }
@@ -110,7 +108,7 @@ function layThongTinPE(danhSachMa: string[]): void {
     object.data.forEach((element: { code?: string; value?: number }) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
-      const vitri = SheetHelper.layViTriCotThamChieu(tenMa, SheetHelper.SHEET_DU_LIEU, duLieuCotThamChieu, 2);
+      const vitri = SheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
       SheetHelper.ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SHEET_DU_LIEU, `F${vitri}:F${vitri}`);
     });
   }
@@ -128,7 +126,7 @@ function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
       const totalRoom: number = element.totalRoom ?? 0;
       const currentRoom: number = element.currentRoom ?? 0;
       const tenMa: string = element.code ?? '_';
-      const vitri = SheetHelper.layViTriCotThamChieu(tenMa, SheetHelper.SHEET_DU_LIEU, duLieuCotThamChieu, 2);
+      const vitri = SheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
       SheetHelper.ghiDuLieuVaoDayTheoVung([[totalRoom, currentRoom]], SheetHelper.SHEET_DU_LIEU, `G${vitri}:H${vitri}`);
     });
   }
@@ -145,7 +143,7 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
     datas.forEach((element: { code?: string; value?: number }) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
-      const vitri = SheetHelper.layViTriCotThamChieu(tenMa, SheetHelper.SHEET_DU_LIEU, duLieuCotThamChieu, 2);
+      const vitri = SheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
       SheetHelper.ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SHEET_DU_LIEU, `I${vitri}:I${vitri}`);
     });
   }
@@ -271,8 +269,9 @@ function layKhoiLuongHangNgay(): void {
 
 function layGiaHangNgay(): void {
   const date: string = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1');
-  const fromDate: string = DateHelper.doiDinhDangNgay(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
-  const toDate: string = DateHelper.doiDinhDangNgay(date, 'YYYY-MM-DD', 'DD/MM/YYYY');
+  const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B6');
+  const fromDate: string = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
+  const toDate: string = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
   const hangCuoi: number = SheetHelper.laySoHangTrongSheet(SheetHelper.SHEET_GIA);
   const duLieuNgayMoiNhat: string = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_GIA, 'A' + hangCuoi);
   const market = 'HOSE';

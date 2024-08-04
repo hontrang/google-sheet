@@ -59,13 +59,8 @@ namespace SheetHelper {
    * @param hangBatDau
    * @returns
    */
-  export function layViTriCotThamChieu(tenMa: string, sheetName: string, duLieuCotThamChieu: string[], hangBatDau: number): number {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+  export function layViTriCotThamChieu(tenMa: string, duLieuCotThamChieu: string[], hangBatDau: number): number {
     let vitri = -1;
-    if (!sheet) {
-      console.log('Sheet không tồn tại');
-      return vitri;
-    }
     for (let i = 0; i < duLieuCotThamChieu.length; i++) {
       if (duLieuCotThamChieu[i] === tenMa) vitri = i + hangBatDau;
     }
