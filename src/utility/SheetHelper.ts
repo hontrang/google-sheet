@@ -1,19 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 namespace SheetHelper {
-  export const SHEET_THAM_CHIEU = 'tham chiếu';
-  export const SHEET_BANG_THONG_TIN = 'bảng thông tin';
-  export const SHEET_DU_LIEU = 'dữ liệu';
-  export const SHEET_CHI_TIET_MA = 'chi tiết mã';
-  export const SHEET_CAU_HINH = 'cấu hình';
-  export const SHEET_DEBUG = 'debug';
+  export namespace SheetName {
+    export const SHEET_THAM_CHIEU = 'tham chiếu';
+    export const SHEET_BANG_THONG_TIN = 'bảng thông tin';
+    export const SHEET_DU_LIEU = 'dữ liệu';
+    export const SHEET_CHI_TIET_MA = 'chi tiết mã';
+    export const SHEET_CAU_HINH = 'cấu hình';
+    export const SHEET_DEBUG = 'debug';
+    export const SHEET_HOSE = 'HOSE';
+    export const SHEET_GIA = 'Giá';
+    export const SHEET_KHOI_LUONG = 'Khối Lượng';
+    export const SHEET_KHOI_NGOAI_MUA = 'KN Mua';
+    export const SHEET_KHOI_NGOAI_BAN = 'KN Bán';
+    export const SHEET_TY_GIA = 'Tỷ Giá USD/VND';
+  }
   export const KICH_THUOC_MANG_PHU = 10;
-  export const SHEET_HOSE = 'HOSE';
-  export const SHEET_GIA = 'Giá';
-  export const SHEET_KHOI_LUONG = 'Khối Lượng';
-  export const SHEET_KHOI_NGOAI_MUA = 'KN Mua';
-  export const SHEET_KHOI_NGOAI_BAN = 'KN Bán';
-  export const SHEET_TY_GIA = 'Tỷ Giá USD/VND';
 
   export function ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
@@ -59,13 +61,8 @@ namespace SheetHelper {
    * @param hangBatDau
    * @returns
    */
-  export function layViTriCotThamChieu(tenMa: string, sheetName: string, duLieuCotThamChieu: string[], hangBatDau: number): number {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+  export function layViTriCotThamChieu(tenMa: string, duLieuCotThamChieu: string[], hangBatDau: number): number {
     let vitri = -1;
-    if (!sheet) {
-      console.log('Sheet không tồn tại');
-      return vitri;
-    }
     for (let i = 0; i < duLieuCotThamChieu.length; i++) {
       if (duLieuCotThamChieu[i] === tenMa) vitri = i + hangBatDau;
     }
@@ -103,6 +100,7 @@ namespace SheetHelper {
         dataArray.push(value);
       }
     }
+    // bỏ hàng đầu là tên cột
     dataArray.shift();
     return dataArray;
   }
