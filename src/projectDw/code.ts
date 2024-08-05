@@ -343,7 +343,7 @@ function LAY_SU_KIEN() {
   let date: string;
   $('table#calendar>thead.table-header,table#calendar>tbody').each(function (this: any) {
     if ($(this).attr('class') !== undefined) {
-      date = $(this).find('tr>th:nth-child(1)').text().trim();
+      date = DateHelper.doiDinhDangNgay($(this).find('tr>th:nth-child(1)').text().trim(), 'dddd MMMM DD YYYY', 'ddd YYYY/MM/DD');
     } else {
       $(this)
         .children('tr')
