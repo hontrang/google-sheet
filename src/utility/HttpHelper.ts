@@ -64,8 +64,8 @@ namespace HttpHelper {
   export function getToken(): string {
     if (TOKEN !== undefined) return TOKEN;
     else {
-      const consumerID = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B7');
-      const consumerSecret = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B8');
+      const consumerID = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B7');
+      const consumerSecret = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B8');
       const OPTIONS_POST_TOKEN_SSI: URLFetchRequestOptions = {
         method: 'post',
         // eslint-disable-next-line @typescript-eslint/naming-convention
