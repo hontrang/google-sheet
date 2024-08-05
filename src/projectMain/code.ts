@@ -3,20 +3,24 @@
 import * as Cheerio from 'cheerio';
 
 function getDataHose(): void {
-  const DANH_SACH_MA: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
-  const mangDuLieuChinh: Array<[string]> = [];
+  const DANH_SACH_MA: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
+  let indexSheetDuLieu = 2;
+  let indexSheetThamChieu = 4;
   const url = `https://bgapidatafeed.vps.com.vn/getliststockdata/${DANH_SACH_MA.join(',')}`;
   const response = HttpHelper.sendGetRequest(url);
+  SheetHelper.xoaDuLieuTrongCot(SheetHelper.SheetName.SHEET_THAM_CHIEU, 'A', 1, 4);
   for (const element of DANH_SACH_MA) {
     const price = response.filter((object: { sym: string }) => object.sym === element).map((object: { lastPrice: number }) => object.lastPrice * 1000);
-    mangDuLieuChinh.push([price]);
+    SheetHelper.ghiDuLieuVaoDayTheoVung([[element]], SheetHelper.SheetName.SHEET_THAM_CHIEU, `A${indexSheetThamChieu}`);
+    SheetHelper.ghiDuLieuVaoDayTheoVung([[price]], SheetHelper.SheetName.SHEET_DU_LIEU, `B${indexSheetDuLieu}`);
+    indexSheetDuLieu++;
+    indexSheetThamChieu++;
   }
-  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_DU_LIEU, 2, 'B');
 }
 
 function layTinTucSheetBangThongTin(): void {
   const mangDuLieuChinh: Array<[string, string, string, string, string, string]> = [];
-  const danhSachMa: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_CAU_HINH, 'E');
+  const danhSachMa: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_CAU_HINH, 'E');
   const baseUrl = 'https://s.cafef.vn';
   danhSachMa.forEach((tenMa: string) => {
     const url = `${baseUrl}/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
@@ -29,13 +33,13 @@ function layTinTucSheetBangThongTin(): void {
       mangDuLieuChinh.push([tenMa, title, '', link, '', date]);
     });
   });
-  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_BANG_THONG_TIN, 35, 'A');
+  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SheetName.SHEET_BANG_THONG_TIN, 35, 'A');
 }
 
 function layThongTinChiTietMa(): void {
-  SheetHelper.ghiDuLieuVaoO('...', SheetHelper.SHEET_CHI_TIET_MA, 'J2');
-  SheetHelper.xoaDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'P', 3, 2);
-  const tenMa: string = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CHI_TIET_MA, 'F1');
+  SheetHelper.ghiDuLieuVaoO('...', SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'J2');
+  SheetHelper.xoaDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'P', 3, 2);
+  const tenMa: string = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F1');
 
   layGiaVaKhoiLuongTheoMaChungKhoan(tenMa);
   layBaoCaoPhanTich(tenMa);
@@ -47,87 +51,90 @@ function layThongTinChiTietMa(): void {
   layThongTinCoTuc(tenMa);
   layHeSoBetaVaFreeFloat(tenMa);
   ZChartHelper.updateChart();
-  LogHelper.logTime(SheetHelper.SHEET_CHI_TIET_MA, 'J2');
+  LogHelper.logTime(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'J2');
   Logger.log('Hàm layThongTinChiTietMa chạy thành công');
 }
 
 function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa: string): void {
-  const fromDate: string = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CHI_TIET_MA, 'F2');
-  const toDate: string = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CHI_TIET_MA, 'H2');
-  const mangDuLieuChinh: Array<[string, number, number]> = [];
-  mangDuLieuChinh.push(['chi tiết mã', 0, 0]);
+  const fromDate: string = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F2');
+  const toDate: string = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'H2');
+  let index = 2;
+  SheetHelper.ghiDuLieuVaoDayTheoVung([['chi tiết mã', '', '']], SheetHelper.SheetName.SHEET_DU_LIEU, 'P1:R1');
   const url = `https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
   const object = HttpHelper.sendGetRequest(url);
   const datas = object.data;
   for (const element of datas) {
-    mangDuLieuChinh.push([element.date, element.close * 1000, element.nmVolume]);
+    SheetHelper.ghiDuLieuVaoDayTheoVung([[element.date, element.close * 1000, element.nmVolume]], SheetHelper.SheetName.SHEET_DU_LIEU, `P${index}:R${index}`);
+    index++;
   }
-  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_DU_LIEU, 1, 'P');
 }
 
 function layTinTucSheetChiTietMa(tenMa: string): void {
   const baseUrl = 'https://s.cafef.vn';
-  const mangDuLieuChinh: Array<[string, string, string, string]> = [];
   const queryUrl = `${baseUrl}/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
   const content: string = UrlFetchApp.fetch(queryUrl).getContentText();
+  const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B6');
+  let index = 2;
   const $ = Cheerio.load(content);
   $('a').each(function (this: any) {
     const title = $(this).attr('title') ?? '';
     const link = `${baseUrl}${$(this).attr('href') ?? ''}`;
-    const date = $(this).siblings('span').text().substring(0, 10);
-    mangDuLieuChinh.push([tenMa.toUpperCase(), title, link, date]);
+    const date = DateHelper.doiDinhDangNgay($(this).siblings('span').text().substring(0, 10), 'DD/MM/YYYY', DEFAULT_FORMAT);
+    SheetHelper.ghiDuLieuVaoDayTheoVung([[tenMa.toUpperCase(), title, link, date]], SheetHelper.SheetName.SHEET_DU_LIEU, `AH${index}:AK${index}`);
+    index++;
   });
-  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_DU_LIEU, 2, 'AH');
 }
 
+// lấy 10 báo cáo tài chính đầu tiên
 function layBaoCaoTaiChinh(): void {
-  const mangDuLieuChinh: Array<[string, string, string, string]> = [];
-  const tenMa: string = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CHI_TIET_MA, 'F1');
+  const tenMa: string = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F1');
   const queryUrl = `https://s.cafef.vn/Ajax/CongTy/BaoCaoTaiChinh.aspx?sym=${tenMa}`;
   const content: string = UrlFetchApp.fetch(queryUrl).getContentText();
+  let index = 18;
   const $ = Cheerio.load(content);
   $('#divDocument>div>table>tbody>tr').each(function (this: any) {
     const title: string = $(this).children('td:nth-child(1)').text();
     const date: string = $(this).children('td:nth-child(2)').text();
     const link: string = $(this).children('td:nth-child(3)').children('a').attr('href') ?? '';
-    mangDuLieuChinh.push([tenMa.toUpperCase(), title, date, link]);
+    if (title !== 'Loại báo cáo' && index < 28) {
+      SheetHelper.ghiDuLieuVaoDayTheoVung([[tenMa.toUpperCase(), title, date, link]], SheetHelper.SheetName.SHEET_DU_LIEU, `AH${index}:AK${index}`);
+      index++;
+    }
   });
-  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh.slice(1, 11), SheetHelper.SHEET_DU_LIEU, 18, 'AH');
 }
 
 function layBaoCaoPhanTich(tenMa: string): void {
-  const mangDuLieuChinh: [string, string, string, string, string][] = [];
   const url = `https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:${tenMa}&pageIndex=1&pageSize=9`;
   const object = HttpHelper.sendPostRequest(url);
-
+  const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B6');
+  let index = 2;
   const datas = object.Data;
   for (const element of datas) {
-    const sourceName: string = element.SourceName ?? '____';
-    const title: string = element.Title ?? '____';
-    const reportTypeName: string = element.ReportTypeName ?? '____';
-    const lastUpdate: string = element.LastUpdate ?? '____';
-    const url: string = element.Url ?? '____';
-    mangDuLieuChinh.push([sourceName, title, reportTypeName, lastUpdate, url]);
+    const sourceName: string = element.SourceName ?? '_';
+    const title: string = element.Title ?? '_';
+    const reportTypeName: string = element.ReportTypeName ?? '_';
+    const lastUpdate: string = element.LastUpdate ?? '_';
+    const url: string = element.Url ?? '_';
+    SheetHelper.ghiDuLieuVaoDayTheoVung(
+      [[sourceName, title, reportTypeName, DateHelper.doiDinhDangNgay(lastUpdate, 'DD/MM/YYYY', DEFAULT_FORMAT), url]],
+      SheetHelper.SheetName.SHEET_DU_LIEU,
+      `AL${index}:AP${index}`
+    );
+    index++;
   }
-
-  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_DU_LIEU, 2, 'AL');
 }
 
 function layThongTinCoDong(tenMa: string): void {
   const url = `https://apipubaws.tcbs.com.vn/tcanalysis/v1/company/${tenMa}/large-share-holders`;
   const object = HttpHelper.sendRequest(url);
-  const mangDuLieuChinh: Array<[string, string, string]> = object.listShareHolder.map(({ ticker, name, ownPercent }: { ticker: string; name: string; ownPercent: string }) => [
-    ticker,
-    name,
-    ownPercent
-  ]);
+  const mangDuLieuChinh = object.listShareHolder.map(({ ticker, name, ownPercent }: { ticker: string; name: string; ownPercent: string }) => [ticker, name, ownPercent]);
 
-  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_DU_LIEU, 2, 'AD');
+  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SheetName.SHEET_DU_LIEU, 2, 'AD');
 }
 
 function layThongTinCoTuc(tenMa: string): void {
-  const mangDuLieuChinh: [string, string, string][] = [];
-
+  const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B6');
+  let index = 18;
   const OPTIONS_CO_TUC: URLFetchRequestOptions = {
     method: 'post',
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -145,10 +152,13 @@ function layThongTinCoTuc(tenMa: string): void {
   for (const element of datas) {
     const content: string = element.content ?? '____';
     const date: string = element.date ?? '____';
-    mangDuLieuChinh.push([content, '', date]);
+    SheetHelper.ghiDuLieuVaoDayTheoVung(
+      [[content, '', DateHelper.doiDinhDangNgay(date, 'DD/MM/YYYY', DEFAULT_FORMAT)]],
+      SheetHelper.SheetName.SHEET_DU_LIEU,
+      `AO${index}:AQ${index}`
+    );
+    index++;
   }
-
-  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_DU_LIEU, 18, 'AO');
 }
 
 function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {
@@ -161,31 +171,29 @@ function layThongTongSoLuongCoPhieuDangNiemYet(tenMa: string): void {
     headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
   };
   const object = HttpHelper.sendRequest(url, OPTION);
-  const mangDuLieuChinh: Array<[string]> = [];
-  mangDuLieuChinh.push([object.data[0].RepeatedInfo[0].ListedShare]);
-  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_CHI_TIET_MA, 18, 'H');
+  SheetHelper.ghiDuLieuVaoDayTheoTen([[[object.data[0].RepeatedInfo[0].ListedShare]]], SheetHelper.SheetName.SHEET_CHI_TIET_MA, 18, 'H');
 }
 
 function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
-  const fromDate: string = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CHI_TIET_MA, 'F2');
+  const fromDate: string = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F2');
   const URL = `https://finfo-api.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
   const response = HttpHelper.sendGetRequest(URL);
   const datas = response.data;
   for (const element of datas) {
     if (element.ratioCode === 'BETA') {
       const value = element.value;
-      SheetHelper.ghiDuLieuVaoO(value, SheetHelper.SHEET_CHI_TIET_MA, 'E18');
+      SheetHelper.ghiDuLieuVaoO(value, SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'E18');
     }
     if (element.ratioCode === 'FREEFLOAT') {
       const value = element.value;
-      SheetHelper.ghiDuLieuVaoO(value, SheetHelper.SHEET_CHI_TIET_MA, 'J16');
+      SheetHelper.ghiDuLieuVaoO(value, SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'J16');
     }
   }
 }
 
 function batSukienSuaThongTinO(e: any) {
   const sheet = SpreadsheetApp.getActive().getActiveSheet();
-  if (e.range.getA1Notation() === 'F1' && sheet.getName() === SheetHelper.SHEET_CHI_TIET_MA) {
+  if (e.range.getA1Notation() === 'F1' && sheet.getName() === SheetHelper.SheetName.SHEET_CHI_TIET_MA) {
     layThongTinChiTietMa();
   }
 }
