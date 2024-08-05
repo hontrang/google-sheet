@@ -72,12 +72,12 @@ function layGiaThamChieu(): void {
   };
   const object = HttpHelper.sendRequest(URL, OPTION);
   const datas = object.data;
-
-  for (const element of DANH_SACH_MA) {
-    const price = datas.filter((object: { Symbol: string }) => object.Symbol === element && object.Symbol.length == 3).map((object: { ClosePrice: number }) => object.ClosePrice);
-    const vitri = SheetHelper.layViTriCotThamChieu(element, DANH_SACH_MA, 2);
-    SheetHelper.ghiDuLieuVaoDayTheoVung([[price]], SheetHelper.SHEET_DU_LIEU, `C${vitri}:C${vitri}`);
-    index++;
+  for (const e of datas) {
+    const vitri = SheetHelper.layViTriCotThamChieu(e.Symbol, DANH_SACH_MA, 2);
+    if (e.Symbol.length === 3 && vitri !== -1) {
+      SheetHelper.ghiDuLieuVaoDayTheoVung([[e.ClosePrice]], SheetHelper.SHEET_DU_LIEU, `C${vitri}:C${vitri}`);
+      index++;
+    }
   }
 }
 
