@@ -4,13 +4,17 @@ import * as Cheerio from 'cheerio';
 
 function getDataHose(): void {
   const DANH_SACH_MA: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
-  let index = 2;
+  let indexSheetDuLieu = 2;
+  let indexSheetThamChieu = 4;
   const url = `https://bgapidatafeed.vps.com.vn/getliststockdata/${DANH_SACH_MA.join(',')}`;
   const response = HttpHelper.sendGetRequest(url);
+  SheetHelper.xoaDuLieuTrongCot(SheetHelper.SHEET_THAM_CHIEU, 'A', 1, 4);
   for (const element of DANH_SACH_MA) {
     const price = response.filter((object: { sym: string }) => object.sym === element).map((object: { lastPrice: number }) => object.lastPrice * 1000);
-    SheetHelper.ghiDuLieuVaoDayTheoVung([[price]], SheetHelper.SHEET_DU_LIEU, `B${index}`);
-    index++;
+    SheetHelper.ghiDuLieuVaoDayTheoVung([[element]], SheetHelper.SHEET_THAM_CHIEU, `A${indexSheetThamChieu}`);
+    SheetHelper.ghiDuLieuVaoDayTheoVung([[price]], SheetHelper.SHEET_DU_LIEU, `B${indexSheetDuLieu}`);
+    indexSheetDuLieu++;
+    indexSheetThamChieu++;
   }
 }
 

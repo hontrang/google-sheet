@@ -98,6 +98,7 @@ namespace SheetHelper {
         dataArray.push(value);
       }
     }
+    // bỏ hàng đầu là tên cột
     dataArray.shift();
     return dataArray;
   }
