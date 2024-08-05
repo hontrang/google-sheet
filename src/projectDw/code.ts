@@ -151,131 +151,103 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
 
 function duLieuTam(): void {
   SheetHelper.layDuLieuTrongCot('TRUY VAN', 'A').forEach((date: string) => {
-    const danhSachMa: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
-
-    while (danhSachMa.length > 0) {
-      const MANG_PHU: string[] = danhSachMa.splice(0, 400);
-      const URL = `https://finfo-api.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${MANG_PHU.join(',')}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
-      const object: any = HttpHelper.sendGetRequest(URL); // Khuyến khích định nghĩa kiểu cụ thể thay vì sử dụng `any`
-
-      if (object?.data.length > 0) {
-        const header: string[] = SheetHelper.layDuLieuTrongHang(SheetHelper.SHEET_KHOI_NGOAI_MUA, 1);
-        const hangCuoi: number = SheetHelper.laySoHangTrongSheet(SheetHelper.SHEET_KHOI_NGOAI_MUA);
-
-        SheetHelper.ghiDuLieuVaoDay([["'" + date]], SheetHelper.SHEET_KHOI_NGOAI_MUA, hangCuoi + 1, 1);
-
-        object.data.forEach((item: any) => {
-          header.forEach((headerItem: string, i: number) => {
-            if (headerItem === item.code) {
-              SheetHelper.ghiDuLieuVaoDay([[item.buyVol]], SheetHelper.SHEET_KHOI_NGOAI_MUA, hangCuoi + 1, i + 1);
-            }
-          });
-        });
-      }
-      console.log(date);
-    }
+    layKhoiNgoaiBanHangNgay('Tam', date);
+    layKhoiNgoaiMuaHangNgay('Tam', date);
+    layKhoiLuongHangNgay('Tam', date);
+    layGiaHangNgay('Tam', date);
   });
 }
 
-function layKhoiNgoaiBanHangNgay(): void {
-  const danhSachMa: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
-  const date: string = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1');
-  const hangCuoi: number = SheetHelper.laySoHangTrongSheet(SheetHelper.SHEET_KHOI_NGOAI_BAN);
-  const duLieuNgayMoiNhat: string = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_KHOI_NGOAI_BAN, 'A' + hangCuoi);
-
+function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.SHEET_KHOI_NGOAI_BAN, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1')) {
+  const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
+  const hangCuoi = SheetHelper.laySoHangTrongSheet(sheetName);
+  const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
     while (danhSachMa.length > 0) {
-      const MANG_PHU: string[] = danhSachMa.splice(0, 400);
+      const MANG_PHU = danhSachMa.splice(0, 400);
       const URL = `https://finfo-api.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${MANG_PHU.join(',')}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
-      const object: any = HttpHelper.sendGetRequest(URL);
-
+      const object = HttpHelper.sendGetRequest(URL);
       if (object?.data.length > 0) {
-        const header: string[] = SheetHelper.layDuLieuTrongHang(SheetHelper.SHEET_KHOI_NGOAI_BAN, 1);
-        SheetHelper.ghiDuLieuVaoDay([["'" + date]], SheetHelper.SHEET_KHOI_NGOAI_BAN, hangCuoi + 1, 1);
+        const header = SheetHelper.layDuLieuTrongHang(sheetName, 1);
+        SheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
         object.data.map((item: any) => {
           for (let i = 0; i < header.length; i++) {
             if (header[i] === item.code) {
-              SheetHelper.ghiDuLieuVaoDay([[item.sellVol]], SheetHelper.SHEET_KHOI_NGOAI_BAN, hangCuoi + 1, i + 1);
+              SheetHelper.ghiDuLieuVaoDay([[item.sellVol]], sheetName, hangCuoi + 1, i + 1);
             }
           }
         });
       }
       console.log('Lấy khối ngoại bán hàng ngày thành công');
     }
-  } else {
+  }
+  else {
     console.log('done');
   }
 }
 
-function layKhoiNgoaiMuaHangNgay(): void {
-  const danhSachMa: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
-  const date: string = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1');
-  const hangCuoi: number = SheetHelper.laySoHangTrongSheet(SheetHelper.SHEET_KHOI_NGOAI_MUA);
-  const duLieuNgayMoiNhat: string = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_KHOI_NGOAI_MUA, 'A' + hangCuoi);
-
+function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.SHEET_KHOI_NGOAI_MUA, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1')) {
+  const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
+  const hangCuoi = SheetHelper.laySoHangTrongSheet(sheetName);
+  const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
     while (danhSachMa.length > 0) {
-      const MANG_PHU: string[] = danhSachMa.splice(0, 400);
+      const MANG_PHU = danhSachMa.splice(0, 400);
       const url = `https://finfo-api.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${MANG_PHU.join(',')}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
-      const object: any = HttpHelper.sendGetRequest(url); // Khuyến khích thay `any` bằng kiểu dữ liệu cụ thể nếu có thể.
-
+      const object = HttpHelper.sendGetRequest(url);
       if (object?.data.length > 0) {
-        const header: string[] = SheetHelper.layDuLieuTrongHang(SheetHelper.SHEET_KHOI_NGOAI_MUA, 1);
-        SheetHelper.ghiDuLieuVaoDay([["'" + date]], SheetHelper.SHEET_KHOI_NGOAI_MUA, hangCuoi + 1, 1);
+        const header = SheetHelper.layDuLieuTrongHang(sheetName, 1);
+        SheetHelper.ghiDuLieuVaoDay([["'" + date]],sheetName, hangCuoi + 1, 1);
         object.data.map((item: any) => {
           for (let i = 0; i < header.length; i++) {
             if (header[i] === item.code) {
-              SheetHelper.ghiDuLieuVaoDay([[item.buyVol]], SheetHelper.SHEET_KHOI_NGOAI_MUA, hangCuoi + 1, i + 1);
+              SheetHelper.ghiDuLieuVaoDay([[item.buyVol]], sheetName, hangCuoi + 1, i + 1);
             }
           }
         });
       }
       console.log('Lấy khối ngoại mua hàng ngày thành công');
     }
-  } else {
+  }
+  else {
     console.log('done');
   }
 }
 
-function layKhoiLuongHangNgay(): void {
-  const danhSachMa: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
-  const date: string = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1');
-  const hangCuoi: number = SheetHelper.laySoHangTrongSheet(SheetHelper.SHEET_KHOI_LUONG);
-  const duLieuNgayMoiNhat: string = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_KHOI_LUONG, 'A' + hangCuoi);
-
+function layKhoiLuongHangNgay(sheetName = SheetHelper.SHEET_KHOI_LUONG, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1')) {
+  const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
+  const hangCuoi = SheetHelper.laySoHangTrongSheet(sheetName);
+  const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
     while (danhSachMa.length > 0) {
-      const MANG_PHU: string[] = danhSachMa.splice(0, 400);
+      const MANG_PHU = danhSachMa.splice(0, 400);
       const url = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${MANG_PHU.join(',')}~date:gte:${date}~date:lte:${date}`;
-      const object: any = HttpHelper.sendGetRequest(url);
-
+      const object = HttpHelper.sendGetRequest(url);
       if (object?.data.length > 0) {
-        const header: string[] = SheetHelper.layDuLieuTrongHang(SheetHelper.SHEET_KHOI_LUONG, 1);
-        SheetHelper.ghiDuLieuVaoDay([["'" + date]], SheetHelper.SHEET_KHOI_LUONG, hangCuoi + 1, 1);
+        const header = SheetHelper.layDuLieuTrongHang(sheetName, 1);
+        SheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
         object.data.map((item: any) => {
           for (let i = 0; i < header.length; i++) {
             if (header[i] === item.code) {
-              SheetHelper.ghiDuLieuVaoDay([[item.nmVolume]], SheetHelper.SHEET_KHOI_LUONG, hangCuoi + 1, i + 1);
+              SheetHelper.ghiDuLieuVaoDay([[item.nmVolume]], sheetName, hangCuoi + 1, i + 1);
             }
           }
         });
       }
       console.log('Lấy khối lượng hàng ngày thành công');
     }
-  } else {
+  }
+  else {
     console.log('done');
   }
 }
-
-function layGiaHangNgay(): void {
-  const date: string = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1');
+function layGiaHangNgay(sheetName = SheetHelper.SHEET_GIA, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1')) {
   const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B6');
-  const fromDate: string = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
-  const toDate: string = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
-  const hangCuoi: number = SheetHelper.laySoHangTrongSheet(SheetHelper.SHEET_GIA);
-  const duLieuNgayMoiNhat: string = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_GIA, 'A' + hangCuoi);
+  const fromDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
+  const toDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
+  const hangCuoi = SheetHelper.laySoHangTrongSheet(sheetName);
+  const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   const market = 'HOSE';
-
   if (duLieuNgayMoiNhat !== date) {
     const url = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.market=${market}`;
     const token = HttpHelper.getToken();
@@ -285,20 +257,20 @@ function layGiaHangNgay(): void {
       headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
     };
     const object = HttpHelper.sendRequest(url, OPTION);
-
     if (object?.data.length > 0) {
-      const header: string[] = SheetHelper.layDuLieuTrongHang(SheetHelper.SHEET_GIA, 1);
-      SheetHelper.ghiDuLieuVaoDay([["'" + date]], SheetHelper.SHEET_GIA, hangCuoi + 1, 1);
+      const header = SheetHelper.layDuLieuTrongHang(sheetName, 1);
+      SheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
       object.data.map((item: any) => {
         for (let i = 0; i < header.length; i++) {
           if (header[i] === item.Symbol) {
-            SheetHelper.ghiDuLieuVaoDay([[item.ClosePrice]], SheetHelper.SHEET_GIA, hangCuoi + 1, i + 1);
+            SheetHelper.ghiDuLieuVaoDay([[item.ClosePrice]], sheetName, hangCuoi + 1, i + 1);
           }
         }
       });
     }
     console.log('Lấy giá hàng ngày thành công');
-  } else {
+  }
+  else {
     console.log('done');
   }
 }
@@ -387,9 +359,7 @@ function LAY_SU_KIEN() {
           const actual = $(this).find('td:nth-child(4)').text().trim();
           const previous = $(this).find('td:nth-child(5)').text().trim();
           const forecast = $(this).find('td:nth-child(6)').text().trim();
-          if (currency === 'US') {
-            result.push([thoigian, currency, name, actual, forecast, previous]);
-          }
+          result.push([thoigian, currency, name, actual, forecast, previous]);
         });
     }
   });
