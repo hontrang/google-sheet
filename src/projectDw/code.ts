@@ -180,8 +180,7 @@ function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.SHEET_KHOI_NGOAI_BAN, d
       }
       console.log('Lấy khối ngoại bán hàng ngày thành công');
     }
-  }
-  else {
+  } else {
     console.log('done');
   }
 }
@@ -197,7 +196,7 @@ function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.SHEET_KHOI_NGOAI_MUA, d
       const object = HttpHelper.sendGetRequest(url);
       if (object?.data.length > 0) {
         const header = SheetHelper.layDuLieuTrongHang(sheetName, 1);
-        SheetHelper.ghiDuLieuVaoDay([["'" + date]],sheetName, hangCuoi + 1, 1);
+        SheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
         object.data.map((item: any) => {
           for (let i = 0; i < header.length; i++) {
             if (header[i] === item.code) {
@@ -208,8 +207,7 @@ function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.SHEET_KHOI_NGOAI_MUA, d
       }
       console.log('Lấy khối ngoại mua hàng ngày thành công');
     }
-  }
-  else {
+  } else {
     console.log('done');
   }
 }
@@ -236,8 +234,7 @@ function layKhoiLuongHangNgay(sheetName = SheetHelper.SHEET_KHOI_LUONG, date = S
       }
       console.log('Lấy khối lượng hàng ngày thành công');
     }
-  }
-  else {
+  } else {
     console.log('done');
   }
 }
@@ -269,8 +266,7 @@ function layGiaHangNgay(sheetName = SheetHelper.SHEET_GIA, date = SheetHelper.la
       });
     }
     console.log('Lấy giá hàng ngày thành công');
-  }
-  else {
+  } else {
     console.log('done');
   }
 }
