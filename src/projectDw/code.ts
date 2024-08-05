@@ -1,36 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Cheerio from 'cheerio';
-interface RoomData {
-  totalRoom?: number;
-  currentRoom?: number;
-}
 
-interface VolumnData {
-  value?: number;
-}
 function layChiSoVnIndex(): void {
   const ngayHienTai: string = DateHelper.layNgayHienTai('YYYY-MM-DD');
-  const duLieuNgayMoiNhat: string = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1');
-  const thanhKhoanMoiNhat: number = parseFloat(SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'D1'));
+  const duLieuNgayMoiNhat: string = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1');
+  const thanhKhoanMoiNhat: number = parseFloat(SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'D1'));
   const url = 'https://banggia.cafef.vn/stockhandler.ashx?index=true';
 
   const object = HttpHelper.sendPostRequest(url);
   const duLieuNhanVe = object[1];
   const thanhKhoan: number = parseFloat(duLieuNhanVe.value.replace(/,/g, '')) * 1000000000;
   if (duLieuNgayMoiNhat === ngayHienTai && thanhKhoan !== thanhKhoanMoiNhat) {
-    SheetHelper.ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SheetHelper.SHEET_HOSE, 'A1:D1');
+    SheetHelper.ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SheetHelper.SheetName.SHEET_HOSE, 'A1:D1');
   } else if (thanhKhoan !== thanhKhoanMoiNhat) {
-    SheetHelper.chen1HangVaoDauSheet(SheetHelper.SHEET_HOSE);
-    SheetHelper.ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SheetHelper.SHEET_HOSE, 'A1:D1');
+    SheetHelper.chen1HangVaoDauSheet(SheetHelper.SheetName.SHEET_HOSE);
+    SheetHelper.ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SheetHelper.SheetName.SHEET_HOSE, 'A1:D1');
   } else {
     console.log('No action required');
   }
 }
 
 // function layTyGiaUSDVND() {
-//   const tyGiaHomNay = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_DU_LIEU, 'K2');
-//   const ngayHomNay = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1');
+//   const tyGiaHomNay = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_DU_LIEU, 'K2');
+//   const ngayHomNay = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1');
 //   const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_TY_GIA, 'A1');
 //   if (duLieuNgayMoiNhat !== ngayHomNay) {
 //     SheetHelper.chen1HangVaoDauSheet(SheetHelper.SHEET_TY_GIA);
@@ -41,7 +34,7 @@ function layChiSoVnIndex(): void {
 // }
 
 function layThongTinCoBan(): void {
-  const danhSachMa: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
+  const danhSachMa: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
   layThongTinPB(danhSachMa);
   layThongTinPE(danhSachMa);
   layThongTinRoomNuocNgoai(danhSachMa);
@@ -54,13 +47,13 @@ function layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay(): void {
   layKhoiLuongHangNgay();
   layKhoiNgoaiMuaHangNgay();
   layKhoiNgoaiBanHangNgay();
-  LogHelper.logTime(SheetHelper.SHEET_CAU_HINH, 'G4');
+  LogHelper.logTime(SheetHelper.SheetName.SHEET_CAU_HINH, 'G4');
 }
 
 function layGiaThamChieu(): void {
-  const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B6');
-  const DANH_SACH_MA: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
-  const date: string = DateHelper.doiDinhDangNgay(SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_CAU_HINH, 'B1'), DEFAULT_FORMAT, 'DD/MM/YYYY');
+  const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B6');
+  const DANH_SACH_MA: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
+  const date: string = DateHelper.doiDinhDangNgay(SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_CAU_HINH, 'B1'), DEFAULT_FORMAT, 'DD/MM/YYYY');
   const market = 'HOSE';
   let index = 2;
   const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${date}&lookupRequest.toDate=${date}&lookupRequest.market=${market}`;
@@ -75,7 +68,7 @@ function layGiaThamChieu(): void {
   for (const e of datas) {
     const vitri = SheetHelper.layViTriCotThamChieu(e.Symbol, DANH_SACH_MA, 2);
     if (e.Symbol.length === 3 && vitri !== -1) {
-      SheetHelper.ghiDuLieuVaoDayTheoVung([[e.ClosePrice]], SheetHelper.SHEET_DU_LIEU, `C${vitri}:C${vitri}`);
+      SheetHelper.ghiDuLieuVaoDayTheoVung([[e.ClosePrice]], SheetHelper.SheetName.SHEET_DU_LIEU, `C${vitri}:C${vitri}`);
       index++;
     }
   }
@@ -83,7 +76,7 @@ function layGiaThamChieu(): void {
 
 function layThongTinPB(danhSachMa: string[]): void {
   const QUERY_API = 'https://api-finfo.vndirect.com.vn/v4/ratios/latest';
-  const duLieuCotThamChieu = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
+  const duLieuCotThamChieu = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
 
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.KICH_THUOC_MANG_PHU) {
     const URL = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetHelper.KICH_THUOC_MANG_PHU).join(',')}`;
@@ -93,58 +86,56 @@ function layThongTinPB(danhSachMa: string[]): void {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = SheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
-      SheetHelper.ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SHEET_DU_LIEU, `E${vitri}:E${vitri}`);
+      SheetHelper.ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SheetName.SHEET_DU_LIEU, `E${vitri}:E${vitri}`);
     });
   }
 }
 
 function layThongTinPE(danhSachMa: string[]): void {
   const QUERY_API = 'https://api-finfo.vndirect.com.vn/v4/ratios/latest';
-  const duLieuCotThamChieu = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
+  const duLieuCotThamChieu = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
 
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.KICH_THUOC_MANG_PHU) {
     const url = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetHelper.KICH_THUOC_MANG_PHU).join(',')}`;
-    const object: any = HttpHelper.sendGetRequest(url);
+    const object = HttpHelper.sendGetRequest(url);
     object.data.forEach((element: { code?: string; value?: number }) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = SheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
-      SheetHelper.ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SHEET_DU_LIEU, `F${vitri}:F${vitri}`);
+      SheetHelper.ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SheetName.SHEET_DU_LIEU, `F${vitri}:F${vitri}`);
     });
   }
 }
 
 function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
   const QUERY_API = 'https://finfo-api.vndirect.com.vn/v4';
-  const duLieuCotThamChieu = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
+  const duLieuCotThamChieu = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
 
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.KICH_THUOC_MANG_PHU) {
     const url = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetHelper.KICH_THUOC_MANG_PHU).join(',')}`;
-    const object: any = HttpHelper.sendGetRequest(url);
-    const datas = Array.from(object.data) as RoomData[];
-    datas.forEach((element: { totalRoom?: number; currentRoom?: number; code?: string }) => {
+    const object = HttpHelper.sendGetRequest(url);
+    object.data.forEach((element: { code?: string; totalRoom?: number; currentRoom?: number }) => {
       const totalRoom: number = element.totalRoom ?? 0;
       const currentRoom: number = element.currentRoom ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = SheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
-      SheetHelper.ghiDuLieuVaoDayTheoVung([[totalRoom, currentRoom]], SheetHelper.SHEET_DU_LIEU, `G${vitri}:H${vitri}`);
+      SheetHelper.ghiDuLieuVaoDayTheoVung([[totalRoom, currentRoom]], SheetHelper.SheetName.SHEET_DU_LIEU, `G${vitri}:H${vitri}`);
     });
   }
 }
 
 function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
   const QUERY_API = 'https://api-finfo.vndirect.com.vn/v4/ratios/latest';
-  const duLieuCotThamChieu = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
+  const duLieuCotThamChieu = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
 
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.KICH_THUOC_MANG_PHU) {
     const url = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetHelper.KICH_THUOC_MANG_PHU).join(',')}`;
-    const object: any = HttpHelper.sendGetRequest(url);
-    const datas = Array.from(object.data) as VolumnData[];
-    datas.forEach((element: { code?: string; value?: number }) => {
+    const object = HttpHelper.sendGetRequest(url);
+    object.data.forEach((element: { code?: string; value?: number }) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = SheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
-      SheetHelper.ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SHEET_DU_LIEU, `I${vitri}:I${vitri}`);
+      SheetHelper.ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SheetName.SHEET_DU_LIEU, `I${vitri}:I${vitri}`);
     });
   }
 }
@@ -158,8 +149,8 @@ function duLieuTam(): void {
   });
 }
 
-function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.SHEET_KHOI_NGOAI_BAN, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1')) {
-  const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
+function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_NGOAI_BAN, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
+  const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
   const hangCuoi = SheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
@@ -185,8 +176,8 @@ function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.SHEET_KHOI_NGOAI_BAN, d
   }
 }
 
-function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.SHEET_KHOI_NGOAI_MUA, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1')) {
-  const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
+function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_NGOAI_MUA, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
+  const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
   const hangCuoi = SheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
@@ -212,8 +203,8 @@ function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.SHEET_KHOI_NGOAI_MUA, d
   }
 }
 
-function layKhoiLuongHangNgay(sheetName = SheetHelper.SHEET_KHOI_LUONG, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1')) {
-  const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A');
+function layKhoiLuongHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_LUONG, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
+  const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
   const hangCuoi = SheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
@@ -238,8 +229,8 @@ function layKhoiLuongHangNgay(sheetName = SheetHelper.SHEET_KHOI_LUONG, date = S
     console.log('done');
   }
 }
-function layGiaHangNgay(sheetName = SheetHelper.SHEET_GIA, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_HOSE, 'A1')) {
-  const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SHEET_CAU_HINH, 'B6');
+function layGiaHangNgay(sheetName = SheetHelper.SheetName.SHEET_GIA, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
+  const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B6');
   const fromDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
   const toDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
   const hangCuoi = SheetHelper.laySoHangTrongSheet(sheetName);
@@ -285,13 +276,13 @@ function layDanhSachMa(): void {
   const mangDuLieuChinh: Array<[string, string]> = [];
   const response = HttpHelper.sendRequest(url, OPTION);
   const datas = response.data;
-  SheetHelper.xoaDuLieuTrongCot(SheetHelper.SHEET_DU_LIEU, 'A', 2, 2);
+  SheetHelper.xoaDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A', 2, 2);
   for (const element of datas) {
     if (element.Symbol.length == 3) {
       mangDuLieuChinh.push([element.Symbol, element.StockName]);
     }
   }
-  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SHEET_DU_LIEU, 2, 'A');
+  SheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SheetName.SHEET_DU_LIEU, 2, 'A');
 }
 
 /**
@@ -302,7 +293,8 @@ function LAY_THONG_TIN_DANH_MUC_DC(url: string) {
   const result: any = [];
   const response = HttpHelper.sendRequest(url);
   const data = response.ffs_holding;
-  data.forEach((element: any) => {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  data.forEach((element: { stock?: string; sector_vi?: string; per_nav?: string; bourse_en?: string; modified?: string }) => {
     const tenMa = element.stock ?? '_';
     const nhomNganh = element.sector_vi ?? '_';
     const tyLe = element.per_nav ?? '_';
@@ -322,7 +314,8 @@ function LAY_THONG_TIN_TAI_SAN_DC(url: string) {
   const response = HttpHelper.sendRequest(url);
   const data = response.ffs_asset;
   console.log(response);
-  data.forEach((element: any) => {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  data.forEach((element: { name_vi?: string; weight?: string; modified?: string }) => {
     const tenTaiSan = element.name_vi ?? '_';
     const tyLe = element.weight ?? '_';
     const capNhatLuc = element.modified ?? '-';
@@ -339,7 +332,6 @@ function LAY_SU_KIEN() {
   const result: any = [];
   const content = UrlFetchApp.fetch(`https://hontrang.github.io/tradingeconomics/`).getContentText();
   const $ = Cheerio.load(content);
-  console.log($('table#calendar>thead.table-header,table#calendar>tbody').length);
   let date: string;
   $('table#calendar>thead.table-header,table#calendar>tbody').each(function (this: any) {
     if ($(this).attr('class') !== undefined) {
