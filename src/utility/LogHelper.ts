@@ -5,7 +5,7 @@ import { DateHelper } from "./DateHelper";
 
 export class LogHelper {
   public static logDebug(content: string): boolean {
-    const data: [string, string][] = [[moment().format('YYYY/MM/DD HH:mm:ss'), content.toString()]];
+    const data: [string, string][] = [[DateHelper.layNgayHienTai('YYYY/MM/DD HH:mm:ss'), content.toString()]];
     Logger.log(content);
     const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SheetName.SHEET_DEBUG);
     if (!sheet) return false;
@@ -19,7 +19,7 @@ export class LogHelper {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return false;
     else {
-      sheet.getRange(cell).setValue(DateHelper.layNgayHienTai());
+      sheet.getRange(cell).setValue(DateHelper.layNgayHienTai('YYYY/MM/DD HH:mm:ss'));
       return true;
     }
   }
