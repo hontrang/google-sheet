@@ -21,18 +21,6 @@ function layChiSoVnIndex(): void {
   }
 }
 
-// function layTyGiaUSDVND() {
-//   const tyGiaHomNay = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_DU_LIEU, 'K2');
-//   const ngayHomNay = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1');
-//   const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SHEET_TY_GIA, 'A1');
-//   if (duLieuNgayMoiNhat !== ngayHomNay) {
-//     SheetHelper.chen1HangVaoDauSheet(SheetHelper.SHEET_TY_GIA);
-//     SheetHelper.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetHelper.SHEET_TY_GIA, 1, 'A');
-//   } else {
-//     SheetHelper.ghiDuLieuVaoDayTheoTen([[ngayHomNay, tyGiaHomNay]], SheetHelper.SHEET_TY_GIA, 1, 'A');
-//   }
-// }
-
 function layThongTinCoBan(): void {
   const danhSachMa: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
   layThongTinPB(danhSachMa);
