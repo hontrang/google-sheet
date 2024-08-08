@@ -5,7 +5,6 @@ import { SheetHelper } from '../utility/SheetHelper';
 import { HttpHelper } from '../utility/HttpHelper';
 import { DateHelper } from '../utility/DateHelper';
 import { LogHelper } from '../utility/LogHelper';
-import { ZChartHelper } from '../utility/zChartUtil';
 
 function getDataHose(): void {
   const DANH_SACH_MA: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
@@ -62,7 +61,6 @@ function layThongTinChiTietMa(): void {
   layThongTongSoLuongCoPhieuDangNiemYet(tenMa);
   layThongTinCoTuc(tenMa);
   layHeSoBetaVaFreeFloat(tenMa);
-  ZChartHelper.updateChart();
   LogHelper.logTime(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'J2');
   Logger.log('Hàm layThongTinChiTietMa chạy thành công');
 }
