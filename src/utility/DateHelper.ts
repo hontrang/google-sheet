@@ -1,15 +1,18 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import moment from "moment";
-namespace DateHelper {
-  export function layNgay(ngay: string): string {
+
+export class DateHelper {
+  public static layNgay(ngay: string): string {
     const date: Date = new Date(ngay);
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
 
-  export function doiDinhDangNgay(date: string, formatFrom: string, formatTo: string): string {
-    return moment(date, formatFrom, true).format(formatTo);
+  public static doiDinhDangNgay(date: string, formatFrom: string, formatTo: string): string {
+    // return moment(date, formatFrom, true).format(formatTo);
+    return date;
   }
-  export function layNgayHienTai(format: string) {
-    return moment().format(format);
+
+  public static layNgayHienTai(format: string): string {
+    //return moment().format(format);
+    return "Done";
   }
 }

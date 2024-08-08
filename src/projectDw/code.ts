@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Cheerio from 'cheerio';
+import { DateHelper } from '../utility/DateHelper';
+import { HttpHelper } from '../utility/HttpHelper';
+import { LogHelper } from '../utility/LogHelper';
+import { SheetHelper } from '../utility/SheetHelper';
 
 function layChiSoVnIndex(): void {
   const ngayHienTai: string = DateHelper.layNgayHienTai('YYYY-MM-DD');
