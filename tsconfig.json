@@ -102,7 +102,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "config.ts"
+    "src/utility/Config.ts"
   ],
   "exclude": [
     "node_modules",
