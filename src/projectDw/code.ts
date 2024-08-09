@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Cheerio from 'cheerio';
+import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
 import { DateHelper } from '../utility/DateHelper';
 import { HttpHelper } from '../utility/HttpHelper';
 import { LogHelper } from '../utility/LogHelper';
