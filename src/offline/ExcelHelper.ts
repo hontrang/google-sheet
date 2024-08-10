@@ -1,18 +1,43 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import * as fs from 'fs';
 import path from 'path';
-import { readFile, set_fs, utils, WorkBook, WorkSheet } from 'xlsx';
+import * as ExcelJS from 'exceljs';
+import { Workbook, Worksheet } from 'exceljs';
 
 export class ExcelHelper {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     readonly FILE_PATH = path.join(__dirname, "./dw.xlsx");
-    private workBook!: WorkBook;
-    private workSheet!: WorkSheet;
-    constructor() {
-        set_fs(fs);
-        this.workBook = readFile(this.FILE_PATH);
+    private workBook!: Workbook;
+    private workSheet!: Worksheet;
+
+    private async readExcelFileSync(filePath: string): Promise<Workbook> {
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.readFile(filePath).then(() => {
+            console.log('Workbook đã được nạp xong.');
+        }).catch(error => {
+            console.error('Lỗi khi nạp workbook:', error);
+        });
+        return workbook;
     }
+
+    public async initializeWorkbook() {
+        this.workBook = await this.readExcelFileSync(this.FILE_PATH);
+    }
+
+    getSheetByName(name = "hose"): Worksheet {
+        let sheetID;
+        this.workBook.eachSheet(function (sheet, id) {
+            if (name === sheet.name) sheetID = id;
+        });
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return this.workBook.getWorksheet(sheetID)!;
+    }
+
+    layDuLieuTrongO(sheetName: string, cell: string): string {
+        this.workSheet = this.getSheetByName(sheetName);
+        return this.workSheet.getCell(cell).text;
+    }
+
     ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
 
         throw new Error('Method not implemented.');
@@ -32,20 +57,12 @@ export class ExcelHelper {
     layDuLieuTrongOTheoTen(sheetName: string, cell: string): string {
         throw new Error('Method not implemented.');
     }
-    layDuLieuTrongO(sheetName: string, cell: string) {
-        const ws: WorkSheet = this.getSheetByName(sheetName);
-        return ws[cell].v;
-    }
     layDuLieuTrongCot(sheetName: string, column: string): string[] {
         const columnData: string[] = [];
         this.workSheet = this.getSheetByName(sheetName);
-        const range = utils.decode_range(this.workSheet['!ref'] ?? "");
-        for (let row = range.s.r; row <= range.e.r; row++) {
-            const cellAddress = `${column}${row + 1}`;
-            const cell = this.workSheet[cellAddress];
-            const value = cell ? cell.v : '';
-            columnData.push(value);
-        }
+        this.workSheet.getColumn(column).eachCell(function (cell) {
+            columnData.push(cell.text);
+        });
         return columnData;
     }
     laySoHangTrongSheet(sheetName: string): number {
@@ -67,9 +84,6 @@ export class ExcelHelper {
         throw new Error('Method not implemented.');
     }
 
-    getSheetByName(name = "hose"): WorkSheet {
-        this.workSheet = this.workBook.Sheets[name];
-        return this.workSheet;
-    }
+
 }
 

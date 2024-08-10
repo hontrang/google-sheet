@@ -1,9 +1,11 @@
 import { ExcelHelper } from "./ExcelHelper";
 
 
-function main() {
+async function main() {
     const excel = new ExcelHelper();
-    const value = excel.layDuLieuTrongCot("hose", "B");
+    await excel.initializeWorkbook();
+    const value = excel.layDuLieuTrongO("KN Bán", "B1");
+    // const value1 = excel.layDuLieuTrongCot("hose", "B");
     console.log(value);
 }
 
