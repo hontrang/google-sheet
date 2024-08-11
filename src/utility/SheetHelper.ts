@@ -70,12 +70,6 @@ export class SheetHelper {
     return true;
   }
 
-  public static layDuLieuTrongOTheoTen(sheetName: string, cell: string): string {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
-    if (!sheet) return 'invalid sheet name';
-    return sheet.getRange(cell).getValue();
-  }
-
   public static layDuLieuTrongO(sheetName: string, cell: string): string {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return '';
