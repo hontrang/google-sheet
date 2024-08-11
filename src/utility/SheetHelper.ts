@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export class SheetHelper {
-  public static readonly SheetName = {
+
+import { SheetSpread } from "../types/types";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-extraneous-class
+export class SheetHelper implements SheetSpread {
+  static readonly SheetName = {
     SHEET_THAM_CHIEU: 'tham chiếu',
     SHEET_BANG_THONG_TIN: 'bảng thông tin',
     SHEET_DU_LIEU: 'dữ liệu',
@@ -18,7 +21,7 @@ export class SheetHelper {
 
   public static readonly KICH_THUOC_MANG_PHU = 10;
 
-  public static ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
+  ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
       console.log('Sheet không tồn tại');
@@ -28,7 +31,7 @@ export class SheetHelper {
     sheet.getRange(row, column, data.length, data[0].length).setValues(data);
   }
 
-  public static ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {
+  ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
       console.log('Sheet không tồn tại');
@@ -38,7 +41,7 @@ export class SheetHelper {
     sheet.getRange(range).setValues(data);
   }
 
-  public static ghiDuLieuVaoDayTheoTen(data: any[][], sheetName: string, rowNumber: number, columnName: string): void {
+  ghiDuLieuVaoDayTheoTen(data: any[][], sheetName: string, rowNumber: number, columnName: string): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
       console.log('Sheet không tồn tại');
@@ -55,7 +58,7 @@ export class SheetHelper {
     }
   }
 
-  public static layViTriCotThamChieu(tenMa: string, duLieuCotThamChieu: string[], hangBatDau: number): number {
+  layViTriCotThamChieu(tenMa: string, duLieuCotThamChieu: string[], hangBatDau: number): number {
     let vitri = -1;
     for (let i = 0; i < duLieuCotThamChieu.length; i++) {
       if (duLieuCotThamChieu[i] === tenMa) vitri = i + hangBatDau;
@@ -63,20 +66,20 @@ export class SheetHelper {
     return vitri;
   }
 
-  public static ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
+  ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return false;
     sheet.getRange(cell).setValue(data);
     return true;
   }
 
-  public static layDuLieuTrongO(sheetName: string, cell: string): string {
+  layDuLieuTrongO(sheetName: string, cell: string): string {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return '';
     return sheet.getRange(cell).getValue();
   }
 
-  public static layDuLieuTrongCot(sheetName: string, column: string): string[] {
+  layDuLieuTrongCot(sheetName: string, column: string): string[] {
     const dataArray: string[] = [];
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return dataArray;
@@ -93,13 +96,13 @@ export class SheetHelper {
     return dataArray;
   }
 
-  public static laySoHangTrongSheet(sheetName: string): number {
+  laySoHangTrongSheet(sheetName: string): number {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return -1;
     return sheet.getLastRow();
   }
 
-  public static doiTenCotThanhChiSo(columnName: string): number {
+  doiTenCotThanhChiSo(columnName: string): number {
     let index = 0;
     const length = columnName.length;
     for (let i = 0; i < length; i++) {
@@ -109,7 +112,7 @@ export class SheetHelper {
     return index;
   }
 
-  public static layDuLieuTrongHang(sheetName: string, rowIndex: number): string[] {
+  layDuLieuTrongHang(sheetName: string, rowIndex: number): string[] {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return [];
     // Lấy số lượng cột trong Sheet
@@ -123,7 +126,7 @@ export class SheetHelper {
     return rowData[0];
   }
 
-  public static chen1HangVaoDauSheet(sheetName: string): boolean {
+  chen1HangVaoDauSheet(sheetName: string): boolean {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
       console.log('Sheet không tồn tại');
@@ -133,7 +136,7 @@ export class SheetHelper {
     return true;
   }
 
-  public static xoaCot(sheetName: string, column: string, numOfCol: number): boolean {
+  xoaCot(sheetName: string, column: string, numOfCol: number): boolean {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
       console.log('Sheet không tồn tại');
@@ -143,7 +146,7 @@ export class SheetHelper {
     return true;
   }
 
-  public static xoaDuLieuTrongCot(sheetName: string, column: string, numOfCol: number, startRow: number): boolean {
+  xoaDuLieuTrongCot(sheetName: string, column: string, numOfCol: number, startRow: number): boolean {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
       console.log('Sheet không tồn tại');
