@@ -2,9 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import path from 'path';
 import * as ExcelJS from 'exceljs';
-import { Workbook, Worksheet } from 'exceljs';
+import { Cell, Workbook, Worksheet } from 'exceljs';
+import { SheetSpread } from './types';
 
-export class ExcelHelper {
+export class ExcelHelper implements SheetSpread {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     readonly FILE_PATH = path.join(__dirname, "./dw.xlsx");
     private workBook!: Workbook;
@@ -20,8 +21,15 @@ export class ExcelHelper {
         return workbook;
     }
 
-    public async initializeWorkbook() {
+    public async truyCapWorkBook() {
         this.workBook = await this.readExcelFileSync(this.FILE_PATH);
+    }
+    public async luuWorkBook() {
+        await this.workBook.xlsx.writeFile(this.FILE_PATH).then(() => {
+            console.log('Workbook đã được lưu xong.');
+        }).catch(error => {
+            console.error('Lỗi khi lưu workbook:', error);
+        });;
     }
 
     getSheetByName(name = "hose"): Worksheet {
@@ -37,25 +45,12 @@ export class ExcelHelper {
         this.workSheet = this.getSheetByName(sheetName);
         return this.workSheet.getCell(cell).text;
     }
-
-    ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
-
-        throw new Error('Method not implemented.');
-    }
-    ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {
-        throw new Error('Method not implemented.');
-    }
-    ghiDuLieuVaoDayTheoTen(data: any[][], sheetName: string, rowNumber: number, columnName: string): void {
-        throw new Error('Method not implemented.');
-    }
     layViTriCotThamChieu(tenMa: string, duLieuCotThamChieu: string[], hangBatDau: number): number {
-        throw new Error('Method not implemented.');
-    }
-    ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
-        throw new Error('Method not implemented.');
-    }
-    layDuLieuTrongOTheoTen(sheetName: string, cell: string): string {
-        throw new Error('Method not implemented.');
+        let vitri = -1;
+        for (let i = 0; i < duLieuCotThamChieu.length; i++) {
+            if (duLieuCotThamChieu[i] === tenMa) vitri = i + hangBatDau;
+        }
+        return vitri;
     }
     layDuLieuTrongCot(sheetName: string, column: string): string[] {
         const columnData: string[] = [];
@@ -66,24 +61,89 @@ export class ExcelHelper {
         return columnData;
     }
     laySoHangTrongSheet(sheetName: string): number {
-        throw new Error('Method not implemented.');
-    }
-    doiTenCotThanhChiSo(columnName: string): number {
-        throw new Error('Method not implemented.');
+        this.workSheet = this.getSheetByName(sheetName);
+        return this.workSheet.lastRow?.number ?? 0;
     }
     layDuLieuTrongHang(sheetName: string, rowIndex: number): string[] {
-        throw new Error('Method not implemented.');
+        this.workSheet = this.getSheetByName(sheetName);
+        const data: string[] = [];
+        this.workSheet.getRow(rowIndex).eachCell(function (cell: Cell) {
+            data.push(cell.text);
+        });
+        return data;
     }
+
+    ghiDuLieuVaoDay(data: any[][], sheetName: string, rowIndex: number, columnIndex: number): void {
+        this.workSheet = this.getSheetByName(sheetName);
+        const row = this.workSheet.getRow(rowIndex);
+        const adjustedData = new Array(columnIndex - 1).fill('').concat(data);
+        row.values = adjustedData;
+        row.commit();
+    }
+    ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {
+        this.workSheet = this.getSheetByName(sheetName);
+        const [startCell, endCell] = range.split(':');
+        const startCellCoord: Cell = this.workSheet.getCell(startCell);
+        const endCellCoord: Cell = this.workSheet.getCell(endCell);
+
+        const startRow = startCellCoord.fullAddress.row;
+        const startCol = startCellCoord.fullAddress.col;
+        const endRow = endCellCoord.fullAddress.row;
+        const endCol = endCellCoord.fullAddress.col;
+
+        if (data.length !== endRow - startRow + 1 || data[0].length !== endCol - startCol + 1) {
+            throw new Error('Kích thước của dữ liệu không khớp với kích thước của range.');
+        }
+
+        for (let i = 0; i < data.length; i++) {
+            for (let j = 0; j < data[i].length; j++) {
+                const cell = this.workSheet.getCell(startRow + i, startCol + j);
+                cell.value = data[i][j];
+            }
+        }
+    }
+    ghiDuLieuVaoDayTheoTen(data: any[][], sheetName: string, rowIndex: number, columnName: string): void {
+        const columnIndex = this.doiTenCotThanhChiSo(columnName);
+        this.ghiDuLieuVaoDay(data, sheetName, rowIndex + 1, columnIndex);
+    }
+
+    ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
+        this.workSheet = this.getSheetByName(sheetName);
+        this.workSheet.getCell(cell).value = data;
+        return true;
+    }
+
+    doiTenCotThanhChiSo(columnName: string): number {
+        let index = 0;
+        const length = columnName.length;
+        for (let i = 0; i < length; i++) {
+            const charCode = columnName.toUpperCase().charCodeAt(i) - 64;
+            index += charCode * Math.pow(26, length - i - 1);
+        }
+        return index;
+    }
+
     chen1HangVaoDauSheet(sheetName: string): boolean {
-        throw new Error('Method not implemented.');
+        this.workSheet = this.getSheetByName(sheetName);
+        this.workSheet.spliceRows(1, 0, []);
+        return true;
     }
     xoaCot(sheetName: string, column: string, numOfCol: number): boolean {
-        throw new Error('Method not implemented.');
+        this.workSheet = this.getSheetByName(sheetName);
+        this.workSheet.spliceColumns(this.doiTenCotThanhChiSo(column), numOfCol);
+        return true;
     }
     xoaDuLieuTrongCot(sheetName: string, column: string, numOfCol: number, startRow: number): boolean {
-        throw new Error('Method not implemented.');
+        this.workSheet = this.getSheetByName(sheetName);
+        const lastRow = this.workSheet.lastRow?.number ?? 0;
+
+        for (let i = startRow; i <= lastRow; i++) {
+            for (let j = this.doiTenCotThanhChiSo(column); j <= this.doiTenCotThanhChiSo(column) + numOfCol; j++) {
+                const cell = this.workSheet.getCell(i, j);
+                cell.value = null;
+            }
+        }
+        return true;
     }
-
-
 }
 

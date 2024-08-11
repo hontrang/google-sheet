@@ -9,8 +9,8 @@ import { SheetHelper } from '../utility/SheetHelper';
 
 function layChiSoVnIndex(): void {
   const ngayHienTai: string = DateHelper.layNgayHienTai('YYYY-MM-DD');
-  const duLieuNgayMoiNhat: string = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1');
-  const thanhKhoanMoiNhat: number = parseFloat(SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'D1'));
+  const duLieuNgayMoiNhat: string = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'A1');
+  const thanhKhoanMoiNhat: number = parseFloat(SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'D1'));
   const url = 'https://banggia.cafef.vn/stockhandler.ashx?index=true';
 
   const object = HttpHelper.sendPostRequest(url);
@@ -46,7 +46,7 @@ function layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay(): void {
 function layGiaThamChieu(): void {
   const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B6');
   const DANH_SACH_MA: string[] = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
-  const date: string = DateHelper.doiDinhDangNgay(SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_CAU_HINH, 'B1'), DEFAULT_FORMAT, 'DD/MM/YYYY');
+  const date: string = DateHelper.doiDinhDangNgay(SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B1'), DEFAULT_FORMAT, 'DD/MM/YYYY');
   const market = 'HOSE';
   let index = 2;
   const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${date}&lookupRequest.toDate=${date}&lookupRequest.market=${market}`;
@@ -142,7 +142,7 @@ function duLieuTam(): void {
   });
 }
 
-function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_NGOAI_BAN, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
+function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_NGOAI_BAN, date = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
   const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
   const hangCuoi = SheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
@@ -169,7 +169,7 @@ function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_NG
   }
 }
 
-function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_NGOAI_MUA, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
+function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_NGOAI_MUA, date = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
   const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
   const hangCuoi = SheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
@@ -196,7 +196,7 @@ function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_NG
   }
 }
 
-function layKhoiLuongHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_LUONG, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
+function layKhoiLuongHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_LUONG, date = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
   const danhSachMa = SheetHelper.layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
   const hangCuoi = SheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = SheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
@@ -222,7 +222,7 @@ function layKhoiLuongHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_LUONG
     console.log('done');
   }
 }
-function layGiaHangNgay(sheetName = SheetHelper.SheetName.SHEET_GIA, date = SheetHelper.layDuLieuTrongOTheoTen(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
+function layGiaHangNgay(sheetName = SheetHelper.SheetName.SHEET_GIA, date = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
   const DEFAULT_FORMAT = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B6');
   const fromDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
   const toDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
