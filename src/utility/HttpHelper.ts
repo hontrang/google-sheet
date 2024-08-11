@@ -2,27 +2,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SheetHelper } from "./SheetHelper";
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
+import { Http } from "../types/types";
 
-export class HttpHelper {
-  private static token: string | undefined;
-
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  private static readonly OPTIONS_POST: URLFetchRequestOptions = {
-    method: 'post',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  private static readonly OPTIONS_GET: URLFetchRequestOptions = {
-    method: 'get',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
-  };
-
-  public static sendRequest(url: string, option?: URLFetchRequestOptions): any {
+export class HttpHelper implements Http {
+  sendRequest(url: string, option?: URLFetchRequestOptions) {
     try {
-      const appliedOption = option || this.OPTIONS_GET;
+      const appliedOption = option || HttpHelper.OPTIONS_GET;
       const response = UrlFetchApp.fetch(url, appliedOption);
       return JSON.parse(response.getContentText());
     } catch (e) {
@@ -30,10 +15,9 @@ export class HttpHelper {
       return null;
     }
   }
-
-  public static sendPostRequest(url: string, options?: URLFetchRequestOptions): any {
+  sendPostRequest(url: string, options?: URLFetchRequestOptions) {
     try {
-      const effectiveOptions = options || this.OPTIONS_POST;
+      const effectiveOptions = options || HttpHelper.OPTIONS_POST;
       const response = UrlFetchApp.fetch(url, effectiveOptions);
       return JSON.parse(response.getContentText());
     } catch (e) {
@@ -41,18 +25,16 @@ export class HttpHelper {
       return null;
     }
   }
-
-  public static sendGetRequest(url: string): any {
+  sendGetRequest(url: string) {
     try {
-      const response = UrlFetchApp.fetch(url, this.OPTIONS_GET);
+      const response = UrlFetchApp.fetch(url, HttpHelper.OPTIONS_GET);
       return JSON.parse(response.getContentText());
     } catch (e) {
       console.log(`error: ${e}`);
       return null;
     }
   }
-
-  public static sendGraphQLRequest(url: string, query: string, variables?: any): any {
+  sendGraphQLRequest(url: string, query: string, variables?: any) {
     const PAYLOAD = JSON.stringify({
       query: query,
       variables: variables
@@ -63,12 +45,11 @@ export class HttpHelper {
     };
     return this.sendPostRequest(url, OPTIONS);
   }
-
-  public static getToken(): string {
-    if (this.token !== undefined) return this.token;
+  getToken(): string {
+    if (HttpHelper.token !== undefined) return HttpHelper.token;
     else {
-      const consumerID = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B7');
-      const consumerSecret = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B8');
+      const consumerID = new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B7');
+      const consumerSecret = new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B8');
       const OPTIONS_POST_TOKEN_SSI: URLFetchRequestOptions = {
         method: 'post',
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -80,8 +61,23 @@ export class HttpHelper {
       };
       const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
       const response = this.sendPostRequest(URL, OPTIONS_POST_TOKEN_SSI);
-      this.token = 'Bearer ' + response.data.accessToken;
-      return this.token;
+      HttpHelper.token = 'Bearer ' + response.data.accessToken;
+      return HttpHelper.token;
     }
   }
+  public static token: string | undefined;
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public static readonly OPTIONS_POST: URLFetchRequestOptions = {
+    method: 'post',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public static readonly OPTIONS_GET: URLFetchRequestOptions = {
+    method: 'get',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
+  };
 }
