@@ -4,30 +4,30 @@ import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOption
 import { DateHelper } from '../utility/DateHelper';
 import { HttpHelper } from '../utility/HttpHelper';
 import { LogHelper } from '../utility/LogHelper';
-import { SheetHelper } from '../utility/SheetHelper';
+import { SheetHelper, SHEET_NAME } from '../utility/SheetHelper';
 import { ResponseSsi, ResponseVndirect } from '../types/types';
 
 function layChiSoVnIndex(): void {
   const ngayHienTai: string = DateHelper.layNgayHienTai('YYYY-MM-DD');
-  const duLieuNgayMoiNhat: string = new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'A1');
-  const thanhKhoanMoiNhat: number = parseFloat(new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'D1'));
+  const duLieuNgayMoiNhat: string = new SheetHelper().layDuLieuTrongO(SHEET_NAME.sheetHose, 'A1');
+  const thanhKhoanMoiNhat: number = parseFloat(new SheetHelper().layDuLieuTrongO(SHEET_NAME.sheetHose, 'D1'));
   const url = 'https://banggia.cafef.vn/stockhandler.ashx?index=true';
 
   const object = new HttpHelper().sendPostRequest(url);
   const duLieuNhanVe = object[1];
   const thanhKhoan: number = parseFloat(duLieuNhanVe.value.replace(/,/g, '')) * 1000000000;
   if (duLieuNgayMoiNhat === ngayHienTai && thanhKhoan !== thanhKhoanMoiNhat) {
-    new SheetHelper().ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SheetHelper.SheetName.SHEET_HOSE, 'A1:D1');
+    new SheetHelper().ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SHEET_NAME.sheetHose, 'A1:D1');
   } else if (thanhKhoan !== thanhKhoanMoiNhat) {
-    new SheetHelper().chen1HangVaoDauSheet(SheetHelper.SheetName.SHEET_HOSE);
-    new SheetHelper().ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SheetHelper.SheetName.SHEET_HOSE, 'A1:D1');
+    new SheetHelper().chen1HangVaoDauSheet(SHEET_NAME.sheetHose);
+    new SheetHelper().ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SHEET_NAME.sheetHose, 'A1:D1');
   } else {
     console.log('No action required');
   }
 }
 
 function layThongTinCoBan(): void {
-  const danhSachMa: string[] = new SheetHelper().layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
+  const danhSachMa: string[] = new SheetHelper().layDuLieuTrongCot(SHEET_NAME.sheetDuLieu, 'A');
   layThongTinPB(danhSachMa);
   layThongTinPE(danhSachMa);
   layThongTinRoomNuocNgoai(danhSachMa);
@@ -40,13 +40,13 @@ function layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay(): void {
   layKhoiLuongHangNgay();
   layKhoiNgoaiMuaHangNgay();
   layKhoiNgoaiBanHangNgay();
-  LogHelper.logTime(SheetHelper.SheetName.SHEET_CAU_HINH, 'G4');
+  LogHelper.logTime(SHEET_NAME.sheetCauHinh, 'G4');
 }
 
 function layGiaThamChieu(): void {
-  const DEFAULT_FORMAT = new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B6');
-  const DANH_SACH_MA: string[] = new SheetHelper().layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
-  const date: string = DateHelper.doiDinhDangNgay(new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B1'), DEFAULT_FORMAT, 'DD/MM/YYYY');
+  const DEFAULT_FORMAT = new SheetHelper().layDuLieuTrongO(SHEET_NAME.sheetCauHinh, 'B6');
+  const DANH_SACH_MA: string[] = new SheetHelper().layDuLieuTrongCot(SHEET_NAME.sheetDuLieu, 'A');
+  const date: string = DateHelper.doiDinhDangNgay(new SheetHelper().layDuLieuTrongO(SHEET_NAME.sheetCauHinh, 'B1'), DEFAULT_FORMAT, 'DD/MM/YYYY');
   const market = 'HOSE';
   let index = 2;
   const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${date}&lookupRequest.toDate=${date}&lookupRequest.market=${market}`;
@@ -61,7 +61,7 @@ function layGiaThamChieu(): void {
   for (const e of datas) {
     const vitri = new SheetHelper().layViTriCotThamChieu(e.Symbol, DANH_SACH_MA, 2);
     if (e.Symbol.length === 3 && vitri !== -1) {
-      new SheetHelper().ghiDuLieuVaoDayTheoVung([[e.ClosePrice]], SheetHelper.SheetName.SHEET_DU_LIEU, `C${vitri}:C${vitri}`);
+      new SheetHelper().ghiDuLieuVaoDayTheoVung([[e.ClosePrice]], SHEET_NAME.sheetDuLieu, `C${vitri}:C${vitri}`);
       index++;
     }
   }
@@ -69,81 +69,81 @@ function layGiaThamChieu(): void {
 
 function layThongTinPB(danhSachMa: string[]): void {
   const QUERY_API = 'https://api-finfo.vndirect.com.vn/v4/ratios/latest';
-  const duLieuCotThamChieu = new SheetHelper().layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
+  const duLieuCotThamChieu = new SheetHelper().layDuLieuTrongCot(SHEET_NAME.sheetDuLieu, 'A');
 
-  for (let i = 0; i < danhSachMa.length; i += SheetHelper.KICH_THUOC_MANG_PHU) {
-    const URL = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetHelper.KICH_THUOC_MANG_PHU).join(',')}`;
+  for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
+    const URL = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object: any = new HttpHelper().sendGetRequest(URL);
 
     object.data.forEach((element: { code?: string; value?: number }) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = new SheetHelper().layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
-      new SheetHelper().ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SheetName.SHEET_DU_LIEU, `E${vitri}:E${vitri}`);
+      new SheetHelper().ghiDuLieuVaoDayTheoVung([[value]], SHEET_NAME.sheetDuLieu, `E${vitri}:E${vitri}`);
     });
   }
 }
 
 function layThongTinPE(danhSachMa: string[]): void {
   const QUERY_API = 'https://api-finfo.vndirect.com.vn/v4/ratios/latest';
-  const duLieuCotThamChieu = new SheetHelper().layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
+  const duLieuCotThamChieu = new SheetHelper().layDuLieuTrongCot(SHEET_NAME.sheetDuLieu, 'A');
 
-  for (let i = 0; i < danhSachMa.length; i += SheetHelper.KICH_THUOC_MANG_PHU) {
-    const url = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetHelper.KICH_THUOC_MANG_PHU).join(',')}`;
+  for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
+    const url = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object = new HttpHelper().sendGetRequest(url);
     object.data.forEach((element: { code?: string; value?: number }) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = new SheetHelper().layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
-      new SheetHelper().ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SheetName.SHEET_DU_LIEU, `F${vitri}:F${vitri}`);
+      new SheetHelper().ghiDuLieuVaoDayTheoVung([[value]], SHEET_NAME.sheetDuLieu, `F${vitri}:F${vitri}`);
     });
   }
 }
 
 function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
   const QUERY_API = 'https://finfo-api.vndirect.com.vn/v4';
-  const duLieuCotThamChieu = new SheetHelper().layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
+  const duLieuCotThamChieu = new SheetHelper().layDuLieuTrongCot(SHEET_NAME.sheetDuLieu, 'A');
 
-  for (let i = 0; i < danhSachMa.length; i += SheetHelper.KICH_THUOC_MANG_PHU) {
-    const url = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetHelper.KICH_THUOC_MANG_PHU).join(',')}`;
+  for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
+    const url = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object = new HttpHelper().sendGetRequest(url);
     object.data.forEach((element: { code?: string; totalRoom?: number; currentRoom?: number }) => {
       const totalRoom: number = element.totalRoom ?? 0;
       const currentRoom: number = element.currentRoom ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = new SheetHelper().layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
-      new SheetHelper().ghiDuLieuVaoDayTheoVung([[totalRoom, currentRoom]], SheetHelper.SheetName.SHEET_DU_LIEU, `G${vitri}:H${vitri}`);
+      new SheetHelper().ghiDuLieuVaoDayTheoVung([[totalRoom, currentRoom]], SHEET_NAME.sheetDuLieu, `G${vitri}:H${vitri}`);
     });
   }
 }
 
 function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
   const QUERY_API = 'https://api-finfo.vndirect.com.vn/v4/ratios/latest';
-  const duLieuCotThamChieu = new SheetHelper().layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
+  const duLieuCotThamChieu = new SheetHelper().layDuLieuTrongCot(SHEET_NAME.sheetDuLieu, 'A');
 
-  for (let i = 0; i < danhSachMa.length; i += SheetHelper.KICH_THUOC_MANG_PHU) {
-    const url = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetHelper.KICH_THUOC_MANG_PHU).join(',')}`;
+  for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
+    const url = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object = new HttpHelper().sendGetRequest(url);
     object.data.forEach((element: { code?: string; value?: number }) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = new SheetHelper().layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
-      new SheetHelper().ghiDuLieuVaoDayTheoVung([[value]], SheetHelper.SheetName.SHEET_DU_LIEU, `I${vitri}:I${vitri}`);
+      new SheetHelper().ghiDuLieuVaoDayTheoVung([[value]], SHEET_NAME.sheetDuLieu, `I${vitri}:I${vitri}`);
     });
   }
 }
 
 export function duLieuTam(): void {
   new SheetHelper().layDuLieuTrongCot('TRUY VAN', 'A').forEach((date: string) => {
-    layKhoiNgoaiBanHangNgay('Tam', date);
-    // layKhoiNgoaiMuaHangNgay('Tam', date);
+    // layKhoiNgoaiBanHangNgay('Tam', date);
+    layKhoiNgoaiMuaHangNgay('Tam', date);
     // layKhoiLuongHangNgay('Tam', date);
     // layGiaHangNgay('Tam', date);
   });
 }
 
-export function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_NGOAI_BAN, date = new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
-  const danhSachMa = new SheetHelper().layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
+export function layKhoiNgoaiBanHangNgay(sheetName = SHEET_NAME.sheetKhoiNgoaiBan, date = new SheetHelper().layDuLieuTrongO(SHEET_NAME.sheetHose, 'A1')) {
+  const danhSachMa = new SheetHelper().layDuLieuTrongCot(SHEET_NAME.sheetDuLieu, 'A');
   const hangCuoi = new SheetHelper().laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = new SheetHelper().layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
@@ -169,8 +169,8 @@ export function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.SheetName.SHEET_
   }
 }
 
-function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_NGOAI_MUA, date = new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
-  const danhSachMa = new SheetHelper().layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
+function layKhoiNgoaiMuaHangNgay(sheetName = SHEET_NAME.sheetKhoiNgoaiMua, date = new SheetHelper().layDuLieuTrongO(SHEET_NAME.sheetHose, 'A1')) {
+  const danhSachMa = new SheetHelper().layDuLieuTrongCot(SHEET_NAME.sheetDuLieu, 'A');
   const hangCuoi = new SheetHelper().laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = new SheetHelper().layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
@@ -196,8 +196,8 @@ function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_NG
   }
 }
 
-function layKhoiLuongHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_LUONG, date = new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
-  const danhSachMa = new SheetHelper().layDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A');
+function layKhoiLuongHangNgay(sheetName = SHEET_NAME.sheetKhoiLuong, date = new SheetHelper().layDuLieuTrongO(SHEET_NAME.sheetHose, 'A1')) {
+  const danhSachMa = new SheetHelper().layDuLieuTrongCot(SHEET_NAME.sheetDuLieu, 'A');
   const hangCuoi = new SheetHelper().laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = new SheetHelper().layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
@@ -222,8 +222,8 @@ function layKhoiLuongHangNgay(sheetName = SheetHelper.SheetName.SHEET_KHOI_LUONG
     console.log('done');
   }
 }
-function layGiaHangNgay(sheetName = SheetHelper.SheetName.SHEET_GIA, date = new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_HOSE, 'A1')) {
-  const DEFAULT_FORMAT = new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B6');
+function layGiaHangNgay(sheetName = SHEET_NAME.sheetGia, date = new SheetHelper().layDuLieuTrongO(SHEET_NAME.sheetHose, 'A1')) {
+  const DEFAULT_FORMAT = new SheetHelper().layDuLieuTrongO(SHEET_NAME.sheetCauHinh, 'B6');
   const fromDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
   const toDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
   const hangCuoi = new SheetHelper().laySoHangTrongSheet(sheetName);
@@ -269,13 +269,13 @@ function layDanhSachMa(): void {
   const mangDuLieuChinh: Array<[string, string]> = [];
   const response = new HttpHelper().sendRequest(url, OPTION);
   const datas = response.data;
-  new SheetHelper().xoaDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A', 2, 2);
+  new SheetHelper().xoaDuLieuTrongCot(SHEET_NAME.sheetDuLieu, 'A', 2, 2);
   for (const element of datas) {
     if (element.Symbol.length == 3) {
       mangDuLieuChinh.push([element.Symbol, element.StockName]);
     }
   }
-  new SheetHelper().ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SheetName.SHEET_DU_LIEU, 2, 'A');
+  new SheetHelper().ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SHEET_NAME.sheetDuLieu, 2, 'A');
 }
 
 /**

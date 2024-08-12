@@ -5,14 +5,15 @@ export class ZChartHelper {
   public static readonly CHART_ID = 911649750;
 
   public static updateChart(): void {
-    const label = `${SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F1')} - ${SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'G1')}`;
-    const tenMa = `${SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F1')}`;
-    const HIGH_MA: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B5');
-    const LOW_MA: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B4');
-    const ABS_MA: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B3');
-    const HIGH_VNI: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C5');
-    const LOW_VNI: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C4');
-    const ABS_VNI: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C3');
+    const sheetHelper = new SheetHelper();
+    const label = `${sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F1')} - ${sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'G1')}`;
+    const tenMa = `${sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F1')}`;
+    const HIGH_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B5');
+    const LOW_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B4');
+    const ABS_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B3');
+    const HIGH_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C5');
+    const LOW_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C4');
+    const ABS_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C3');
     const chart = this.getChartById(this.CHART_ID, SheetHelper.SheetName.SHEET_CHI_TIET_MA);
     const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SheetName.SHEET_CHI_TIET_MA);
 

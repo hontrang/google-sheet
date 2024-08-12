@@ -1,34 +1,48 @@
 import { ExcelHelper } from "../utility/ExcelHelper";
-import { SheetHelper } from "../utility/SheetHelper";
 import { AxiosHelper } from "../utility/AxiosHelper";
-import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
+import { ResponseVndirect } from "../types/types";
+import { sleepSync } from "bun";
 
+const excel = new ExcelHelper();
+const axios = new AxiosHelper();
 
 async function main() {
-    const excel = new ExcelHelper();
-    const axiosHelper = new AxiosHelper();
+
     await excel.truyCapWorkBook();
-    const market = 'HOSE';
-    const pageIndex = 1;
-    const pageSize = 1000;
-    const token = await axiosHelper.getToken();
-    const url = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
-    const OPTION: URLFetchRequestOptions = {
-        method: 'get',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
-    };
-    const mangDuLieuChinh: Array<[string, string]> = [];
-    const response = axiosHelper.sendRequest(url, OPTION);
-    const datas = response.data;
-    excel.xoaDuLieuTrongCot(SheetHelper.SheetName.SHEET_DU_LIEU, 'A', 2, 2);
-    for (const element of datas) {
-        if (element.Symbol.length == 3) {
-            mangDuLieuChinh.push([element.Symbol, element.StockName]);
-        }
+    const ngay = await excel.layDuLieuTrongCot('TRUY VAN', 'A').reverse();
+    for (const date of ngay) {
+        await layKhoiNgoaiMuaHangNgay('Tam', date);
     }
-    excel.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.SheetName.SHEET_DU_LIEU, 2, 'A');
     await excel.luuWorkBook();
+}
+
+async function layKhoiNgoaiMuaHangNgay(sheetName = 'Tam', date = '2024-01-01'): Promise<void> {
+    // const headers = excel.layDuLieuTrongHang(sheetName, 1).slice(1);
+    const tenMa = 'VIC';
+    const url = `https://finfo-api.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${tenMa}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
+    try {
+        const response = await axios.sendGetRequest(url);
+        if (response.data.length > 0) {
+            // const list = [date];
+            // response.data.map(async (item: ResponseVndirect) => {
+            //     for (const header of headers) {
+            //         if (header === item.code) {
+            //             list.push(item.buyVol);
+            //         }
+            //     }
+            // });
+            const item: ResponseVndirect = response.data[0];
+            const hangCuoi = await excel.laySoHangTrongSheet(sheetName);
+            await excel.ghiDuLieuVaoDay([date, item.sellVol], sheetName, hangCuoi + 1, 1);
+            console.log('Lấy khối ngoại bán hàng ngày thành công');
+        } else {
+            const hangCuoi = await excel.laySoHangTrongSheet(sheetName);
+            await excel.ghiDuLieuVaoDay([`${date}`, ""], sheetName, hangCuoi + 1, 1);
+        }
+        sleepSync(100);
+    } catch (error) {
+        console.error('Lỗi khi lấy dữ liệu từ API:', error);
+    }
 }
 
 main();

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from '../Config';
+import { Configuration } from 'src/configuration/Configuration';
 
 let TOKEN: string | undefined;
 describe('kiểm tra url vndirect chạy chính xác', () => {
@@ -17,7 +17,7 @@ describe('kiểm tra url vndirect chạy chính xác', () => {
 describe('kiểm tra url simplize chạy chính xác', () => {
   test('kiểm tra phản hồi từ api lấy cổ tức', async () => {
     const tenMa = 'HPG';
-    const URL: string = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
+    const URL = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
     const response = await axios.post(URL, { tickers: [`${tenMa}`], page: 0, size: 10 });
     const data = response.data;
     expect(data).not.toBeNull();
@@ -81,6 +81,7 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const pageSize = 1000;
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data.data;
     expect(data[0].Market).toBe(market);
@@ -93,6 +94,7 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const pageSize = 1000;
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/SecuritiesDetails?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.symbol=${tenMa}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data.data[0].RepeatedInfo;
     expect(data[0].Exchange).toBe(market);
@@ -116,6 +118,7 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const pageSize = 1000;
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/IndexComponents?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.Exchange=${exchange}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
@@ -130,6 +133,7 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const ascending = true;
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
@@ -144,6 +148,7 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const ascending = true;
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/IntradayOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
@@ -170,6 +175,7 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const market = 'HOSE';
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.market=${market}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
@@ -179,8 +185,8 @@ describe('kiểm tra url ssi chạy chính xác', () => {
 async function getToken(): Promise<string> {
   if (TOKEN !== undefined) return TOKEN;
   else {
-    const consumerID = config.consumerID;
-    const consumerSecret = config.consumerSecret;
+    const consumerID = Configuration.consumerID;
+    const consumerSecret = Configuration.consumerSecret;
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
     const response = await axios.post(URL, { consumerID: consumerID, consumerSecret: consumerSecret });
     TOKEN = 'Bearer ' + response.data.data.accessToken;
