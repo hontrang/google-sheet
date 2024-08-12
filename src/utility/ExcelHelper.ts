@@ -4,10 +4,11 @@ import path from 'path';
 import * as ExcelJS from 'exceljs';
 import { Cell, Workbook, Worksheet } from 'exceljs';
 import { SheetSpread } from '../types/types';
+import { Configuration } from 'src/configuration/Configuration';
 
 export class ExcelHelper implements SheetSpread {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    readonly FILE_PATH = path.join(__dirname, "./dw.xlsx");
+    readonly filePath = path.resolve(process.cwd(), Configuration.xlsxInput);
+    readonly outPath = path.resolve(process.cwd(), Configuration.xlsxOutput);
     private workBook!: Workbook;
     private workSheet!: Worksheet;
 
@@ -22,10 +23,10 @@ export class ExcelHelper implements SheetSpread {
     }
 
     public async truyCapWorkBook() {
-        this.workBook = await this.readExcelFileSync(this.FILE_PATH);
+        this.workBook = await this.readExcelFileSync(this.filePath);
     }
     public async luuWorkBook() {
-        await this.workBook.xlsx.writeFile(this.FILE_PATH).then(() => {
+        await this.workBook.xlsx.writeFile(this.outPath).then(() => {
             console.log('Workbook đã được lưu xong.');
         }).catch(error => {
             console.error('Lỗi khi lưu workbook:', error);
@@ -56,13 +57,16 @@ export class ExcelHelper implements SheetSpread {
         const columnData: string[] = [];
         this.workSheet = this.getSheetByName(sheetName);
         this.workSheet.getColumn(column).eachCell(function (cell) {
-            columnData.push(cell.text);
+            const text = cell.text;
+            if (text !== '') {
+                columnData.push(cell.text);
+            }
         });
         return columnData;
     }
-    laySoHangTrongSheet(sheetName: string): number {
+    async laySoHangTrongSheet(sheetName: string): Promise<number> {
         this.workSheet = this.getSheetByName(sheetName);
-        return this.workSheet.lastRow?.number ?? 0;
+        return this.workSheet.rowCount ?? 0;
     }
     layDuLieuTrongHang(sheetName: string, rowIndex: number): string[] {
         this.workSheet = this.getSheetByName(sheetName);
@@ -73,12 +77,12 @@ export class ExcelHelper implements SheetSpread {
         return data;
     }
 
-    ghiDuLieuVaoDay(data: any[][], sheetName: string, rowIndex: number, columnIndex: number): void {
+    async ghiDuLieuVaoDay(data: any[], sheetName: string, rowIndex: number, columnIndex: number): Promise<void> {
         this.workSheet = this.getSheetByName(sheetName);
         const row = this.workSheet.getRow(rowIndex);
         const adjustedData = new Array(columnIndex - 1).fill('').concat(data);
         row.values = adjustedData;
-        console.log("Da ghi du lieu: " + adjustedData);
+        console.log(`Da ghi du lieu vao hang ${rowIndex} cot: ${columnIndex} data ${data}`);
         row.commit();
     }
     ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {

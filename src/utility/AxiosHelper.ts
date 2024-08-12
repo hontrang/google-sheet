@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Configuration } from "src/configuration/Configuration";
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
 import { Http } from "../types/types";
 import { HttpHelper } from "./HttpHelper";
 import axios from 'axios';
-import { SheetHelper } from "./SheetHelper";
 
 export class AxiosHelper implements Http {
   async sendRequest(url: string, option?: URLFetchRequestOptions) {
@@ -49,8 +49,8 @@ export class AxiosHelper implements Http {
   async getToken(): Promise<string> {
     if (HttpHelper.token !== undefined) return HttpHelper.token;
     else {
-      const consumerID = "35e723ae7e4c426694226ed4649379d5";
-      const consumerSecret = "a54573a4a78949a0b59befc59523aee2";
+      const consumerID = Configuration.consumerID;
+      const consumerSecret = Configuration.consumerSecret;
       const OPTIONS_POST_TOKEN_SSI: URLFetchRequestOptions = {
         method: 'post',
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -62,7 +62,7 @@ export class AxiosHelper implements Http {
       };
       const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
       const response = await axios.post(URL, { consumerID: consumerID, consumerSecret: consumerSecret });
-      HttpHelper.token = 'Bearer ' + response.data.accessToken;
+      HttpHelper.token = 'Bearer ' + response.data.data.accessToken;
       return HttpHelper.token;
     }
   }

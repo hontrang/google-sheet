@@ -2,24 +2,26 @@
 
 import { SheetSpread } from "../types/types";
 
+export const SHEET_NAME = {
+  sheetThamChieu: 'tham chiếu',
+  sheetBangThongTin: 'bảng thông tin',
+  sheetDuLieu: 'dữ liệu',
+  sheetChiTietMa: 'chi tiết mã',
+  sheetCauHinh: 'cấu hình',
+  sheetDebug: 'debug',
+  sheetHose: 'HOSE',
+  sheetGia: 'Giá',
+  sheetKhoiLuong: 'Khối Lượng',
+  sheetKhoiNgoaiMua: 'KN Mua',
+  sheetKhoiNgoaiBan: 'KN Bán',
+  sheetTyGia: 'Tỷ Giá USD/VND',
+};
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-extraneous-class
 export class SheetHelper implements SheetSpread {
-  static readonly SheetName = {
-    SHEET_THAM_CHIEU: 'tham chiếu',
-    SHEET_BANG_THONG_TIN: 'bảng thông tin',
-    SHEET_DU_LIEU: 'dữ liệu',
-    SHEET_CHI_TIET_MA: 'chi tiết mã',
-    SHEET_CAU_HINH: 'cấu hình',
-    SHEET_DEBUG: 'debug',
-    SHEET_HOSE: 'HOSE',
-    SHEET_GIA: 'Giá',
-    SHEET_KHOI_LUONG: 'Khối Lượng',
-    SHEET_KHOI_NGOAI_MUA: 'KN Mua',
-    SHEET_KHOI_NGOAI_BAN: 'KN Bán',
-    SHEET_TY_GIA: 'Tỷ Giá USD/VND',
-  };
 
-  public static readonly KICH_THUOC_MANG_PHU = 10;
+
+  public static readonly kichThuocMangPhu = 10;
 
   ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
@@ -30,6 +32,7 @@ export class SheetHelper implements SheetSpread {
     sheet.getRange(row, column, data.length, data[0].length).clearContent();
     sheet.getRange(row, column, data.length, data[0].length).setValues(data);
   }
+
 
   ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
@@ -96,7 +99,7 @@ export class SheetHelper implements SheetSpread {
     return dataArray;
   }
 
-  laySoHangTrongSheet(sheetName: string): number {
+  async laySoHangTrongSheet(sheetName: string): Promise<number> {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return -1;
     return sheet.getLastRow();

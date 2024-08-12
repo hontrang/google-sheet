@@ -45,3 +45,20 @@ export interface ResponseSsi {
         Symbol?: string,
         ClosePrice?: number
 }
+
+export interface ResponseDC {
+        id?: number,
+        fund_id?: number,
+        created?: string,
+        modified?: string,
+        stock?: string,
+        sector_vi?: string,
+        sector_en?: string,
+        bourse_vi?: string,
+        bourse_en?: string,
+        per_nav?: number,
+        data_index_id?: number,
+        shares?: number,
+        market_value?: number,
+        foreign_ownership?: number
+}
