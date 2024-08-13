@@ -287,12 +287,12 @@ function LAY_THONG_TIN_DANH_MUC_DC(url: string) {
   const response = HttpHelper.sendRequest(url);
   const data = response.ffs_holding;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  data.forEach((element: { stock?: string; sector_vi?: string; per_nav?: string; bourse_en?: string; modified?: string }) => {
+  data.forEach((element: { stock?: string; sector_vi?: string; per_nav?: string; bourse_en?: string; created?: string }) => {
     const tenMa = element.stock ?? '_';
     const nhomNganh = element.sector_vi ?? '_';
     const tyLe = element.per_nav ?? '_';
     const sanGD = element.bourse_en ?? '_';
-    const capNhatLuc = element.modified ?? '-';
+    const capNhatLuc = element.created ?? '-';
     result.push([tenMa, nhomNganh, sanGD, tyLe, capNhatLuc]);
   });
   return result;
@@ -308,10 +308,10 @@ function LAY_THONG_TIN_TAI_SAN_DC(url: string) {
   const data = response.ffs_asset;
   console.log(response);
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  data.forEach((element: { name_vi?: string; weight?: string; modified?: string }) => {
+  data.forEach((element: { name_vi?: string; weight?: string; created?: string }) => {
     const tenTaiSan = element.name_vi ?? '_';
     const tyLe = element.weight ?? '_';
-    const capNhatLuc = element.modified ?? '-';
+    const capNhatLuc = element.created ?? '-';
     result.push([tenTaiSan, tyLe, capNhatLuc]);
   });
   return result;
