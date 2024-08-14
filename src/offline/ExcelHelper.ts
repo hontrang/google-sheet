@@ -3,8 +3,8 @@
 import path from 'path';
 import * as ExcelJS from 'exceljs';
 import { Cell, Workbook, Worksheet } from 'exceljs';
-import { SheetSpread } from '../../types/types';
-import { Configuration } from '../../configuration/Configuration';
+import { SheetSpread } from '../types/types';
+import { Configuration } from '../configuration/Configuration';
 
 export class ExcelHelper implements SheetSpread {
     readonly filePath = path.resolve(process.cwd(), Configuration.xlsxInput);
@@ -64,7 +64,7 @@ export class ExcelHelper implements SheetSpread {
         });
         return columnData;
     }
-    async laySoHangTrongSheet(sheetName: string): Promise<number> {
+    laySoHangTrongSheet(sheetName: string): number {
         this.workSheet = this.getSheetByName(sheetName);
         return this.workSheet.rowCount ?? 0;
     }
