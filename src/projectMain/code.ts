@@ -30,6 +30,7 @@ function getDataHose(): void {
     indexSheetDuLieu++;
     indexSheetThamChieu++;
   }
+  LogHelper.logTime(SheetHelper.sheetName.sheetBangThongTin, 'I1');
 }
 
 function layTinTucSheetBangThongTin(): void {
