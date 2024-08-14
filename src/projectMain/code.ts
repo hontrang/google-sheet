@@ -219,3 +219,11 @@ function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
     }
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function batSukienSuaThongTinO(e: any) {
+  const sheet = SpreadsheetApp.getActive().getActiveSheet();
+  if (e.range.getA1Notation() === 'F1' && sheet.getName() === SheetHelper.sheetName.sheetChiTietMa) {
+    layThongTinChiTietMa();
+  }
+}
