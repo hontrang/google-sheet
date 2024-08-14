@@ -26,7 +26,6 @@
     "@types/jest": "^29.5.3",
     "@types/moment": "^2.13.0",
     "@types/node": "^20.11.5",
-    "@types/xlsx": "^0.0.36",
     "axios": "^1.6.8",
     "bun": "^1.1.24",
     "cheerio": "^1.0.0-rc.12",
