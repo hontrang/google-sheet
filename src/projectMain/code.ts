@@ -186,12 +186,12 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
   }
 }
 
-function layThongTongSoLuongCoPhieuDangNiemYet(tenMa = 'FRT'): void {
+async function layThongTongSoLuongCoPhieuDangNiemYet(tenMa = 'FRT'): Promise<void> {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const market = 'HOSE';
   const url = `https://fc-data.ssi.com.vn/api/v2/Market/SecuritiesDetails?lookupRequest.market=${market}&lookupRequest.pageIndex=1&lookupRequest.pageSize=1000&lookupRequest.symbol=${tenMa}`;
-  const token = httpHelper.getToken();
+  const token = await httpHelper.getToken();
   const OPTION: URLFetchRequestOptions = {
     method: 'get',
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -217,12 +217,5 @@ function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
       const value = element.value;
       sheetHelper.ghiDuLieuVaoO(value, SheetHelper.sheetName.sheetChiTietMa, 'J16');
     }
-  }
-}
-
-function batSukienSuaThongTinO(e: any) {
-  const sheet = SpreadsheetApp.getActive().getActiveSheet();
-  if (e.range.getA1Notation() === 'F1' && sheet.getName() === SheetHelper.sheetName.sheetChiTietMa) {
-    layThongTinChiTietMa();
   }
 }

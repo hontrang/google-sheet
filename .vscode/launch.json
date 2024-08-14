@@ -9,7 +9,7 @@
             "internalConsoleOptions": "neverOpen",
             "request": "launch",
             "name": "Debug Bun offline file ${workspaceFolder}/src/offline/Code.ts",
-            "program": "${workspaceFolder}/src/offline/Code.ts",
+            "program": "${workspaceFolder}/src/offline/Main.ts",
             "cwd": "${workspaceFolder}",
             "stopOnEntry": false,
             "watchMode": false
@@ -19,7 +19,7 @@
             "internalConsoleOptions": "neverOpen",
             "request": "launch",
              "name": "Run Bun offline file ${workspaceFolder}/src/offline/Code.ts",
-            "program": "${workspaceFolder}/src/offline/Code.ts",
+            "program": "${workspaceFolder}/src/offline/Main.ts",
             "cwd": "${workspaceFolder}",
             "noDebug": true,
             "watchMode": false

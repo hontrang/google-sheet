@@ -20,9 +20,8 @@ export interface SheetSpread {
 export interface Http {
         sendRequest(url: string, option?: URLFetchRequestOptions): any;
         sendPostRequest(url: string, options?: URLFetchRequestOptions): any;
-        sendGetRequest(url: string): any;
-        sendGraphQLRequest(url: string, query: string, variables?: any): any;
-        getToken(): string;
+        sendGetRequest(url: string): Promise<HttpResponse>;
+        getToken(): Promise<string>;
 }
 
 export interface ResponseVndirect {
@@ -38,7 +37,11 @@ export interface ResponseVndirect {
         netVol?: number,
         totalRoom?: number,
         currentRoom?: number,
-        nmVolume?: number
+        nmVolume?: number,
+        value?: number,
+        itemName?: string,
+        reportDate?: string,
+        itemCode?: string
 }
 
 export interface ResponseSsi {
@@ -61,4 +64,11 @@ export interface ResponseDC {
         shares?: number,
         market_value?: number,
         foreign_ownership?: number
+}
+
+export interface HttpResponse {
+        data?: any,
+        status?: number,
+        statusText?: string
+
 }

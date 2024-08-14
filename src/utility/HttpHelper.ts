@@ -33,20 +33,9 @@ export class HttpHelper implements Http {
       return null;
     }
   }
-  sendGraphQLRequest(url: string, query: string, variables?: any) {
-    const PAYLOAD = JSON.stringify({
-      query: query,
-      variables: variables
-    });
-    const OPTIONS: URLFetchRequestOptions = {
-      method: 'post',
-      payload: PAYLOAD
-    };
-    return this.sendPostRequest(url, OPTIONS);
-  }
-  getToken(): string {
+  async getToken(): Promise<string> {
     const sheetHelper = new SheetHelper();
-    if (HttpHelper.token !== undefined) return HttpHelper.token;
+    if (this.token !== undefined) return this.token;
     else {
       const consumerID = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B7');
       const consumerSecret = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B8');
@@ -61,11 +50,11 @@ export class HttpHelper implements Http {
       };
       const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
       const response = this.sendPostRequest(URL, OPTIONS_POST_TOKEN_SSI);
-      HttpHelper.token = 'Bearer ' + response.data.accessToken;
-      return HttpHelper.token;
+      this.token = 'Bearer ' + response.data.accessToken;
+      return this.token;
     }
   }
-  public static token: string | undefined;
+  public token: string | undefined;
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   public static readonly OPTIONS_POST: URLFetchRequestOptions = {

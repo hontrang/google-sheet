@@ -46,7 +46,7 @@ function layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay(): void {
   LogHelper.logTime(SheetHelper.sheetName.sheetCauHinh, 'G4');
 }
 
-function layGiaThamChieu(): void {
+async function layGiaThamChieu(): Promise<void> {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const DEFAULT_FORMAT = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
@@ -55,7 +55,7 @@ function layGiaThamChieu(): void {
   const market = 'HOSE';
   let index = 2;
   const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${date}&lookupRequest.toDate=${date}&lookupRequest.market=${market}`;
-  const token = httpHelper.getToken();
+  const token = await httpHelper.getToken();
   const OPTION: URLFetchRequestOptions = {
     method: 'get',
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -242,7 +242,7 @@ function layKhoiLuongHangNgay(sheetName = SheetHelper.sheetName.sheetKhoiLuong, 
     console.log('done');
   }
 }
-function layGiaHangNgay(sheetName = SheetHelper.sheetName.sheetGia, date = new SheetHelper().layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'A1')) {
+async function layGiaHangNgay(sheetName = SheetHelper.sheetName.sheetGia, date = new SheetHelper().layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'A1')) {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const DEFAULT_FORMAT = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
@@ -253,7 +253,7 @@ function layGiaHangNgay(sheetName = SheetHelper.sheetName.sheetGia, date = new S
   const market = 'HOSE';
   if (duLieuNgayMoiNhat !== date) {
     const url = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.market=${market}`;
-    const token = httpHelper.getToken();
+    const token = await httpHelper.getToken();
     const OPTION: URLFetchRequestOptions = {
       method: 'get',
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -277,13 +277,13 @@ function layGiaHangNgay(sheetName = SheetHelper.sheetName.sheetGia, date = new S
   }
 }
 
-function layDanhSachMa(): void {
+async function layDanhSachMa(): Promise<void> {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const market = 'HOSE';
   const pageIndex = 1;
   const pageSize = 1000;
-  const token = httpHelper.getToken();
+  const token = await httpHelper.getToken();
   const url = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
   const OPTION: URLFetchRequestOptions = {
     method: 'get',
