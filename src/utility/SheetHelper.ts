@@ -11,7 +11,7 @@ export class SheetHelper implements SheetSpread {
     sheetChiTietMa: 'chi tiết mã',
     sheetCauHinh: 'cấu hình',
     sheetDebug: 'debug',
-    sheetHose: 'HOSE',
+    sheetHose: 'hose',
     sheetGia: 'Giá',
     sheetKhoiLuong: 'Khối Lượng',
     sheetKhoiNgoaiMua: 'KN Mua',
