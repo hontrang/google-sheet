@@ -17,8 +17,7 @@
     "deploy": "cd dist && clasp push && clasp open",
     "test": "npm run clean && jest -c",
     "lint": "eslint .",
-    "prettier": "prettier --config .prettierrc **/*.ts --write",
-    "start": "tsc src/offline/Code.ts && node src/offline/Code.js"
+    "prettier": "prettier --config .prettierrc **/*.ts --write"
   },
   "description": "Quản lý chứng khoán bằng google sheet",
   "devDependencies": {
@@ -51,8 +50,7 @@
     "tslib": "^2.6.2",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.8.0",
-    "upath": "2.0.1",
-    "xlsx": "^0.18.5"
+    "upath": "2.0.1"
   },
   "type": "module"
 }
