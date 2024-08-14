@@ -1,5 +1,5 @@
-import { ExcelHelper } from "../utility/ExcelHelper";
-import { AxiosHelper } from "../utility/AxiosHelper";
+import { ExcelHelper } from "../offline/utility/ExcelHelper";
+import { AxiosHelper } from "../offline/utility/AxiosHelper";
 import { ResponseVndirect } from "../types/types";
 import { sleepSync } from "bun";
 
@@ -9,7 +9,7 @@ const axios = new AxiosHelper();
 async function main() {
 
     await excel.truyCapWorkBook();
-    const ngay = await excel.layDuLieuTrongCot('TRUY VAN', 'A').reverse();
+    const ngay = excel.layDuLieuTrongCot('TRUY VAN', 'A').reverse();
     for (const date of ngay) {
         await layKhoiNgoaiMuaHangNgay('Tam', date);
     }
