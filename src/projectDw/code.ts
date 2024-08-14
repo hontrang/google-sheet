@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Cheerio from 'cheerio';
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
-import { DateHelper } from '../utility/DateHelper';
-import { HttpHelper } from '../utility/HttpHelper';
-import { LogHelper } from '../utility/LogHelper';
-import { SheetHelper } from '../utility/SheetHelper';
+import { DateHelper } from '@utils/DateHelper';
+import { HttpHelper } from '@utils/HttpHelper';
+import { LogHelper } from '@utils/LogHelper';
+import { SheetHelper } from '@utils/SheetHelper';
 import { ResponseSsi, ResponseVndirect } from '../types/types';
 
 function layChiSoVnIndex(): void {

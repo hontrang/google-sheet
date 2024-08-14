@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Configuration } from "src/configuration/Configuration";
+import { Configuration } from "../../configuration/Configuration";
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
-import { Http } from "../types/types";
-import { HttpHelper } from "./HttpHelper";
+import { Http } from "../../types/types";
+import { HttpHelper } from "../../utility/HttpHelper";
 import axios from 'axios';
 
 export class AxiosHelper implements Http {

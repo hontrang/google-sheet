@@ -2,9 +2,9 @@
 import * as Cheerio from 'cheerio';
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
 
-import { HttpHelper } from '../utility/HttpHelper';
-import { DateHelper } from '../utility/DateHelper';
-import { LogHelper } from '../utility/LogHelper';
+import { HttpHelper } from '@utils/HttpHelper';
+import { DateHelper } from '@utils/DateHelper';
+import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
 
 function getDataHose(): void {
