@@ -102,6 +102,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "test/**/*.ts",
     "Config.ts"
   ],
   "exclude": [
