@@ -1,21 +1,22 @@
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SheetHelper } from './SheetHelper'; // Đảm bảo đường dẫn đúng
 
-export class ZChartHelper {
-  public static readonly CHART_ID = 911649750;
+export class ZchartHelper {
+  public static readonly chartID = 911649750;
 
   public static updateChart(): void {
     const sheetHelper = new SheetHelper();
-    const label = `${sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F1')} - ${sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'G1')}`;
-    const tenMa = `${sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F1')}`;
-    const HIGH_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B5');
-    const LOW_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B4');
-    const ABS_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B3');
-    const HIGH_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C5');
-    const LOW_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C4');
-    const ABS_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C3');
-    const chart = this.getChartById(this.CHART_ID, SheetHelper.SheetName.SHEET_CHI_TIET_MA);
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SheetName.SHEET_CHI_TIET_MA);
+    const label = `${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'F1')} - ${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'G1')}`;
+    const tenMa = `${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'F1')}`;
+    const HIGH_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B5');
+    const LOW_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B4');
+    const ABS_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B3');
+    const HIGH_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'C5');
+    const LOW_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'C4');
+    const ABS_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'C3');
+    const chart = this.getChartById(this.chartID, SheetHelper.sheetName.sheetChiTietMa);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetChiTietMa);
 
     if (!sheet || !chart) {
       console.error(`Sheet hoặc biểu đồ không tồn tại.`);
@@ -38,7 +39,7 @@ export class ZChartHelper {
   }
 
   public static createChart(): void {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SheetName.SHEET_CHI_TIET_MA);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetChiTietMa);
     if (!sheet) {
       console.error('Không tìm thấy sheet.');
       return;
@@ -71,15 +72,15 @@ export class ZChartHelper {
   }
 
   public static removeChartByID(): void {
-    const chart = this.getChartById(this.CHART_ID, SheetHelper.SheetName.SHEET_CHI_TIET_MA);
+    const chart = this.getChartById(this.chartID, SheetHelper.sheetName.sheetChiTietMa);
     if (!chart) {
       console.error('Biểu đồ không tồn tại.');
       return;
     }
 
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SheetName.SHEET_CHI_TIET_MA);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetChiTietMa);
     if (!sheet) {
-      console.error(`Sheet ${SheetHelper.SheetName.SHEET_CHI_TIET_MA} không tồn tại.`);
+      console.error(`Sheet ${SheetHelper.sheetName.sheetChiTietMa} không tồn tại.`);
       return;
     }
 
@@ -96,13 +97,13 @@ export class ZChartHelper {
     });
 
     for (const sheet of chartsInfo?.sheets || []) {
-      if (sheet.properties?.title === SheetHelper.SheetName.SHEET_CHI_TIET_MA) {
+      if (sheet.properties?.title === SheetHelper.sheetName.sheetChiTietMa) {
         if (sheet.charts && sheet.charts.length > 0) {
           for (const chart of sheet.charts) {
             Logger.log(JSON.stringify(chart));
           }
         } else {
-          Logger.log(`Không tìm thấy biểu đồ nào trên bảng ${SheetHelper.SheetName.SHEET_CHI_TIET_MA}.`);
+          Logger.log(`Không tìm thấy biểu đồ nào trên bảng ${SheetHelper.sheetName.sheetChiTietMa}.`);
         }
         break;
       }

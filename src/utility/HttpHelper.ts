@@ -46,10 +46,11 @@ export class HttpHelper implements Http {
     return this.sendPostRequest(url, OPTIONS);
   }
   getToken(): string {
+    const sheetHelper = new SheetHelper();
     if (HttpHelper.token !== undefined) return HttpHelper.token;
     else {
-      const consumerID = new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B7');
-      const consumerSecret = new SheetHelper().layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B8');
+      const consumerID = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B7');
+      const consumerSecret = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B8');
       const OPTIONS_POST_TOKEN_SSI: URLFetchRequestOptions = {
         method: 'post',
         // eslint-disable-next-line @typescript-eslint/naming-convention

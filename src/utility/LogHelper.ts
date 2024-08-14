@@ -7,7 +7,7 @@ export class LogHelper {
   public static logDebug(content: string): boolean {
     const data: [string, string][] = [[DateHelper.layNgayHienTai('YYYY/MM/DD HH:mm:ss'), content.toString()]];
     Logger.log(content);
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SheetName.SHEET_DEBUG);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetDebug);
     if (!sheet) return false;
     else {
       sheet.getRange(sheet.getLastRow() + 1, 1, data.length, data[0].length).setValues(data);
