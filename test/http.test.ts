@@ -101,17 +101,6 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     expect(data[0].Symbol).toBe(tenMa);
   });
 
-  // test("kiểm tra url IndexComponents", async () => {
-  //     const indexCode = 'HNX';
-  //     const pageIndex = 1;
-  //     const pageSize = 1000;
-  //     const token = await getToken();
-  //     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/IndexComponents?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.indexCode=${indexCode}`;
-  //     const response = await axios.get(URL, { headers: { Authorization: token } });
-  //     const data = response.data;
-  //     expect(data.status).toBe("Success");
-  // });
-
   test('kiểm tra url GetIndexList', async () => {
     const exchange = 'HOSE';
     const pageIndex = 1;
@@ -153,21 +142,6 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const data = response.data;
     expect(data.status).toBe('Success');
   });
-
-  // test("kiểm tra url GetDailyIndex", async () => {
-  //     const indexCode = 'HNX';
-  //     const pageIndex = 1;
-  //     const pageSize = 1000;
-  //     const fromDate = "04/05/2020";
-  //     const toDate = "04/05/2020";
-  //     const orderBy = "Tradingdate";
-  //     const order = "desc";
-  //     const token = await getToken();
-  //     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyIndex?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.OrderBy=${orderBy}&lookupRequest.Order=${order}&lookupRequest.IndexCode=${indexCode}`;
-  //     const response = await axios.get(URL, { headers: { Authorization: token } });
-  //     const data = response.data;
-  //     expect(data.status).toBe('Success');
-  // });
 
   test('kiểm tra url GetStockPrice', async () => {
     const fromDate = '04/05/2020';
