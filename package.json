@@ -3,8 +3,8 @@
   "name": "google-sheet",
   "version": "1.0.0",
   "scripts": {
-    "build:main": "npm run clean && tsc && npm run prettier && npm run build:assets && npm run cpMain && npm run build:clasp:main && npm run removeImport",
-    "build:dw": "npm run clean && tsc && npm run prettier && npm run build:assets && npm run cpDW && npm run build:clasp:dw && npm run removeImport",
+    "build:main": "npm run clean && npm run build:assets && npm run cpMain && npm run removeImport && npm run prettier && npm run build:clasp:main",
+    "build:dw": "npm run clean  && npm run build:assets && npm run cpDW && npm run removeImport && npm run prettier && npm run build:clasp:dw",
     "build:main:deploy": "npm run build:main && npm run deploy",
     "build:dw:deploy": "npm run build:dw && npm run deploy",
     "build:assets": "copyfiles -u 1 -f -E src/assets/**/*.js dist",
@@ -12,10 +12,9 @@
     "build:clasp:dw": "node scripts/build-clasp-dw.js",
     "clean": "node scripts/clean.js",
     "removeImport": "node scripts/remove-import.js",
-    "cpMain": "copyfiles -u 1 -f -E build/src/utility/*.js build/src/projectMain/*.js dist",
-    "cpDW": "copyfiles -u 1 -f -E build/src/utility/*.js build/src/projectDw/*.js dist",
+    "cpMain": "copyfiles -u 1 -f -E src/utility/*.ts src/projectMain/*.ts dist",
+    "cpDW": "copyfiles -u 1 -f -E src/utility/*.ts src/projectDw/*.ts dist",
     "deploy": "cd dist && clasp push && clasp open",
-    "compile": "tsc",
     "test": "npm run clean && jest -c",
     "lint": "eslint .",
     "prettier": "prettier --config .prettierrc **/*.ts --write"
