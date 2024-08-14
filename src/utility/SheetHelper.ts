@@ -2,24 +2,22 @@
 
 import { SheetSpread } from "../types/types";
 
-export const SHEET_NAME = {
-  sheetThamChieu: 'tham chiếu',
-  sheetBangThongTin: 'bảng thông tin',
-  sheetDuLieu: 'dữ liệu',
-  sheetChiTietMa: 'chi tiết mã',
-  sheetCauHinh: 'cấu hình',
-  sheetDebug: 'debug',
-  sheetHose: 'HOSE',
-  sheetGia: 'Giá',
-  sheetKhoiLuong: 'Khối Lượng',
-  sheetKhoiNgoaiMua: 'KN Mua',
-  sheetKhoiNgoaiBan: 'KN Bán',
-  sheetTyGia: 'Tỷ Giá USD/VND',
-};
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-extraneous-class
 export class SheetHelper implements SheetSpread {
-
+  public static readonly sheetName = {
+    sheetThamChieu: 'tham chiếu',
+    sheetBangThongTin: 'bảng thông tin',
+    sheetDuLieu: 'dữ liệu',
+    sheetChiTietMa: 'chi tiết mã',
+    sheetCauHinh: 'cấu hình',
+    sheetDebug: 'debug',
+    sheetHose: 'HOSE',
+    sheetGia: 'Giá',
+    sheetKhoiLuong: 'Khối Lượng',
+    sheetKhoiNgoaiMua: 'KN Mua',
+    sheetKhoiNgoaiBan: 'KN Bán',
+    sheetTyGia: 'Tỷ Giá USD/VND'
+  };
 
   public static readonly kichThuocMangPhu = 10;
 
@@ -99,7 +97,7 @@ export class SheetHelper implements SheetSpread {
     return dataArray;
   }
 
-  async laySoHangTrongSheet(sheetName: string): Promise<number> {
+  laySoHangTrongSheet(sheetName: string): number {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return -1;
     return sheet.getLastRow();
