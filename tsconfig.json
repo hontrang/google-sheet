@@ -104,8 +104,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "test/**/*.ts",
-    "Config.ts"
+    "test/**/*.ts"
   ],
   "exclude": [
     "node_modules",
