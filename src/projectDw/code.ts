@@ -5,7 +5,7 @@ import { DateHelper } from '@utils/DateHelper';
 import { HttpHelper } from '@utils/HttpHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
-import { ResponseDC, ResponseSsi, ResponseVndirect } from '../types/types';
+import { ResponseDC, ResponseSsi, ResponseVndirect } from '@src/types/types';
 
 function layChiSoVnIndex(): void {
   const sheetHelper = new SheetHelper();

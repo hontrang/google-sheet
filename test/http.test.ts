@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Configuration } from '../src/configuration/Configuration';
+import { Configuration } from '@src/configuration/Configuration';
 
 let TOKEN: string | undefined;
 describe('kiểm tra url vndirect chạy chính xác', () => {

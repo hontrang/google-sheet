@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Configuration } from "../configuration/Configuration";
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
-import { Http, HttpResponse } from "../types/types";
+import { Http, HttpResponse } from "@src/types/types";
 import { HttpHelper } from "@utils/HttpHelper";
 import axios from 'axios';
 
