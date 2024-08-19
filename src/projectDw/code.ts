@@ -98,8 +98,8 @@ function layThongTinPE(danhSachMa: string[]): void {
   const duLieuCotThamChieu = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
 
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
-    const url = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
-    const object = httpHelper.sendGetRequest(url);
+    const URL = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
+    const object = httpHelper.sendGetRequest(URL);
     object.data.forEach((element: { code?: string; value?: number }) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
@@ -116,8 +116,8 @@ function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
   const duLieuCotThamChieu = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
 
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
-    const url = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
-    const object = httpHelper.sendGetRequest(url);
+    const URL = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
+    const object = httpHelper.sendGetRequest(URL);
     object.data.forEach((element: { code?: string; totalRoom?: number; currentRoom?: number }) => {
       const totalRoom: number = element.totalRoom ?? 0;
       const currentRoom: number = element.currentRoom ?? 0;
@@ -159,27 +159,24 @@ export function duLieuTam(): void {
 export function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.sheetName.sheetKhoiNgoaiBan, date = new SheetHelper().layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'A1')) {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const danhSachMa = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
+  const headers: string[] = sheetHelper.layDuLieuTrongHang(SheetHelper.sheetName.sheetKhoiNgoaiBan, 1).slice(1);
   const hangCuoi = sheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = sheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
-    while (danhSachMa.length > 0) {
-      const MANG_PHU = danhSachMa.splice(0, 400);
-      const URL = `https://finfo-api.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${MANG_PHU.join(',')}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
-      const object = httpHelper.sendGetRequest(URL);
-      if (object?.data.length > 0) {
-        const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
-        sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
-        object.data.map((item: ResponseVndirect) => {
-          for (let i = 0; i < header.length; i++) {
-            if (header[i] === item.code) {
-              sheetHelper.ghiDuLieuVaoDay([[item.sellVol]], sheetName, hangCuoi + 1, i + 1);
-            }
+    const URL = `https://finfo-api.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${headers.join(',')}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
+    const object = httpHelper.sendGetRequest(URL);
+    if (object?.data.length > 0) {
+      const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
+      sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
+      object.data.map((item: ResponseVndirect) => {
+        for (let i = 0; i < header.length; i++) {
+          if (header[i] === item.code) {
+            sheetHelper.ghiDuLieuVaoDay([[item.sellVol]], sheetName, hangCuoi + 1, i + 1);
           }
-        });
-      }
-      console.log('Lấy khối ngoại bán hàng ngày thành công');
+        }
+      });
     }
+    console.log('Lấy khối ngoại bán hàng ngày thành công');
   } else {
     console.log('done');
   }
@@ -188,27 +185,24 @@ export function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.sheetName.sheetK
 function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.sheetName.sheetKhoiNgoaiMua, date = new SheetHelper().layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'A1')) {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const danhSachMa = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
+  const headers: string[] = sheetHelper.layDuLieuTrongHang(SheetHelper.sheetName.sheetKhoiNgoaiMua, 1).slice(1);
   const hangCuoi = sheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = sheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
-    while (danhSachMa.length > 0) {
-      const MANG_PHU = danhSachMa.splice(0, 400);
-      const url = `https://finfo-api.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${MANG_PHU.join(',')}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
-      const object = httpHelper.sendGetRequest(url);
-      if (object?.data.length > 0) {
-        const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
-        sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
-        object.data.map((item: ResponseVndirect) => {
-          for (let i = 0; i < header.length; i++) {
-            if (header[i] === item.code) {
-              sheetHelper.ghiDuLieuVaoDay([[item.buyVol]], sheetName, hangCuoi + 1, i + 1);
-            }
+    const url = `https://finfo-api.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${headers.join(',')}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
+    const object = httpHelper.sendGetRequest(url);
+    if (object?.data.length > 0) {
+      const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
+      sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
+      object.data.map((item: ResponseVndirect) => {
+        for (let i = 0; i < header.length; i++) {
+          if (header[i] === item.code) {
+            sheetHelper.ghiDuLieuVaoDay([[item.buyVol]], sheetName, hangCuoi + 1, i + 1);
           }
-        });
-      }
-      console.log('Lấy khối ngoại mua hàng ngày thành công');
+        }
+      });
     }
+    console.log('Lấy khối ngoại mua hàng ngày thành công');
   } else {
     console.log('done');
   }
@@ -217,27 +211,24 @@ function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.sheetName.sheetKhoiNgoa
 function layKhoiLuongHangNgay(sheetName = SheetHelper.sheetName.sheetKhoiLuong, date = new SheetHelper().layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'A1')) {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const danhSachMa = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
+  const headers: string[] = sheetHelper.layDuLieuTrongHang(SheetHelper.sheetName.sheetKhoiLuong, 1).slice(1);
   const hangCuoi = sheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = sheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
-    while (danhSachMa.length > 0) {
-      const MANG_PHU = danhSachMa.splice(0, 400);
-      const url = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${MANG_PHU.join(',')}~date:gte:${date}~date:lte:${date}`;
-      const object = httpHelper.sendGetRequest(url);
-      if (object?.data.length > 0) {
-        const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
-        sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
-        object.data.map((item: ResponseVndirect) => {
-          for (let i = 0; i < header.length; i++) {
-            if (header[i] === item.code) {
-              sheetHelper.ghiDuLieuVaoDay([[item.nmVolume]], sheetName, hangCuoi + 1, i + 1);
-            }
+    const URL = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${headers.join(',')}~date:gte:${date}~date:lte:${date}`;
+    const object = httpHelper.sendGetRequest(URL);
+    if (object?.data.length > 0) {
+      const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
+      sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
+      object.data.map((item: ResponseVndirect) => {
+        for (let i = 0; i < header.length; i++) {
+          if (header[i] === item.code) {
+            sheetHelper.ghiDuLieuVaoDay([[item.nmVolume]], sheetName, hangCuoi + 1, i + 1);
           }
-        });
-      }
-      console.log('Lấy khối lượng hàng ngày thành công');
+        }
+      });
     }
+    console.log('Lấy khối lượng hàng ngày thành công');
   } else {
     console.log('done');
   }
@@ -252,14 +243,14 @@ async function layGiaHangNgay(sheetName = SheetHelper.sheetName.sheetGia, date =
   const duLieuNgayMoiNhat = sheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   const market = 'HOSE';
   if (duLieuNgayMoiNhat !== date) {
-    const url = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.market=${market}`;
+    const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.market=${market}`;
     const token = await httpHelper.getToken();
     const OPTION: URLFetchRequestOptions = {
       method: 'get',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
     };
-    const object = httpHelper.sendRequest(url, OPTION);
+    const object = httpHelper.sendRequest(URL, OPTION);
     if (object?.data.length > 0) {
       const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
       sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
@@ -284,14 +275,14 @@ async function layDanhSachMa(): Promise<void> {
   const pageIndex = 1;
   const pageSize = 1000;
   const token = await httpHelper.getToken();
-  const url = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
+  const URL = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
   const OPTION: URLFetchRequestOptions = {
     method: 'get',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
   };
   const mangDuLieuChinh: Array<[string, string]> = [];
-  const response = httpHelper.sendRequest(url, OPTION);
+  const response = httpHelper.sendRequest(URL, OPTION);
   const datas = response.data;
   sheetHelper.xoaDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A', 2, 2);
   for (const element of datas) {
@@ -306,10 +297,10 @@ async function layDanhSachMa(): Promise<void> {
  * @customfunction
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
-function LAY_THONG_TIN_DANH_MUC_DC(url: string) {
+function LAY_THONG_TIN_DANH_MUC_DC(URL: string) {
   const httpHelper = new HttpHelper();
   const result: string[][] = [];
-  const response = httpHelper.sendRequest(url);
+  const response = httpHelper.sendRequest(URL);
   const data = response.ffs_holding;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   data.forEach((element: { stock?: string; sector_vi?: string; per_nav?: string; bourse_en?: string; created?: string }) => {
@@ -327,10 +318,10 @@ function LAY_THONG_TIN_DANH_MUC_DC(url: string) {
  * @customfunction
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
-function LAY_THONG_TIN_TAI_SAN_DC(url: string) {
+function LAY_THONG_TIN_TAI_SAN_DC(URL: string) {
   const httpHelper = new HttpHelper();
   const result: string[][] = [];
-  const response = httpHelper.sendRequest(url);
+  const response = httpHelper.sendRequest(URL);
   const data = response.ffs_asset;
   console.log(response);
   // eslint-disable-next-line @typescript-eslint/naming-convention
