@@ -137,7 +137,7 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
     const url = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object = httpHelper.sendGetRequest(url);
-    object.data.forEach((element: { code?: string; value?: number }) => {
+    object.data.forEach((element: ResponseVndirect) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = sheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
