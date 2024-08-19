@@ -343,13 +343,13 @@ function LAY_SU_KIEN() {
   const content = UrlFetchApp.fetch(`https://hontrang.github.io/tradingeconomics/`).getContentText();
   const $ = Cheerio.load(content);
   let date: string;
-  $('table#calendar>thead.table-header,table#calendar>tbody').each(function (this: any) {
+  $('table#calendar>thead.table-header,table#calendar>tbody').each(function () {
     if ($(this).attr('class') !== undefined) {
       date = DateHelper.doiDinhDangNgay($(this).find('tr>th:nth-child(1)').text().trim(), 'dddd MMMM DD YYYY', 'ddd YYYY/MM/DD');
     } else {
       $(this)
         .children('tr')
-        .each(function (this: any) {
+        .each(function () {
           const timeValue = $(this).find('td:nth-child(1)').text().trim() || '00:00 AM';
           const thoigian = `${date} ${timeValue}`;
           const currency = $(this).find('td:nth-child(2) td.calendar-iso').text().trim();
