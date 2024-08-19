@@ -42,7 +42,7 @@ function layTinTucSheetBangThongTin(): void {
     const url = `${baseUrl}/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
     const content: string = UrlFetchApp.fetch(url).getContentText();
     const $ = Cheerio.load(content);
-    $('a').each(function (this: any) {
+    $('a').each(function () {
       const title: string = $(this).attr('title') ?? '';
       const link: string = baseUrl + ($(this).attr('href') ?? '');
       const date: string = $(this).siblings('span').text().substring(0, 10);
@@ -95,7 +95,7 @@ function layTinTucSheetChiTietMa(tenMa = 'FRT'): void {
   const DEFAULT_FORMAT = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   let index = 2;
   const $ = Cheerio.load(content);
-  $('a').each(function (this: any) {
+  $('a').each(function () {
     const title = $(this).attr('title') ?? '';
     const link = `${baseUrl}${$(this).attr('href') ?? ''}`;
     const date = DateHelper.doiDinhDangNgay($(this).siblings('span').text().substring(0, 10), 'DD/MM/YYYY', DEFAULT_FORMAT);
@@ -111,7 +111,7 @@ function layBaoCaoTaiChinh(tenMa = 'FRT'): void {
   const content: string = UrlFetchApp.fetch(queryUrl).getContentText();
   let index = 18;
   const $ = Cheerio.load(content);
-  $('#divDocument>div>table>tbody>tr').each(function (this: any) {
+  $('#divDocument>div>table>tbody>tr').each(function () {
     const title: string = $(this).children('td:nth-child(1)').text();
     const date: string = $(this).children('td:nth-child(2)').text();
     const link: string = $(this).children('td:nth-child(3)').children('a').attr('href') ?? '';
