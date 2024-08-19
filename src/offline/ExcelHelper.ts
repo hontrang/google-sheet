@@ -82,7 +82,7 @@ export class ExcelHelper implements SheetSpread {
         const row = this.workSheet.getRow(rowIndex);
         const adjustedData = new Array(columnIndex - 1).fill('').concat(data);
         row.values = adjustedData;
-        console.log(`Da ghi du lieu vao hang ${rowIndex} cot: ${columnIndex} data ${data}`);
+        console.log(`Da ghi du lieu vao hang ${rowIndex} cot: ${columnIndex}`);
         row.commit();
     }
     ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {
