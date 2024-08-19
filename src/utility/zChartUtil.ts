@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { SheetHelper } from './SheetHelper'; // Đảm bảo đường dẫn đúng
+import { SheetHelper } from '@src/utility/SheetHelper'; // Đảm bảo đường dẫn đúng
 
 export class ZchartHelper {
   public static readonly chartID = 911649750;

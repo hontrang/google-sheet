@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import { SheetHelper } from "./SheetHelper";
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
-import { Http } from "../types/types";
+import { Http } from "@src/types/types";
 
 export class HttpHelper implements Http {
   sendRequest(url: string, option?: URLFetchRequestOptions) {

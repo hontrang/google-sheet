@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { SheetSpread } from "../types/types";
+import { SheetSpread } from "@src/types/types";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-extraneous-class
 export class SheetHelper implements SheetSpread {

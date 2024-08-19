@@ -3,8 +3,8 @@
 import path from 'path';
 import * as ExcelJS from 'exceljs';
 import { Cell, Workbook, Worksheet } from 'exceljs';
-import { SheetSpread } from '../types/types';
-import { Configuration } from '../configuration/Configuration';
+import { SheetSpread } from '@src/types/types';
+import { Configuration } from '@src/configuration/Configuration';
 
 export class ExcelHelper implements SheetSpread {
     readonly filePath = path.resolve(process.cwd(), Configuration.xlsxInput);

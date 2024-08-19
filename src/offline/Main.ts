@@ -1,7 +1,7 @@
-import { ExcelHelper } from "./ExcelHelper";
-import { AxiosHelper } from "./AxiosHelper";
-import { SheetHelper } from "../utility/SheetHelper";
-import { ResponseVndirect } from "../types/types";
+import { ExcelHelper } from "@src/offline/ExcelHelper";
+import { AxiosHelper } from "@src/offline/AxiosHelper";
+import { SheetHelper } from "@src/utility/SheetHelper";
+import { ResponseVndirect } from "@src/types/types";
 
 const sheetHelper = new ExcelHelper();
 const httpHelper = new AxiosHelper();

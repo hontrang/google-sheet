@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { SheetHelper } from "./SheetHelper";
-import { DateHelper } from "./DateHelper";
+import { SheetHelper } from "@src/utility/SheetHelper";
+import { DateHelper } from "@src/utility/DateHelper";
 
 export class LogHelper {
   public static logDebug(content: string): boolean {
