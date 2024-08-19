@@ -5,7 +5,7 @@ import { DateHelper } from '@utils/DateHelper';
 import { HttpHelper } from '@utils/HttpHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
-import { ResponseSsi, ResponseVndirect } from '../types/types';
+import { ResponseDC, ResponseSsi, ResponseVndirect } from '../types/types';
 
 function layChiSoVnIndex(): void {
   const sheetHelper = new SheetHelper();
@@ -82,7 +82,7 @@ function layThongTinPB(danhSachMa: string[]): void {
     const URL = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object = httpHelper.sendGetRequest(URL);
 
-    object.data.forEach((element: { code?: string; value?: number }) => {
+    object.data.forEach((element: ResponseVndirect) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = sheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
@@ -100,7 +100,7 @@ function layThongTinPE(danhSachMa: string[]): void {
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
     const URL = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object = httpHelper.sendGetRequest(URL);
-    object.data.forEach((element: { code?: string; value?: number }) => {
+    object.data.forEach((element: ResponseVndirect) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = sheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
@@ -118,7 +118,7 @@ function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
     const URL = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object = httpHelper.sendGetRequest(URL);
-    object.data.forEach((element: { code?: string; totalRoom?: number; currentRoom?: number }) => {
+    object.data.forEach((element: ResponseVndirect) => {
       const totalRoom: number = element.totalRoom ?? 0;
       const currentRoom: number = element.currentRoom ?? 0;
       const tenMa: string = element.code ?? '_';
@@ -303,13 +303,13 @@ function LAY_THONG_TIN_DANH_MUC_DC(URL: string) {
   const response = httpHelper.sendRequest(URL);
   const data = response.ffs_holding;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  data.forEach((element: { stock?: string; sector_vi?: string; per_nav?: string; bourse_en?: string; created?: string }) => {
+  data.forEach((element: ResponseDC) => {
     const tenMa = element.stock ?? '_';
     const nhomNganh = element.sector_vi ?? '_';
-    const tyLe = element.per_nav ?? '_';
+    const tyLe = element.per_nav ?? 0;
     const sanGD = element.bourse_en ?? '_';
     const capNhatLuc = element.created ?? '-';
-    result.push([tenMa, nhomNganh, sanGD, tyLe, capNhatLuc]);
+    result.push([tenMa, nhomNganh, sanGD, String(tyLe), capNhatLuc]);
   });
   return result;
 }
@@ -325,11 +325,11 @@ function LAY_THONG_TIN_TAI_SAN_DC(URL: string) {
   const data = response.ffs_asset;
   console.log(response);
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  data.forEach((element: { name_vi?: string; weight?: string; created?: string }) => {
+  data.forEach((element: ResponseDC) => {
     const tenTaiSan = element.name_vi ?? '_';
     const tyLe = element.weight ?? '_';
     const capNhatLuc = element.created ?? '-';
-    result.push([tenTaiSan, tyLe, capNhatLuc]);
+    result.push([tenTaiSan, String(tyLe), capNhatLuc]);
   });
   return result;
 }

@@ -63,7 +63,9 @@ export interface ResponseDC {
         data_index_id?: number,
         shares?: number,
         market_value?: number,
-        foreign_ownership?: number
+        foreign_ownership?: number,
+        name_vi: string,
+        weight: number
 }
 
 export interface HttpResponse {
