@@ -85,6 +85,11 @@ export class ExcelHelper implements SheetSpread {
         console.log(`Da ghi du lieu vao hang ${rowIndex} cot: ${columnIndex}`);
         row.commit();
     }
+    async ghiDuLieuVaoCot(data: any[], sheetName: string, columnIndex: number): Promise<void> {
+        this.workSheet = this.getSheetByName(sheetName);
+        const column = this.workSheet.getColumn(columnIndex);
+        column.values = data;
+    }
     ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {
         this.workSheet = this.getSheetByName(sheetName);
         const [startCell, endCell] = range.split(':');

@@ -8,14 +8,9 @@ import axios from 'axios';
 
 export class AxiosHelper implements Http {
   async sendRequest(url: string, option?: URLFetchRequestOptions) {
-    try {
-      const appliedOption = option || HttpHelper.OPTIONS_GET;
-      const response = await axios.get(url, appliedOption);
-      return JSON.parse(response.data);
-    } catch (e) {
-      console.log(`error: ${e}`);
-      return null;
-    }
+    const appliedOption = option || HttpHelper.OPTIONS_GET;
+    const response = await axios.get(url, appliedOption);
+    return (response as HttpResponse);
   }
   async sendPostRequest(url: string, options?: URLFetchRequestOptions) {
     try {

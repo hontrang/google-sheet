@@ -16,4 +16,8 @@ export class DateHelper {
   public static layNgayHienTai(format: string): string {
     return moment().format(format);
   }
+
+  public static convertUnixToDate(unix: number, format: string): string {
+    return moment.unix(unix).format(format)
+  }
 }
