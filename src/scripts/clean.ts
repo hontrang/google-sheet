@@ -8,8 +8,8 @@ const fileName: string = fileURLToPath(import.meta.url);
 const dirName: string = dirname(fileName);
 
 // Tạo đường dẫn đích
-const destPath: string = upath.resolve(dirName, '../dist');
-const buildPath: string = upath.resolve(dirName, '../build');
+const destPath: string = upath.resolve(dirName, '../../dist');
+const buildPath: string = upath.resolve(dirName, '../../build');
 
 // Xóa tất cả các file trong thư mục đích
 sh.rm('-rf', [`${destPath}/*`, `${buildPath}/*`]);
