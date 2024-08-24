@@ -46,8 +46,17 @@ export interface ResponseVndirect {
 
 export interface ResponseSsi {
         Symbol?: string,
-        ClosePrice?: number
+        ClosePrice?: number,
+        Market?: string,
+        Open?: number,
+        High?: number,
+        Low?: number,
+        Close?: number,
+        Volume?: number,
+        Time?: string,
+        TradingDate?: string
 }
+
 
 export interface ResponseDC {
         id?: number,
@@ -72,5 +81,22 @@ export interface HttpResponse {
         data?: any,
         status?: number,
         statusText?: string
+}
 
+export interface ResponseSimplize {
+        date?: number,
+        priceClose?: number,
+        priceOpen?: number,
+        priceLow?: number,
+        priceHigh?: number,
+        netChange?: number,
+        pctChange?: number,
+        volume?: number,
+        cfr?: number,
+        bfq?: number,
+        sfq?: number,
+        fnbsq?: number,
+        bfv?: number,
+        sfv?: number,
+        fnbsv?: number
 }
