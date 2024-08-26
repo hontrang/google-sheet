@@ -2,7 +2,8 @@ import { test } from '@playwright/test';
 import { ExcelHelper } from '@src/offline/ExcelHelper';
 import { AxiosHelper } from '@src/offline/AxiosHelper';
 import { SheetHelper } from '@src/utility/SheetHelper';
-import { ResponseVndirect } from '@src/types/types';
+import { ResponseSsi, ResponseVndirect } from '@src/types/types';
+import { LogHelper } from '@utils/LogHelper';
 
 const sheetHelper = new ExcelHelper();
 const httpHelper = new AxiosHelper();
@@ -10,31 +11,43 @@ const httpHelper = new AxiosHelper();
 test('crawl data', async () => {
   await sheetHelper.truyCapWorkBook();
   const headers: string[] = sheetHelper.layDuLieuTrongHang(SheetHelper.sheetName.sheetKhoiNgoaiMua, 1).slice(1);
-  const dates = sheetHelper.layDuLieuTrongCot('TRUY VAN', 'A');
-  for (let i = 0; i < dates.length; i++) {
-    const date = dates[i];
-    await layThongTin(headers, date, i + 2);
-  }
+  sheetHelper.ghiDuLieuVaoDay(headers, 'Tam', 1, 2);
+  // for (let i = 0; i < headers.length; i++) {
+  // const tenMa = headers[i];
+  await layThongTin("AAA");
+  // }
   await sheetHelper.luuWorkBook();
 });
 
-async function layThongTin(headers: string[], date: string, hang: number): Promise<void> {
-  const URL = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${headers.join(',')}~date:gte:${date}~date:lte:${date}`;
-  const response = await httpHelper.sendGetRequest(URL);
-  Bun.sleepSync(100);
+async function layThongTin(tenMa: string): Promise<void> {
+  const pageIndex = 1;
+  const pageSize = 1000;
+  const fromDate = '01/01/2000';
+  const toDate = '04/05/2020';
+  const ascending = true;
+  const token = await httpHelper.getToken();
+  const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
+  const response = await httpHelper.sendRequest(URL, { headers: { Authorization: token } });
+  LogHelper.sleep(100);
   const datas = response.data.data;
-  const khoiLuong: string[] = [date];
-  if (datas.length > 0) {
-    for (const head of headers) {
-      const element: ResponseVndirect = timDoiTuongCoMa(datas, head);
-      if (element.nmVolume === undefined) {
-        throw new Error(`Sai du lieu`);
-      } else {
-        khoiLuong.push(String(element.nmVolume));
-      }
-    }
-  }
-  sheetHelper.ghiDuLieuVaoDay(khoiLuong, 'Tam', hang, 1);
+  let index = 2;
+  datas.forEach(function (element: ResponseSsi) {
+    sheetHelper.ghiDuLieuVaoO(element.TradingDate, 'Tam', `A${index}`);
+    index++;
+  });
+
+  // const khoiLuong: string[] = [date];
+  // if (datas.length > 0) {
+  //   for (const head of headers) {
+  //     const element: ResponseVndirect = timDoiTuongCoMa(datas, head);
+  //     if (element.nmVolume === undefined) {
+  //       throw new Error(`Sai du lieu`);
+  //     } else {
+  //       khoiLuong.push(String(element.nmVolume));
+  //     }
+  //   }
+  // }
+  // sheetHelper.ghiDuLieuVaoDay(khoiLuong, 'Tam', hang, 1);
   console.log('Lấy thông tin thành công');
 }
 
