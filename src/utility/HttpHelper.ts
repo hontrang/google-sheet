@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import { SheetHelper } from "./SheetHelper";
-import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
 import { Http } from "@src/types/types";
 
 export class HttpHelper implements Http {
-  sendRequest(url: string, option?: URLFetchRequestOptions) {
+  sendRequest(url: string, option?: any) {
     try {
       const appliedOption = option || HttpHelper.OPTIONS_GET;
       const response = UrlFetchApp.fetch(url, appliedOption);
@@ -14,7 +13,7 @@ export class HttpHelper implements Http {
       return null;
     }
   }
-  sendPostRequest(url: string, options?: URLFetchRequestOptions) {
+  sendPostRequest(url: string, options?: any) {
     try {
       const effectiveOptions = options || HttpHelper.OPTIONS_POST;
       const response = UrlFetchApp.fetch(url, effectiveOptions);
@@ -39,7 +38,7 @@ export class HttpHelper implements Http {
     else {
       const consumerID = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B7');
       const consumerSecret = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B8');
-      const OPTIONS_POST_TOKEN_SSI: URLFetchRequestOptions = {
+      const OPTIONS_POST_TOKEN_SSI = {
         method: 'post',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -57,14 +56,14 @@ export class HttpHelper implements Http {
   public token: string | undefined;
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  public static readonly OPTIONS_POST: URLFetchRequestOptions = {
+  public static readonly OPTIONS_POST = {
     method: 'post',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
   };
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  public static readonly OPTIONS_GET: URLFetchRequestOptions = {
+  public static readonly OPTIONS_GET = {
     method: 'get',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
