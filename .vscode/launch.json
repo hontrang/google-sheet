@@ -41,6 +41,18 @@
             "cwd": "${workspaceFolder}",
             "stopOnEntry": false,
             "watchMode": false
+        },
+        {
+            "name": "Debug Playwright Test",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/node_modules/@playwright/test/lib/cli.js",
+            "args": ["${relativeFile}"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": {
+                "PWDEBUG": "1"
+            }
         }
     ]
 }
