@@ -42,6 +42,12 @@ export class ExcelHelper implements SheetSpread {
         return this.workBook.getWorksheet(sheetID)!;
     }
 
+    taoSheetMoi(name = 'new'): void {
+        this.workBook.addWorksheet(name);
+        console.log(`Tạo sheet ${name} thành công`);
+
+    }
+
     layDuLieuTrongO(sheetName: string, cell: string): string {
         this.workSheet = this.getSheetByName(sheetName);
         return this.workSheet.getCell(cell).text;
@@ -82,7 +88,7 @@ export class ExcelHelper implements SheetSpread {
         const row = this.workSheet.getRow(rowIndex);
         const adjustedData = new Array(columnIndex - 1).fill('').concat(data);
         row.values = adjustedData;
-        console.log(`Da ghi du lieu vao hang ${rowIndex} cot: ${columnIndex}`);
+        console.log(`Da ghi du lieu ${data} vao hang ${rowIndex} cot: ${columnIndex}`);
         row.commit();
     }
     async ghiDuLieuVaoCot(data: any[], sheetName: string, columnIndex: number): Promise<void> {
@@ -117,9 +123,15 @@ export class ExcelHelper implements SheetSpread {
         this.ghiDuLieuVaoDay(data, sheetName, rowIndex + 1, columnIndex);
     }
 
-    ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
+    ghiDuLieuVaoO(data: any, sheetName: string, cellOrRow: string | number, col?: number): boolean {
         this.workSheet = this.getSheetByName(sheetName);
-        this.workSheet.getCell(cell).value = data;
+        if (typeof cellOrRow === 'string') {
+            this.workSheet.getCell(cellOrRow).value = data;
+            console.log(`Da ghi du lieu ${data} vao o ${cellOrRow}`);
+        } else {
+            this.workSheet.getCell(cellOrRow, col).value = data;
+            console.log(`Da ghi du lieu ${data} vao hang ${cellOrRow} cot ${col}`);
+        }
         return true;
     }
 
