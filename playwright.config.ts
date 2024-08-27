@@ -35,8 +35,12 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: 'offline',
+      testMatch: /.offline.ts/
+    },
+    {
+      name: 'test',
+      testMatch: /.test.ts/
     }
   ],
   timeout: 100 * 60 * 1000

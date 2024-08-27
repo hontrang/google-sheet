@@ -5,44 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "bun",
-            "internalConsoleOptions": "neverOpen",
-            "request": "launch",
-            "name": "Debug Bun offline file ${workspaceFolder}/src/offline/Code.ts",
-            "program": "${workspaceFolder}/src/offline/Main.ts",
-            "cwd": "${workspaceFolder}",
-            "stopOnEntry": false,
-            "watchMode": false
-        },
-        {
-            "type": "bun",
-            "internalConsoleOptions": "neverOpen",
-            "request": "launch",
-             "name": "Run Bun offline file ${workspaceFolder}/src/offline/Code.ts",
-            "program": "${workspaceFolder}/src/offline/Main.ts",
-            "cwd": "${workspaceFolder}",
-            "noDebug": true,
-            "watchMode": false
-        },
-        {
-            "type": "bun",
-            "internalConsoleOptions": "neverOpen",
-            "request": "attach",
-            "name": "Attach Bun",
-            "url": "ws://localhost:6499/",
-            "stopOnEntry": false
-        },
-        {
-            "type": "bun",
-            "internalConsoleOptions": "neverOpen",
-            "request": "launch",
-            "name": "Debug Bun Current File",
-            "program": "${file}",
-            "cwd": "${workspaceFolder}",
-            "stopOnEntry": false,
-            "watchMode": false
-        },
-        {
             "name": "Debug Playwright Test",
             "type": "node",
             "request": "launch",
