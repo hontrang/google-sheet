@@ -34,3 +34,9 @@ jobs:
       with:
         webhook-url: ${{ secrets.WEBHOOK_URL }}
         content: "Trading Economics build ${{ github.ref_name }} success!"
+    - name: Send message to Telegram
+      run: |
+        curl -s -X POST https://api.telegram.org/bot6462681422:AAFTYhtUEPlxUl5hkF82524F0BwR09r5ttQ/sendMessage \
+        -d chat_id=6207786665 \
+        -d text="Trading Economics build ${{ github.ref_name }} success!"
+    
