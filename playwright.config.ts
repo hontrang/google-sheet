@@ -41,6 +41,10 @@ export default defineConfig({
     {
       name: 'test',
       testMatch: /.test.ts/
+    },
+    {
+      name: 'tradingeconomics',
+      testMatch: /.tradingeconomics.ts/
     }
   ],
   timeout: 100 * 60 * 1000
