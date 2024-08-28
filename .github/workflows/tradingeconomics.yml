@@ -29,14 +29,14 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: docs
-    - name: Discord Webhook Action
-      uses: tsickert/discord-webhook@v5.3.0
-      with:
-        webhook-url: ${{ secrets.WEBHOOK_URL }}
-        content: "Trading Economics build ${{ github.ref_name }} success!"
+    # - name: Discord Webhook Action
+    #   uses: tsickert/discord-webhook@v5.3.0
+    #   with:
+    #     webhook-url: ${{ secrets.WEBHOOK_URL }}
+    #     content: "Trading Economics build ${{ github.ref_name }} success!"
     - name: Send message to Telegram
       run: |
-        curl -s -X POST https://api.telegram.org/bot6462681422:AAFTYhtUEPlxUl5hkF82524F0BwR09r5ttQ/sendMessage \
-        -d chat_id=6207786665 \
+        curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_SECRET }}/sendMessage \
+        -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
         -d text="Trading Economics build ${{ github.ref_name }} success!"
     
