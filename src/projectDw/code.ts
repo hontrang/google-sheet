@@ -340,7 +340,7 @@ function LAY_THONG_TIN_TAI_SAN_DC(URL: string) {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function LAY_SU_KIEN() {
   const result: string[][] = [];
-  const content = UrlFetchApp.fetch(`https://hontrang.github.io/tradingeconomics/`).getContentText();
+  const content = UrlFetchApp.fetch(`https://hontrang.github.io/google-sheet/`).getContentText();
   const $ = Cheerio.load(content);
   let date: string;
   $('table#calendar>thead.table-header,table#calendar>tbody').each(function () {
