@@ -36,7 +36,8 @@ export default defineConfig({
   projects: [
     {
       name: 'offline',
-      testMatch: /.offline.ts/
+      testMatch: /.offline.ts/,
+      timeout: 100 * 60 * 1000
     },
     {
       name: 'test',
@@ -44,10 +45,10 @@ export default defineConfig({
     },
     {
       name: 'tradingeconomics',
-      testMatch: /.tradingeconomics.ts/
+      testMatch: /.tradingeconomics.ts/,
+      timeout: 1 * 60 * 1000
     }
   ],
-  timeout: 100 * 60 * 1000
   /* Run your local dev server before starting the tests */
   // webServer: {
   //   command: 'npm run start',
