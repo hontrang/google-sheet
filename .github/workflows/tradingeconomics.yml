@@ -21,7 +21,7 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test --project=tradingeconomics
+      run: npx playwright test --project tradingeconomics --headed
     - name: Check if file exists
       run: ls -la /home/runner/work/google-sheet/google-sheet/
     - name: Deploy to GitHub Pages
