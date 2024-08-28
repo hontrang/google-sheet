@@ -33,7 +33,7 @@ export class LogHelper {
     }
   }
 
-  public static sleep(ms: number): Promise<void> {
+  public static async sleepSync(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
