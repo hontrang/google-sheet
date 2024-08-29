@@ -1,14 +1,23 @@
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-namespace DateHelper {
-  export function layNgay(ngay: string): string {
+
+import moment from "moment";
+
+export class DateHelper {
+  public static layNgay(ngay: string): string {
     const date: Date = new Date(ngay);
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
 
-  export function doiDinhDangNgay(date: string, formatFrom: string, formatTo: string): string {
+  public static doiDinhDangNgay(date: string, formatFrom: string, formatTo: string): string {
     return moment(date, formatFrom, true).format(formatTo);
   }
-  export function layNgayHienTai(format: string) {
+
+  public static layNgayHienTai(format: string): string {
     return moment().format(format);
+  }
+
+  public static convertUnixToDate(unix: number, format: string): string {
+    return moment.unix(unix).format(format)
   }
 }

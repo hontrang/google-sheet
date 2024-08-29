@@ -1,72 +1,44 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-namespace HttpHelper {
-  export const URL_GRAPHQL_CAFEF = 'https://msh-data.cafef.vn/graphql';
-  export let TOKEN: string | undefined;
+/* eslint-disable @typescript-eslint/no-extraneous-class */
+import { SheetHelper } from "./SheetHelper";
+import { Http } from "@src/types/types";
 
-  export const OPTIONS_POST: URLFetchRequestOptions = {
-    method: 'post',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
-  };
-
-  export const OPTIONS_GET: URLFetchRequestOptions = {
-    method: 'get',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
-  };
-
-  export function sendRequest(url: string, option?: URLFetchRequestOptions): any {
+export class HttpHelper implements Http {
+  sendRequest(url: string, option?: any) {
     try {
-      const appliedOption = option || OPTIONS_GET;
+      const appliedOption = option || HttpHelper.OPTIONS_GET;
       const response = UrlFetchApp.fetch(url, appliedOption);
       return JSON.parse(response.getContentText());
     } catch (e) {
-      LogHelper.logDebug(`error: ${e}`);
+      console.log(`error: ${e}`);
       return null;
     }
   }
-
-  export function sendPostRequest(url: string, options?: URLFetchRequestOptions): any {
+  sendPostRequest(url: string, options?: any) {
     try {
-      const effectiveOptions = options || OPTIONS_POST;
+      const effectiveOptions = options || HttpHelper.OPTIONS_POST;
       const response = UrlFetchApp.fetch(url, effectiveOptions);
       return JSON.parse(response.getContentText());
     } catch (e) {
-      LogHelper.logDebug(`error: ${e}`);
+      console.log(`error: ${e}`);
       return null;
     }
   }
-
-  export function sendGetRequest(url: string): any {
+  sendGetRequest(url: string) {
     try {
-      const response = UrlFetchApp.fetch(url, OPTIONS_GET);
+      const response = UrlFetchApp.fetch(url, HttpHelper.OPTIONS_GET);
       return JSON.parse(response.getContentText());
     } catch (e) {
-      LogHelper.logDebug(`error: ${e}`);
+      console.log(`error: ${e}`);
       return null;
     }
   }
-
-  export function sendGraphQLRequest(url: string, query: string, variables?: any): any {
-    const PAYLOAD = JSON.stringify({
-      query: query,
-      variables: variables
-    });
-    const OPTIONS: URLFetchRequestOptions = {
-      method: 'post',
-      payload: PAYLOAD
-    };
-    return sendPostRequest(url, OPTIONS);
-  }
-
-  export function getToken(): string {
-    if (TOKEN !== undefined) return TOKEN;
+  async getToken(): Promise<string> {
+    const sheetHelper = new SheetHelper();
+    if (this.token !== undefined) return this.token;
     else {
-      const consumerID = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B7');
-      const consumerSecret = SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B8');
-      const OPTIONS_POST_TOKEN_SSI: URLFetchRequestOptions = {
+      const consumerID = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B7');
+      const consumerSecret = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B8');
+      const OPTIONS_POST_TOKEN_SSI = {
         method: 'post',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -76,9 +48,24 @@ namespace HttpHelper {
         })
       };
       const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
-      const response = sendPostRequest(URL, OPTIONS_POST_TOKEN_SSI);
-      TOKEN = 'Bearer ' + response.data.accessToken;
-      return TOKEN;
+      const response = this.sendPostRequest(URL, OPTIONS_POST_TOKEN_SSI);
+      this.token = 'Bearer ' + response.data.accessToken;
+      return this.token;
     }
   }
+  public token: string | undefined;
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public static readonly OPTIONS_POST = {
+    method: 'post',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  public static readonly OPTIONS_GET = {
+    method: 'get',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
+  };
 }

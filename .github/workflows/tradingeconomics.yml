@@ -1,0 +1,42 @@
+name: Lấy thông tin từ trading economics
+on:
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 0 * * *'
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+          ref: ${{ github.event.pull_request.head.ref }}
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test --project tradingeconomics
+    - name: Check if file exists
+      run: ls -la /home/runner/work/google-sheet/google-sheet/
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs
+    # - name: Discord Webhook Action
+    #   uses: tsickert/discord-webhook@v5.3.0
+    #   with:
+    #     webhook-url: ${{ secrets.WEBHOOK_URL }}
+    #     content: "Trading Economics build ${{ github.ref_name }} success!"
+    - name: Send message to Telegram
+      run: |
+        curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_SECRET }}/sendMessage \
+        -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+        -d text="Trading Economics build ${{ github.ref_name }} success!"
+    
