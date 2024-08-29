@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/no-extraneous-class */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-
-import moment from "moment";
+import * as luxon from "luxon";
 
 export class DateHelper {
   public static layNgay(ngay: string): string {
@@ -10,14 +7,10 @@ export class DateHelper {
   }
 
   public static doiDinhDangNgay(date: string, formatFrom: string, formatTo: string): string {
-    return moment(date, formatFrom, true).format(formatTo);
+    return luxon.DateTime.fromFormat(date, formatFrom).toFormat(formatTo).toString();
   }
 
   public static layNgayHienTai(format: string): string {
-    return moment().format(format);
-  }
-
-  public static convertUnixToDate(unix: number, format: string): string {
-    return moment.unix(unix).format(format)
+    return luxon.DateTime.now().toFormat(format).toString();
   }
 }

@@ -51,7 +51,7 @@ async function layGiaThamChieu(): Promise<void> {
   const httpHelper = new HttpHelper();
   const DEFAULT_FORMAT = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   const DANH_SACH_MA: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
-  const date: string = DateHelper.doiDinhDangNgay(sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B1'), DEFAULT_FORMAT, 'DD/MM/YYYY');
+  const date: string = DateHelper.doiDinhDangNgay(sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B1'), DEFAULT_FORMAT, 'dd/MM/yyyy');
   const market = 'HOSE';
   let index = 2;
   const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${date}&lookupRequest.toDate=${date}&lookupRequest.market=${market}`;
@@ -237,8 +237,8 @@ async function layGiaHangNgay(sheetName = SheetHelper.sheetName.sheetGia, date =
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const DEFAULT_FORMAT = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
-  const fromDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
-  const toDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'DD/MM/YYYY');
+  const fromDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'dd/MM/yyyy');
+  const toDate = DateHelper.doiDinhDangNgay(date, DEFAULT_FORMAT, 'dd/MM/yyyy');
   const hangCuoi = sheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = sheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   const market = 'HOSE';
@@ -345,7 +345,7 @@ function LAY_SU_KIEN() {
   let date: string;
   $('table#calendar>thead.table-header,table#calendar>tbody').each(function () {
     if ($(this).attr('class') !== undefined) {
-      date = DateHelper.doiDinhDangNgay($(this).find('tr>th:nth-child(1)').text().trim(), 'dddd MMMM DD YYYY', 'ddd YYYY/MM/DD');
+      date = DateHelper.doiDinhDangNgay($(this).find('tr>th:nth-child(1)').text().trim(), 'DDDD MMMM dd yyyy', 'DDD yyyy/MM/dd');
     } else {
       $(this)
         .children('tr')
