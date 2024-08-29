@@ -1,18 +1,22 @@
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-namespace ZChartHelper {
-  export const CHART_ID = 911649750;
+import { SheetHelper } from '@src/utility/SheetHelper'; // Đảm bảo đường dẫn đúng
 
-  export function updateChart(): void {
-    const label = `${SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F1')} - ${SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'G1')}`;
-    const tenMa = `${SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CHI_TIET_MA, 'F1')}`;
-    const HIGH_MA: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B5');
-    const LOW_MA: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B4');
-    const ABS_MA: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'B3');
-    const HIGH_VNI: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C5');
-    const LOW_VNI: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C4');
-    const ABS_VNI: number = +SheetHelper.layDuLieuTrongO(SheetHelper.SheetName.SHEET_CAU_HINH, 'C3');
-    const chart = getChartById(CHART_ID, SheetHelper.SheetName.SHEET_CHI_TIET_MA);
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SheetName.SHEET_CHI_TIET_MA);
+export class ZchartHelper {
+  public static readonly chartID = 911649750;
+
+  public static updateChart(): void {
+    const sheetHelper = new SheetHelper();
+    const label = `${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'F1')} - ${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'G1')}`;
+    const tenMa = `${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'F1')}`;
+    const HIGH_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B5');
+    const LOW_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B4');
+    const ABS_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B3');
+    const HIGH_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'C5');
+    const LOW_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'C4');
+    const ABS_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'C3');
+    const chart = this.getChartById(this.chartID, SheetHelper.sheetName.sheetChiTietMa);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetChiTietMa);
 
     if (!sheet || !chart) {
       console.error(`Sheet hoặc biểu đồ không tồn tại.`);
@@ -24,13 +28,9 @@ namespace ZChartHelper {
       .setOption('title', label)
       .setOption('vAxis.minValue', LOW_MA - ABS_MA * 2)
       .setOption('vAxis.maxValue', HIGH_MA + ABS_MA * 2)
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       .setOption('series', { 0: { labelInLegend: tenMa }, 1: { labelInLegend: 'VN-INDEX' } })
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       .setOption('vAxes', {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         0: { viewWindow: { min: LOW_MA - ABS_MA * 2, max: HIGH_MA + ABS_MA * 2 } },
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         1: { viewWindow: { min: LOW_VNI - ABS_VNI * 2, max: HIGH_VNI + ABS_VNI * 2 } }
       })
       .build();
@@ -38,8 +38,8 @@ namespace ZChartHelper {
     sheet.updateChart(updatedChart);
   }
 
-  export function createChart(): void {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SheetName.SHEET_CHI_TIET_MA);
+  public static createChart(): void {
+    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetChiTietMa);
     if (!sheet) {
       console.error('Không tìm thấy sheet.');
       return;
@@ -53,7 +53,7 @@ namespace ZChartHelper {
     console.log(chart.getChartId());
   }
 
-  export function getChartById(chartId: number, sheetName: string) {
+  public static getChartById(chartId: number, sheetName: string) {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
       console.error(`Sheet ${sheetName} không tồn tại.`);
@@ -71,23 +71,23 @@ namespace ZChartHelper {
     return null;
   }
 
-  export function removeChartByID(): void {
-    const chart = getChartById(CHART_ID, SheetHelper.SheetName.SHEET_CHI_TIET_MA);
+  public static removeChartByID(): void {
+    const chart = this.getChartById(this.chartID, SheetHelper.sheetName.sheetChiTietMa);
     if (!chart) {
       console.error('Biểu đồ không tồn tại.');
       return;
     }
 
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.SheetName.SHEET_CHI_TIET_MA);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetChiTietMa);
     if (!sheet) {
-      console.error(`Sheet ${SheetHelper.SheetName.SHEET_CHI_TIET_MA} không tồn tại.`);
+      console.error(`Sheet ${SheetHelper.sheetName.sheetChiTietMa} không tồn tại.`);
       return;
     }
 
     sheet.removeChart(chart);
   }
 
-  export function inRaThongTinChart(): void {
+  public static inRaThongTinChart(): void {
     const spreadsheetId: string = SpreadsheetApp.getActiveSpreadsheet().getId();
 
     const chartsInfo = Sheets.Spreadsheets?.get(spreadsheetId, {
@@ -97,13 +97,13 @@ namespace ZChartHelper {
     });
 
     for (const sheet of chartsInfo?.sheets || []) {
-      if (sheet.properties?.title === SheetHelper.SheetName.SHEET_CHI_TIET_MA) {
+      if (sheet.properties?.title === SheetHelper.sheetName.sheetChiTietMa) {
         if (sheet.charts && sheet.charts.length > 0) {
           for (const chart of sheet.charts) {
             Logger.log(JSON.stringify(chart));
           }
         } else {
-          Logger.log(`Không tìm thấy biểu đồ nào trên bảng ${SheetHelper.SheetName.SHEET_CHI_TIET_MA}.`);
+          Logger.log(`Không tìm thấy biểu đồ nào trên bảng ${SheetHelper.sheetName.sheetChiTietMa}.`);
         }
         break;
       }

@@ -1,8 +1,9 @@
 import axios from 'axios';
-import config from '../config';
+import { Configuration } from '@src/configuration/Configuration';
+import { test, expect } from '@playwright/test';
 
 let TOKEN: string | undefined;
-describe('kiểm tra url vndirect chạy chính xác', () => {
+test.describe('kiểm tra url vndirect chạy chính xác', () => {
   test('kiểm tra phản hồi từ api vndirect', async () => {
     const tenMa = 'HPG';
     const fromDate = '2024-04-08';
@@ -14,10 +15,10 @@ describe('kiểm tra url vndirect chạy chính xác', () => {
   });
 });
 
-describe('kiểm tra url simplize chạy chính xác', () => {
+test.describe('kiểm tra url simplize chạy chính xác', () => {
   test('kiểm tra phản hồi từ api lấy cổ tức', async () => {
     const tenMa = 'HPG';
-    const URL: string = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
+    const URL = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
     const response = await axios.post(URL, { tickers: [`${tenMa}`], page: 0, size: 10 });
     const data = response.data;
     expect(data).not.toBeNull();
@@ -25,7 +26,7 @@ describe('kiểm tra url simplize chạy chính xác', () => {
   });
 });
 
-describe('kiểm tra url vps chạy chính xác', () => {
+test.describe('kiểm tra url vps chạy chính xác', () => {
   test('kiểm tra phản hồi từ api vps', async () => {
     const ma1 = 'HPG';
     const ma2 = 'STB';
@@ -38,7 +39,7 @@ describe('kiểm tra url vps chạy chính xác', () => {
   });
 });
 
-describe('kiểm tra url cafef chạy chính xác', () => {
+test.describe('kiểm tra url cafef chạy chính xác', () => {
   test('kiểm tra phản hồi từ api báo cáo phân tích', async () => {
     const tenMa = 'HPG';
     const URL = `https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:${tenMa}&pageIndex=1&pageSize=9`;
@@ -64,8 +65,8 @@ describe('kiểm tra url cafef chạy chính xác', () => {
   });
 });
 
-describe('kiểm tra url tcbs chạy chính xác', () => {
-  test('kiểm tra phản hồi từ api vps', async () => {
+test.describe('kiểm tra url tcbs chạy chính xác', () => {
+  test('kiểm tra phản hồi từ api tcbs', async () => {
     const tenMa = 'HPG';
     const URL = `https://apipubaws.tcbs.com.vn/tcanalysis/v1/company/${tenMa}/large-share-holders`;
     const response = await axios.get(URL);
@@ -74,13 +75,14 @@ describe('kiểm tra url tcbs chạy chính xác', () => {
   });
 });
 
-describe('kiểm tra url ssi chạy chính xác', () => {
+test.describe('kiểm tra url ssi chạy chính xác', () => {
   test('kiểm tra url lấy tên mã trên HOSE', async () => {
     const market = 'HOSE';
     const pageIndex = 1;
     const pageSize = 1000;
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data.data;
     expect(data[0].Market).toBe(market);
@@ -93,22 +95,12 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const pageSize = 1000;
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/SecuritiesDetails?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.symbol=${tenMa}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data.data[0].RepeatedInfo;
     expect(data[0].Exchange).toBe(market);
     expect(data[0].Symbol).toBe(tenMa);
   });
-
-  // test("kiểm tra url IndexComponents", async () => {
-  //     const indexCode = 'HNX';
-  //     const pageIndex = 1;
-  //     const pageSize = 1000;
-  //     const token = await getToken();
-  //     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/IndexComponents?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.indexCode=${indexCode}`;
-  //     const response = await axios.get(URL, { headers: { Authorization: token } });
-  //     const data = response.data;
-  //     expect(data.status).toBe("Success");
-  // });
 
   test('kiểm tra url GetIndexList', async () => {
     const exchange = 'HOSE';
@@ -116,6 +108,7 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const pageSize = 1000;
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/IndexComponents?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.Exchange=${exchange}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
@@ -130,6 +123,7 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const ascending = true;
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
@@ -144,25 +138,11 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const ascending = true;
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/IntradayOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
   });
-
-  // test("kiểm tra url GetDailyIndex", async () => {
-  //     const indexCode = 'HNX';
-  //     const pageIndex = 1;
-  //     const pageSize = 1000;
-  //     const fromDate = "04/05/2020";
-  //     const toDate = "04/05/2020";
-  //     const orderBy = "Tradingdate";
-  //     const order = "desc";
-  //     const token = await getToken();
-  //     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyIndex?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.OrderBy=${orderBy}&lookupRequest.Order=${order}&lookupRequest.IndexCode=${indexCode}`;
-  //     const response = await axios.get(URL, { headers: { Authorization: token } });
-  //     const data = response.data;
-  //     expect(data.status).toBe('Success');
-  // });
 
   test('kiểm tra url GetStockPrice', async () => {
     const fromDate = '04/05/2020';
@@ -170,6 +150,7 @@ describe('kiểm tra url ssi chạy chính xác', () => {
     const market = 'HOSE';
     const token = await getToken();
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.market=${market}`;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(URL, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
@@ -179,8 +160,8 @@ describe('kiểm tra url ssi chạy chính xác', () => {
 async function getToken(): Promise<string> {
   if (TOKEN !== undefined) return TOKEN;
   else {
-    const consumerID = config.consumerID;
-    const consumerSecret = config.consumerSecret;
+    const consumerID = Configuration.consumerID;
+    const consumerSecret = Configuration.consumerSecret;
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
     const response = await axios.post(URL, { consumerID: consumerID, consumerSecret: consumerSecret });
     TOKEN = 'Bearer ' + response.data.data.accessToken;
