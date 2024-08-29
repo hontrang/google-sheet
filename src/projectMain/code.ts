@@ -98,7 +98,7 @@ function layTinTucSheetChiTietMa(tenMa = 'FRT'): void {
   $('a').each(function () {
     const title = $(this).attr('title') ?? '';
     const link = `${baseUrl}${$(this).attr('href') ?? ''}`;
-    const date = DateHelper.doiDinhDangNgay($(this).siblings('span').text().substring(0, 10), 'DD/MM/YYYY', DEFAULT_FORMAT);
+    const date = DateHelper.doiDinhDangNgay($(this).siblings('span').text().substring(0, 10), 'dd/MM/yyyy', DEFAULT_FORMAT);
     sheetHelper.ghiDuLieuVaoDayTheoVung([[tenMa.toUpperCase(), title, link, date]], SheetHelper.sheetName.sheetDuLieu, `AH${index}:AK${index}`);
     index++;
   });
@@ -137,7 +137,7 @@ function layBaoCaoPhanTich(tenMa = 'FRT'): void {
     const lastUpdate: string = element.LastUpdate ?? '_';
     const url: string = element.Url ?? '_';
     sheetHelper.ghiDuLieuVaoDayTheoVung(
-      [[sourceName, title, reportTypeName, DateHelper.doiDinhDangNgay(lastUpdate, 'DD/MM/YYYY', DEFAULT_FORMAT), url]],
+      [[sourceName, title, reportTypeName, DateHelper.doiDinhDangNgay(lastUpdate, 'dd/MM/yyyy', DEFAULT_FORMAT), url]],
       SheetHelper.sheetName.sheetDuLieu,
       `AL${index}:AP${index}`
     );
@@ -178,7 +178,7 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
     const content: string = element.content ?? '____';
     const date: string = element.date ?? '____';
     sheetHelper.ghiDuLieuVaoDayTheoVung(
-      [[content, '', DateHelper.doiDinhDangNgay(date, 'DD/MM/YYYY', DEFAULT_FORMAT)]],
+      [[content, '', DateHelper.doiDinhDangNgay(date, 'dd/MM/yyyy', DEFAULT_FORMAT)]],
       SheetHelper.sheetName.sheetDuLieu,
       `AO${index}:AQ${index}`
     );
