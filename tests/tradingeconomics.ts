@@ -19,7 +19,7 @@ test('test', async () => {
     await page.getByText('Save').click();
     const content = await page.content();
     await page.waitForTimeout(5000);
-    let scrollsRemaining = 2;
+    let scrollsRemaining = 5;
     while (scrollsRemaining > 0) {
         await page.evaluate(() => window.scrollBy(0, 10000));
         await page.waitForTimeout(1000);
