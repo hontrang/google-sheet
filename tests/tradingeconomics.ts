@@ -1,4 +1,5 @@
 import { test } from '@playwright/test';
+import { LogHelper } from '@utils/LogHelper';
 import { writeFile } from 'fs';
 import { chromium } from 'playwright-extra'
 
@@ -16,6 +17,7 @@ test('test', async () => {
     await page.getByRole('button', { name: '   Category' }).click();
     await page.getByText('Save').click();
     const content = await page.content();
+    await LogHelper.sleepSync(5000);
     writeFile('./docs/index.html', content, (err) => {
         if (err) {
             console.error('Error writing to file', err);
