@@ -7,8 +7,8 @@ export class ZchartHelper {
 
   public static updateChart(): void {
     const sheetHelper = new SheetHelper();
-    const label = `${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'F1')} - ${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'G1')}`;
-    const tenMa = `${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'F1')}`;
+    const label = `${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1')} - ${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'D1')}`;
+    const tenMa = `${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1')}`;
     const HIGH_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B5');
     const LOW_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B4');
     const ABS_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B3');
