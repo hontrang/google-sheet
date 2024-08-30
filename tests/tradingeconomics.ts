@@ -1,5 +1,4 @@
 import { test } from '@playwright/test';
-import { LogHelper } from '@utils/LogHelper';
 import { writeFile } from 'fs';
 import { chromium } from 'playwright-extra'
 
@@ -12,12 +11,20 @@ test('test', async () => {
     await page.goto('https://tradingeconomics.com/calendar');
     await page.getByRole('button', { name: '  Countries' }).click();
     await page.getByText('Clear').click();
-    await page.locator('#te-c-all li').filter({ hasText: 'United States' }).click();
+    const USA = page.locator('#te-c-all li').filter({ hasText: 'United States' });
+    await USA.scrollIntoViewIfNeeded();
+    await USA.click();
     await page.getByRole('cell', { name: '  Recent    Impact  ' }).click();
     await page.getByRole('button', { name: '   Category' }).click();
     await page.getByText('Save').click();
     const content = await page.content();
-    await LogHelper.sleepSync(5000);
+    await page.waitForTimeout(5000);
+    let scrollsRemaining = 2;
+    while (scrollsRemaining > 0) {
+        await page.evaluate(() => window.scrollBy(0, 10000));
+        await page.waitForTimeout(1000);
+        scrollsRemaining--;
+    }
     writeFile('./docs/index.html', content, (err) => {
         if (err) {
             console.error('Error writing to file', err);
@@ -25,4 +32,5 @@ test('test', async () => {
             console.log('File has been written');
         }
     });
+    await browser.close();
 });
