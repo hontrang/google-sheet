@@ -25,7 +25,7 @@ export class HttpHelper implements Http {
   }
   sendGetRequest(url: string) {
     try {
-      const response = UrlFetchApp.fetch(url, HttpHelper.OPTIONS_GET);
+      const response = UrlFetchApp.fetch(url);
       return JSON.parse(response.getContentText());
     } catch (e) {
       console.log(`error: ${e}`);
