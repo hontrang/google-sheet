@@ -1,14 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import path from 'path';
 import * as ExcelJS from 'exceljs';
 import { Cell, Workbook, Worksheet } from 'exceljs';
 import { SheetSpread } from '@src/types/types';
-import { Configuration } from '@src/configuration/Configuration';
 
 export class ExcelHelper implements SheetSpread {
-    readonly filePath = path.resolve(process.cwd(), Configuration.xlsxInput);
-    readonly outPath = path.resolve(process.cwd(), Configuration.xlsxOutput);
+    readonly filePath = path.resolve(process.cwd(), process.env.xlsxInput || '');
+    readonly outPath = path.resolve(process.cwd(), process.env.xlsxOutput || '');
     private workBook!: Workbook;
     private workSheet!: Worksheet;
 
@@ -38,7 +35,6 @@ export class ExcelHelper implements SheetSpread {
         this.workBook.eachSheet(function (sheet, id) {
             if (name === sheet.name) sheetID = id;
         });
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.workBook.getWorksheet(sheetID)!;
     }
 

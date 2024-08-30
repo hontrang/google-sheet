@@ -3,14 +3,13 @@ import upath from 'upath';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import glob from 'glob';
-import { Configuration } from '@src/configuration/Configuration';
 
 const fileName: string = fileURLToPath(import.meta.url);
 const dirName: string = dirname(fileName);
 
 export function renderClasp(): void {
   // copy clasp
-  const sourcePath: string = upath.resolve(dirName, Configuration.dwClasp);
+  const sourcePath: string = upath.resolve(dirName, process.env.dwClasp);
   const destPath: string = upath.resolve(dirName, '../../dist');
   console.log('Sao chép files trong folder clasp vào dist');
 
