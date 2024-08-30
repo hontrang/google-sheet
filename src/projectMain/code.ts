@@ -6,6 +6,7 @@ import { HttpHelper } from '@utils/HttpHelper';
 import { DateHelper } from '@utils/DateHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
+import { ZchartHelper } from '@utils/zChartUtil';
 
 function getDataHose(): void {
   const sheetHelper = new SheetHelper();
@@ -20,7 +21,6 @@ function getDataHose(): void {
   response.forEach((object: { sym: string, lastPrice: number }) => {
     priceMap[object.sym] = object.lastPrice * 1000;
   });
-
   sheetHelper.xoaDuLieuTrongCot(SheetHelper.sheetName.sheetThamChieu, 'A', 1, 4);
 
   for (const element of DANH_SACH_MA) {
@@ -54,9 +54,9 @@ function layTinTucSheetBangThongTin(): void {
 
 function layThongTinChiTietMa(): void {
   const sheetHelper = new SheetHelper();
-  sheetHelper.ghiDuLieuVaoO('...', SheetHelper.sheetName.sheetChiTietMa, 'J2');
+  sheetHelper.ghiDuLieuVaoO('...', SheetHelper.sheetName.sheetChiTietMa, 'G2');
   sheetHelper.xoaDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'P', 3, 2);
-  const tenMa: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'F1');
+  const tenMa: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1');
 
   layGiaVaKhoiLuongTheoMaChungKhoan(tenMa);
   layBaoCaoPhanTich(tenMa);
@@ -67,15 +67,16 @@ function layThongTinChiTietMa(): void {
   layThongTongSoLuongCoPhieuDangNiemYet(tenMa);
   layThongTinCoTuc(tenMa);
   layHeSoBetaVaFreeFloat(tenMa);
-  LogHelper.logTime(SheetHelper.sheetName.sheetChiTietMa, 'J2');
+  ZchartHelper.updateChart();
+  LogHelper.logTime(SheetHelper.sheetName.sheetChiTietMa, 'G2');
   Logger.log('Hàm layThongTinChiTietMa chạy thành công');
 }
 
 function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa = 'FRT'): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'F2');
-  const toDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'H2');
+  const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B2');
+  const toDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'E2');
   let index = 2;
   sheetHelper.ghiDuLieuVaoDayTheoVung([['chi tiết mã', '', '']], SheetHelper.sheetName.sheetDuLieu, 'P1:R1');
   const url = `https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
@@ -204,7 +205,7 @@ async function layThongTongSoLuongCoPhieuDangNiemYet(tenMa = 'FRT'): Promise<voi
 function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'F2');
+  const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B2');
   const URL = `https://finfo-api.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
   const response = httpHelper.sendGetRequest(URL);
   const datas = response.data;
@@ -223,7 +224,7 @@ function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function batSukienSuaThongTinO(e: any) {
   const sheet = SpreadsheetApp.getActive().getActiveSheet();
-  if (e.range.getA1Notation() === 'F1' && sheet.getName() === SheetHelper.sheetName.sheetChiTietMa) {
+  if (e.range.getA1Notation() === 'B1' && sheet.getName() === SheetHelper.sheetName.sheetChiTietMa) {
     layThongTinChiTietMa();
   }
 }
