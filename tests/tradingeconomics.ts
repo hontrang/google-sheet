@@ -17,14 +17,13 @@ test('test', async () => {
     await page.getByRole('cell', { name: '  Recent    Impact  ' }).click();
     await page.getByRole('button', { name: '   Category' }).click();
     await page.getByText('Save').click();
-    const content = await page.content();
-    await page.waitForTimeout(5000);
-    let scrollsRemaining = 20;
+    let scrollsRemaining = 30;
     while (scrollsRemaining > 0) {
         await page.evaluate(() => window.scrollBy(0, 10000));
         await page.waitForTimeout(1000);
         scrollsRemaining--;
     }
+    const content = await page.content();
     writeFile('./docs/index.html', content, (err) => {
         if (err) {
             console.error('Error writing to file', err);
