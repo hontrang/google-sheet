@@ -7,6 +7,7 @@ import { DateHelper } from '@utils/DateHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
 import { ZchartHelper } from '@utils/zChartUtil';
+import { ResponseVndirect } from '@src/types/types';
 
 function getDataHose(): void {
   const sheetHelper = new SheetHelper();
@@ -54,7 +55,7 @@ function layTinTucSheetBangThongTin(): void {
 
 function layThongTinChiTietMa(): void {
   const sheetHelper = new SheetHelper();
-  sheetHelper.ghiDuLieuVaoO('...', SheetHelper.sheetName.sheetChiTietMa, 'G2');
+  sheetHelper.ghiDuLieuVaoO('...', SheetHelper.sheetName.sheetChiTietMa, 'I1');
   sheetHelper.xoaDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'P', 3, 2);
   const tenMa: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1');
 
@@ -67,16 +68,18 @@ function layThongTinChiTietMa(): void {
   layThongTongSoLuongCoPhieuDangNiemYet(tenMa);
   layThongTinCoTuc(tenMa);
   layHeSoBetaVaFreeFloat(tenMa);
+  layDonViKiemToan(tenMa);
+  layChiTietBaoCaoTaiChinh(tenMa);
   ZchartHelper.updateChart();
-  LogHelper.logTime(SheetHelper.sheetName.sheetChiTietMa, 'G2');
+  LogHelper.logTime(SheetHelper.sheetName.sheetChiTietMa, 'I1');
   Logger.log('Hàm layThongTinChiTietMa chạy thành công');
 }
 
 function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa = 'FRT'): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B2');
-  const toDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'E2');
+  const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B17');
+  const toDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B18');
   let index = 2;
   sheetHelper.ghiDuLieuVaoDayTheoVung([['chi tiết mã', '', '']], SheetHelper.sheetName.sheetDuLieu, 'P1:R1');
   const url = `https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
@@ -205,7 +208,7 @@ async function layThongTongSoLuongCoPhieuDangNiemYet(tenMa = 'FRT'): Promise<voi
 function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B2');
+  const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B17');
   const URL = `https://finfo-api.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
   const response = httpHelper.sendGetRequest(URL);
   const datas = response.data;
@@ -219,6 +222,51 @@ function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
       sheetHelper.ghiDuLieuVaoO(value, SheetHelper.sheetName.sheetChiTietMa, 'J16');
     }
   }
+}
+
+function layDonViKiemToan(tenMa = 'FRT') {
+  const sheetHelper = new SheetHelper();
+  const httpHelper = new HttpHelper();
+  const URL = `https://api-finfo.vndirect.com.vn/v4/company_relations?q=code:${tenMa}~relationType:AUDITOR&size=100&sort=year:DESC`;
+  const response = httpHelper.sendGetRequest(URL);
+  const datas = response.data;
+  let index = 67;
+  datas.forEach(function (element: ResponseVndirect) {
+    sheetHelper.ghiDuLieuVaoDayTheoVung([[element.relationNameVn, "", "", element.year]], SheetHelper.sheetName.sheetChiTietMa, `A${index}:D${index}`);
+    index++;
+  });
+}
+function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
+  const sheetHelper = new SheetHelper();
+  const httpHelper = new HttpHelper();
+  const URL = `https://finfo-api.vndirect.com.vn/v4/financial_statements?q=code:${tenMa}~reportType:QUARTER~modelType:1,89,3,91~fiscalDate:${DateHelper.layKiTaiChinhTheoQuy()}&sort=fiscalDate&size=2000`;
+
+  const response = httpHelper.sendGetRequest(URL);
+  const datas = response.data;
+  let index = 67;
+  datas.forEach(function (element: ResponseVndirect) {
+    // Tiền và tương đương tiền
+    if (element.itemCode === 37000) {
+      sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
+      index++;
+    }
+  });
+  index = 70;
+  datas.forEach(function (element: ResponseVndirect) {
+    // Tổng tài sản
+    if (element.itemCode === 12700) {
+      sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
+      index++;
+    }
+  });
+  index = 73;
+  datas.forEach(function (element: ResponseVndirect) {
+    // Nợ ngắn hạn
+    if (element.itemCode === 13100) {
+      sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
+      index++;
+    }
+  });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
