@@ -4,3 +4,4 @@ build/*
 html-report/*
 **/config.ts
 .DS_Store
+**/playwright-report/*
