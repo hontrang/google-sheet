@@ -345,7 +345,7 @@ function LAY_SU_KIEN() {
   let date: string;
   $('table#calendar>thead.table-header,table#calendar>tbody').each(function () {
     if ($(this).attr('class') !== undefined) {
-      date = DateHelper.doiDinhDangNgay($(this).find('tr>th:nth-child(1)').text().trim(), 'DDDD MMMM dd yyyy', 'DDD yyyy/MM/dd');
+      date = DateHelper.doiDinhDangNgay($(this).find('tr>th:nth-child(1)').text().trim(), 'EEEE MMMM dd yyyy', 'EEE yyyy/MM/dd');
     } else {
       $(this)
         .children('tr')
