@@ -32,12 +32,11 @@ async function layThongTin(tenMa: string, headers: string[], token: string): Pro
   const hangCuoiCungTrongSheet = sheetHelper.laySoHangTrongSheet(tenMa);
 
   const fromDate = sheetHelper.layDuLieuTrongO(tenMa, `A${hangCuoiCungTrongSheet}`);
-  const year = fromDate.split(`/`)[2]
+  const year = fromDate.split(`/`)[2];
   if (hangCuoiCungTrongSheet < 2 || Number(year) >= 2013 || fromDate == '28/12/2012') {
     console.log(`skip ${tenMa}`);
     return;
-  };
-
+  }
 
   const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
   await LogHelper.sleepSync(1000);

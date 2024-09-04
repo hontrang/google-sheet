@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Configuration } from "../configuration/Configuration";
 import { Http, HttpResponse } from "@src/types/types";
-import { HttpHelper } from "@utils/HttpHelper";
 import axios from 'axios';
 
 export class AxiosHelper implements Http {
