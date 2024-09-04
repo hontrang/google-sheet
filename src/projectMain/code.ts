@@ -243,30 +243,34 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
 
   const response = httpHelper.sendGetRequest(URL);
   const datas = response.data;
-  let index = 67;
-  datas.forEach(function (element: ResponseVndirect) {
-    // Tiền và tương đương tiền
-    if (element.itemCode === 37000) {
-      sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
-      index++;
-    }
-  });
-  index = 70;
-  datas.forEach(function (element: ResponseVndirect) {
-    // Tổng tài sản
-    if (element.itemCode === 12700) {
-      sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
-      index++;
-    }
-  });
-  index = 73;
-  datas.forEach(function (element: ResponseVndirect) {
-    // Nợ ngắn hạn
-    if (element.itemCode === 13100) {
-      sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
-      index++;
-    }
-  });
+  if (datas.length <= 0) {
+    sheetHelper.ghiDuLieuVaoO('Lỗi dữ liệu', SheetHelper.sheetName.sheetChiTietMa, 'E67');
+  } else {
+    let index = 67;
+    datas.forEach(function (element: ResponseVndirect) {
+      // Tiền và tương đương tiền
+      if (element.itemCode === 37000) {
+        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
+        index++;
+      }
+    });
+    index = 70;
+    datas.forEach(function (element: ResponseVndirect) {
+      // Tổng tài sản
+      if (element.itemCode === 12700) {
+        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
+        index++;
+      }
+    });
+    index = 73;
+    datas.forEach(function (element: ResponseVndirect) {
+      // Nợ ngắn hạn
+      if (element.itemCode === 13100) {
+        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
+        index++;
+      }
+    });
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

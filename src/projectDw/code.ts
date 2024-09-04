@@ -356,8 +356,9 @@ function LAY_SU_KIEN() {
           const name = $(this).find('td:nth-child(3)').text().trim();
           const actual = $(this).find('td:nth-child(4)').text().trim();
           const previous = $(this).find('td:nth-child(5)').text().trim();
-          const forecast = $(this).find('td:nth-child(6)').text().trim();
-          result.push([thoigian, currency, name, actual, forecast, previous]);
+          const consensus = $(this).find('td:nth-child(6)').text().trim();
+          const forecast = $(this).find('td:nth-child(7)').text().trim();
+          result.push([thoigian, currency, name, actual, previous, consensus, forecast]);
         });
     }
   });
