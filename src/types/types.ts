@@ -41,11 +41,11 @@ export interface ResponseVndirect {
         value?: number,
         itemName?: string,
         reportDate?: string,
-        itemCode?: string | number | '',
-        relationNameVn: string | '';
-        year: string | '';
-        fiscalDate: string | '';
-        numericValue: number | 0;
+        itemCode?: string | number,
+        relationNameVn: string;
+        year: string;
+        fiscalDate: string;
+        numericValue: number;
 }
 
 export interface ResponseSsi {

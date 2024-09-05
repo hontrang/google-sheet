@@ -308,7 +308,7 @@ function LAY_THONG_TIN_DANH_MUC_DC(URL: string) {
     const nhomNganh = element.sector_vi ?? '_';
     const tyLe = element.per_nav ?? 0;
     const sanGD = element.bourse_en ?? '_';
-    const capNhatLuc = element.created ?? '-';
+    const capNhatLuc = element.created ?? '_';
     result.push([tenMa, nhomNganh, sanGD, String(tyLe), capNhatLuc]);
   });
   return result;
@@ -328,7 +328,7 @@ function LAY_THONG_TIN_TAI_SAN_DC(URL: string) {
   data.forEach((element: ResponseDC) => {
     const tenTaiSan = element.name_vi ?? '_';
     const tyLe = element.weight ?? '_';
-    const capNhatLuc = element.created ?? '-';
+    const capNhatLuc = element.created ?? '_';
     result.push([tenTaiSan, String(tyLe), capNhatLuc]);
   });
   return result;
