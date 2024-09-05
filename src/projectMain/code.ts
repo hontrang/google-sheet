@@ -44,8 +44,8 @@ function layTinTucSheetBangThongTin(): void {
     const content: string = UrlFetchApp.fetch(url).getContentText();
     const $ = Cheerio.load(content);
     $('a').each(function () {
-      const title: string = $(this).attr('title') ?? '';
-      const link: string = baseUrl + ($(this).attr('href') ?? '');
+      const title: string = $(this).attr('title') ?? '_';
+      const link: string = baseUrl + ($(this).attr('href') ?? '_');
       const date: string = $(this).siblings('span').text().substring(0, 10);
       mangDuLieuChinh.push([tenMa, title, '', link, '', date]);
     });
@@ -179,8 +179,8 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
 
   const datas = response.data;
   for (const element of datas) {
-    const content: string = element.content ?? '____';
-    const date: string = element.date ?? '____';
+    const content: string = element.content ?? '_';
+    const date: string = element.date ?? '_';
     sheetHelper.ghiDuLieuVaoDayTheoVung(
       [[content, '', DateHelper.doiDinhDangNgay(date, 'dd/MM/yyyy', DEFAULT_FORMAT)]],
       SheetHelper.sheetName.sheetDuLieu,
@@ -273,8 +273,7 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function batSukienSuaThongTinO(e: any) {
+function batSukienSuaThongTinO(e: GoogleAppsScript.Events.SheetsOnEdit) {
   const sheet = SpreadsheetApp.getActive().getActiveSheet();
   if (e.range.getA1Notation() === 'B1' && sheet.getName() === SheetHelper.sheetName.sheetChiTietMa) {
     layThongTinChiTietMa();
