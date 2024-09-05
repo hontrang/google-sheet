@@ -10,7 +10,7 @@ import { ResponseDC, ResponseSsi, ResponseVndirect } from '@src/types/types';
 function layChiSoVnIndex(): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const ngayHienTai: string = DateHelper.layNgayHienTai('YYYY-MM-DD');
+  const ngayHienTai: string = DateHelper.layNgayHienTai('yyyy-MM-dd');
   const duLieuNgayMoiNhat: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'A1');
   const thanhKhoanMoiNhat: number = parseFloat(sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'D1'));
   const url = 'https://banggia.cafef.vn/stockhandler.ashx?index=true';
