@@ -219,7 +219,7 @@ function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
     }
     if (element.ratioCode === 'FREEFLOAT') {
       const value = element.value;
-      sheetHelper.ghiDuLieuVaoO(value, SheetHelper.sheetName.sheetChiTietMa, 'J16');
+      sheetHelper.ghiDuLieuVaoO(value, SheetHelper.sheetName.sheetChiTietMa, 'I20');
     }
   }
 }
