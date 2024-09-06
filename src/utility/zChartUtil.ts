@@ -9,6 +9,8 @@ export class ZchartHelper {
     const HIGH_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B5');
     const LOW_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B4');
     const ABS_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B3');
+    const HIGH_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'D5');
+    const LOW_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'D4');
     let chart = this.getChart(SheetHelper.sheetName.sheetChiTietMa);
     const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetChiTietMa);
 
@@ -44,8 +46,8 @@ export class ZchartHelper {
       .setOption('series.0.labelInLegend', tenMa)
       .setOption('trendlines.0.type', 'linear')
       .setOption('vAxes.1.formatOptions.scaleFactor', 100)
-      .setOption('vAxes.1.viewWindow.max', 1350)
-      .setOption('vAxes.1.viewWindow.min', 1200)
+      .setOption('vAxes.1.viewWindow.max', HIGH_VNI)
+      .setOption('vAxes.1.viewWindow.min', LOW_VNI)
       .setOption('vAxes.1.textStyle.color', '#000000')
       .setOption('series.1.targetAxisIndex', 1)
       .setOption('series.1.labelInLegend', 'VNINDEX')
