@@ -4,7 +4,8 @@ import { SheetHelper } from '@src/utility/SheetHelper';
 export class ZchartHelper {
   public static updateChart(): void {
     const sheetHelper = new SheetHelper();
-    const title = `*${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1')}* - ${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'D1')}`;
+    const tenMa = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1');
+    const title = `*${tenMa}* - ${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'D1')}`;
     const HIGH_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B5');
     const LOW_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B4');
     const ABS_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B3');
@@ -19,7 +20,8 @@ export class ZchartHelper {
     chart = sheet.newChart()
       .asLineChart()
       .setRange(LOW_MA - ABS_MA * 2, HIGH_MA + ABS_MA * 2)
-      .addRange(sheet.getRange('A16:B36'))
+      .addRange(sheet.getRange('A16:B35'))
+      .addRange(sheet.getRange('\'dữ liệu\'!AD18:AE37'))
       .setMergeStrategy(Charts.ChartMergeStrategy.MERGE_COLUMNS)
       .setTransposeRowsAndColumns(false)
       .setNumHeaders(0)
@@ -39,11 +41,18 @@ export class ZchartHelper {
       .setOption('hAxis.textStyle.fontSize', 10)
       .setOption('hAxis.textStyle.color', '#000000')
       .setOption('vAxes.0.textStyle.color', '#000000')
-      .setOption('series.0.labelInLegend', 'MWG')
+      .setOption('series.0.labelInLegend', tenMa)
       .setOption('trendlines.0.type', 'linear')
+      .setOption('vAxes.1.formatOptions.scaleFactor', 100)
+      .setOption('vAxes.1.viewWindow.max', 1350)
+      .setOption('vAxes.1.viewWindow.min', 1200)
+      .setOption('vAxes.1.textStyle.color', '#000000')
+      .setOption('series.1.targetAxisIndex', 1)
+      .setOption('series.1.labelInLegend', 'VNINDEX')
+      .setOption('trendlines.1.type', 'linear')
       .setOption('height', 245)
       .setOption('width', 430)
-      .setPosition(13, 1, 0, 12)
+      .setPosition(13, 1, 0, 0)
       .build();
     sheet.insertChart(chart);
   }
