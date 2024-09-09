@@ -10,7 +10,7 @@ import { ResponseDC, ResponseSsi, ResponseVndirect } from '@src/types/types';
 function layChiSoVnIndex(): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const ngayHienTai: string = DateHelper.layNgayHienTai('YYYY-MM-DD');
+  const ngayHienTai: string = DateHelper.layNgayHienTai('yyyy-MM-dd');
   const duLieuNgayMoiNhat: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'A1');
   const thanhKhoanMoiNhat: number = parseFloat(sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'D1'));
   const url = 'https://banggia.cafef.vn/stockhandler.ashx?index=true';
@@ -308,7 +308,7 @@ function LAY_THONG_TIN_DANH_MUC_DC(URL: string) {
     const nhomNganh = element.sector_vi ?? '_';
     const tyLe = element.per_nav ?? 0;
     const sanGD = element.bourse_en ?? '_';
-    const capNhatLuc = element.created ?? '-';
+    const capNhatLuc = element.created ?? '_';
     result.push([tenMa, nhomNganh, sanGD, String(tyLe), capNhatLuc]);
   });
   return result;
@@ -328,7 +328,7 @@ function LAY_THONG_TIN_TAI_SAN_DC(URL: string) {
   data.forEach((element: ResponseDC) => {
     const tenTaiSan = element.name_vi ?? '_';
     const tyLe = element.weight ?? '_';
-    const capNhatLuc = element.created ?? '-';
+    const capNhatLuc = element.created ?? '_';
     result.push([tenTaiSan, String(tyLe), capNhatLuc]);
   });
   return result;
@@ -345,7 +345,7 @@ function LAY_SU_KIEN() {
   let date: string;
   $('table#calendar>thead.table-header,table#calendar>tbody').each(function () {
     if ($(this).attr('class') !== undefined) {
-      date = DateHelper.doiDinhDangNgay($(this).find('tr>th:nth-child(1)').text().trim(), 'DDDD MMMM dd yyyy', 'DDD yyyy/MM/dd');
+      date = DateHelper.doiDinhDangNgay($(this).find('tr>th:nth-child(1)').text().trim(), 'EEEE MMMM dd yyyy', 'EEEE yyyy/MM/dd', { locale: "vi-VN" });
     } else {
       $(this)
         .children('tr')

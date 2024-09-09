@@ -1,4 +1,5 @@
 import * as luxon from "luxon";
+import { LocaleOptions } from "luxon";
 
 export class DateHelper {
   public static layNgay(ngay: string): string {
@@ -6,8 +7,8 @@ export class DateHelper {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
 
-  public static doiDinhDangNgay(date: string, formatFrom: string, formatTo: string): string {
-    return luxon.DateTime.fromFormat(date, formatFrom).toFormat(formatTo).toString();
+  public static doiDinhDangNgay(date: string, formatFrom: string, formatTo: string, opts?: LocaleOptions): string {
+    return luxon.DateTime.fromFormat(date, formatFrom).toFormat(formatTo, opts).toString();
   }
 
   public static layNgayHienTai(format: string): string {
