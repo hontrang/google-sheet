@@ -1,59 +1,65 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { SheetHelper } from '@src/utility/SheetHelper'; // Đảm bảo đường dẫn đúng
+import { SheetHelper } from '@src/utility/SheetHelper';
 
 export class ZchartHelper {
-  public static readonly chartID = 911649750;
-
   public static updateChart(): void {
     const sheetHelper = new SheetHelper();
-    const label = `${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1')} - ${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'D1')}`;
-    const tenMa = `${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1')}`;
+    const tenMa = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1');
+    const title = `*${tenMa}* - ${sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'D1')}`;
     const HIGH_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B5');
     const LOW_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B4');
     const ABS_MA: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B3');
-    const HIGH_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'C5');
-    const LOW_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'C4');
-    const ABS_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'C3');
-    const chart = this.getChartById(this.chartID, SheetHelper.sheetName.sheetChiTietMa);
+    const HIGH_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'D5');
+    const LOW_VNI: number = +sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'D4');
+    let chart = this.getChart(SheetHelper.sheetName.sheetChiTietMa);
     const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetChiTietMa);
 
-    if (!sheet || !chart) {
+    if (!sheet || chart === null) {
       console.error(`Sheet hoặc biểu đồ không tồn tại.`);
       return;
     }
-
-    const updatedChart = chart
-      .modify()
-      .setOption('title', label)
-      .setOption('vAxis.minValue', LOW_MA - ABS_MA * 2)
-      .setOption('vAxis.maxValue', HIGH_MA + ABS_MA * 2)
-      .setOption('series', { 0: { labelInLegend: tenMa }, 1: { labelInLegend: 'VN-INDEX' } })
-      .setOption('vAxes', {
-        0: { viewWindow: { min: LOW_MA - ABS_MA * 2, max: HIGH_MA + ABS_MA * 2 } },
-        1: { viewWindow: { min: LOW_VNI - ABS_VNI * 2, max: HIGH_VNI + ABS_VNI * 2 } }
-      })
+    sheet.removeChart(chart);
+    chart = sheet.newChart()
+      .asLineChart()
+      .setRange(LOW_MA - ABS_MA * 2, HIGH_MA + ABS_MA * 2)
+      .addRange(sheet.getRange('A16:B35'))
+      .addRange(sheet.getRange('\'dữ liệu\'!AD18:AE37'))
+      .setMergeStrategy(Charts.ChartMergeStrategy.MERGE_COLUMNS)
+      .setTransposeRowsAndColumns(false)
+      .setNumHeaders(0)
+      .setHiddenDimensionStrategy(Charts.ChartHiddenDimensionStrategy.IGNORE_ROWS)
+      .setOption('bubble.stroke', '#000000')
+      .setOption('useFirstColumnAsDomain', true)
+      .setOption('curveType', 'function')
+      .setOption('title', title)
+      .setOption('annotations.domain.textStyle.color', '#808080')
+      .setOption('textStyle.color', '#000000')
+      .setOption('legend.textStyle.color', '#1a1a1a')
+      .setOption('titleTextStyle.color', '#757575')
+      .setOption('annotations.total.textStyle.color', '#808080')
+      .setOption('hAxis.gridlines.count', 10)
+      .setOption('hAxis.slantedText', true)
+      .setOption('hAxis.slantedTextAngle', 30)
+      .setOption('hAxis.textStyle.fontSize', 10)
+      .setOption('hAxis.textStyle.color', '#000000')
+      .setOption('vAxes.0.textStyle.color', '#000000')
+      .setOption('series.0.labelInLegend', tenMa)
+      .setOption('trendlines.0.type', 'linear')
+      .setOption('vAxes.1.formatOptions.scaleFactor', 100)
+      .setOption('vAxes.1.viewWindow.max', HIGH_VNI)
+      .setOption('vAxes.1.viewWindow.min', LOW_VNI)
+      .setOption('vAxes.1.textStyle.color', '#000000')
+      .setOption('series.1.targetAxisIndex', 1)
+      .setOption('series.1.labelInLegend', 'VNINDEX')
+      .setOption('trendlines.1.type', 'linear')
+      .setOption('height', 245)
+      .setOption('width', 430)
+      .setPosition(13, 1, 0, 0)
       .build();
-
-    sheet.updateChart(updatedChart);
-  }
-
-  public static createChart(): void {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetChiTietMa);
-    if (!sheet) {
-      console.error('Không tìm thấy sheet.');
-      return;
-    }
-
-    const range = sheet.getRange('A1:B8');
-    const chartBuilder = sheet.newChart().addRange(range).setChartType(Charts.ChartType.LINE).setPosition(10, 10, 0, 0).setOption('title', 'My Line Chart!');
-
-    const chart = chartBuilder.build();
     sheet.insertChart(chart);
-    console.log(chart.getChartId());
   }
 
-  public static getChartById(chartId: number, sheetName: string) {
+  public static getChart(sheetName: string) {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
       console.error(`Sheet ${sheetName} không tồn tại.`);
@@ -62,51 +68,12 @@ export class ZchartHelper {
 
     const charts = sheet.getCharts();
     for (const chart of charts) {
-      if (chart.getChartId() === chartId) {
+      if (chart.getOptions().get('title').toString().startsWith('*')) {
         return chart;
       }
     }
 
-    console.log(`Không tìm thấy biểu đồ có ID ${chartId} trong sheet ${sheetName}.`);
+    console.log(`Không tìm thấy biểu đồ trong sheet ${sheetName}.`);
     return null;
-  }
-
-  public static removeChartByID(): void {
-    const chart = this.getChartById(this.chartID, SheetHelper.sheetName.sheetChiTietMa);
-    if (!chart) {
-      console.error('Biểu đồ không tồn tại.');
-      return;
-    }
-
-    const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetChiTietMa);
-    if (!sheet) {
-      console.error(`Sheet ${SheetHelper.sheetName.sheetChiTietMa} không tồn tại.`);
-      return;
-    }
-
-    sheet.removeChart(chart);
-  }
-
-  public static inRaThongTinChart(): void {
-    const spreadsheetId: string = SpreadsheetApp.getActiveSpreadsheet().getId();
-
-    const chartsInfo = Sheets.Spreadsheets?.get(spreadsheetId, {
-      ranges: [],
-      includeGridData: false,
-      fields: 'sheets(charts,properties)'
-    });
-
-    for (const sheet of chartsInfo?.sheets || []) {
-      if (sheet.properties?.title === SheetHelper.sheetName.sheetChiTietMa) {
-        if (sheet.charts && sheet.charts.length > 0) {
-          for (const chart of sheet.charts) {
-            Logger.log(JSON.stringify(chart));
-          }
-        } else {
-          Logger.log(`Không tìm thấy biểu đồ nào trên bảng ${SheetHelper.sheetName.sheetChiTietMa}.`);
-        }
-        break;
-      }
-    }
   }
 }
