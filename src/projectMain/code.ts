@@ -7,7 +7,7 @@ import { DateHelper } from '@utils/DateHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
 import { ZchartHelper } from '@utils/zChartUtil';
-import { ResponseVndirect } from '@src/types/types';
+import { ResponseSimplize, ResponseVndirect } from '@src/types/types';
 
 function getDataHose(): void {
   const sheetHelper = new SheetHelper();
@@ -84,9 +84,12 @@ function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa = 'FRT'): void {
   sheetHelper.ghiDuLieuVaoDayTheoVung([['chi tiết mã', '', '']], SheetHelper.sheetName.sheetDuLieu, 'P1:R1');
   const url = `https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
   const object = httpHelper.sendGetRequest(url);
-  const datas = object.data;
+  const datas: [ResponseVndirect] = object.data;
   for (const element of datas) {
-    sheetHelper.ghiDuLieuVaoDayTheoVung([[element.date, element.close * 1000, element.nmVolume]], SheetHelper.sheetName.sheetDuLieu, `P${index}:R${index}`);
+    const ngay = element.date || '_';
+    const gia = element.close || 0;
+    const khoiLuong = element.nmVolume || '_';
+    sheetHelper.ghiDuLieuVaoDayTheoVung([[ngay, gia * 1000, khoiLuong]], SheetHelper.sheetName.sheetDuLieu, `P${index}:R${index}`);
     index++;
   }
 }
@@ -129,21 +132,22 @@ function layBaoCaoTaiChinh(tenMa = 'FRT'): void {
 function layBaoCaoPhanTich(tenMa = 'FRT'): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const url = `https://edocs.vietstock.vn/Home/Report_ReportAll_Paging?xml=Keyword:${tenMa}&pageIndex=1&pageSize=9`;
-  const object = httpHelper.sendPostRequest(url);
+  const url = `https://api.simplize.vn/api/company/analysis-report/list?ticker=${tenMa}&isWl=false&page=0&size=10`;
+  const object = httpHelper.sendGetRequest(url);
   const DEFAULT_FORMAT = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   let index = 2;
-  const datas = object.Data;
+  const datas: [ResponseSimplize] = object.data;
   for (const element of datas) {
-    const sourceName: string = element.SourceName ?? '_';
-    const title: string = element.Title ?? '_';
-    const reportTypeName: string = element.ReportTypeName ?? '_';
-    const lastUpdate: string = element.LastUpdate ?? '_';
-    const url: string = element.Url ?? '_';
+    const sourceName: string = element.source ?? '_';
+    const title: string = element.title ?? '_';
+    const targetPrice: number = element.targetPrice ?? 0;
+    const lastUpdate: string = element.issueDate ?? '_';
+    const url: string = element.attachedLink ?? '_';
+    const khuyenNghi: string = element.recommend ?? 'Không Có';
     sheetHelper.ghiDuLieuVaoDayTheoVung(
-      [[sourceName, title, reportTypeName, DateHelper.doiDinhDangNgay(lastUpdate, 'dd/MM/yyyy', DEFAULT_FORMAT), url]],
+      [[sourceName, title, `${targetPrice}`, DateHelper.doiDinhDangNgay(lastUpdate, 'dd/MM/yyyy', DEFAULT_FORMAT), url, khuyenNghi]],
       SheetHelper.sheetName.sheetDuLieu,
-      `AL${index}:AP${index}`
+      `AL${index}:AQ${index}`
     );
     index++;
   }
@@ -177,7 +181,7 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
   const url = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
   const response = httpHelper.sendRequest(url, OPTIONS_CO_TUC);
 
-  const datas = response.data;
+  const datas: [ResponseSimplize] = response.data;
   for (const element of datas) {
     const content: string = element.content ?? '_';
     const date: string = element.date ?? '_';
@@ -219,7 +223,7 @@ function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
     }
     if (element.ratioCode === 'FREEFLOAT') {
       const value = element.value;
-      sheetHelper.ghiDuLieuVaoO(value, SheetHelper.sheetName.sheetChiTietMa, 'I20');
+      sheetHelper.ghiDuLieuVaoO(value, SheetHelper.sheetName.sheetChiTietMa, 'E20');
     }
   }
 }
