@@ -43,9 +43,12 @@ export interface ResponseVndirect {
         reportDate?: string,
         itemCode?: string | number,
         relationNameVn: string;
-        year: string;
+        year: string,
         fiscalDate: string;
-        numericValue: number;
+        numericValue: number,
+        date?: string,
+        close?: number
+
 }
 
 export interface ResponseSsi {
@@ -88,7 +91,7 @@ export interface HttpResponse {
 }
 
 export interface ResponseSimplize {
-        date?: number,
+        date?: string,
         priceClose?: number,
         priceOpen?: number,
         priceLow?: number,
@@ -102,5 +105,17 @@ export interface ResponseSimplize {
         fnbsq?: number,
         bfv?: number,
         sfv?: number,
-        fnbsv?: number
+        fnbsv?: number,
+        ticker?: string,
+        issueDate?: string,
+        title?: string,
+        attachedLink?: string,
+        fileName?: string,
+        targetPrice?: number,
+        recommend?: RecommendSimplize,
+        source?: string,
+        content?: string,
 }
+
+export type RecommendSimplize = "TRUNG LẬP" | "MUA" | "KHÁC"
+
