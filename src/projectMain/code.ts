@@ -230,9 +230,9 @@ function layDonViKiemToan(tenMa = 'FRT') {
   const URL = `https://api-finfo.vndirect.com.vn/v4/company_relations?q=code:${tenMa}~relationType:AUDITOR&size=100&sort=year:DESC`;
   const response = httpHelper.sendGetRequest(URL);
   const datas = response.data;
-  let index = 67;
+  let index = 29;
   datas.forEach(function (element: ResponseVndirect) {
-    sheetHelper.ghiDuLieuVaoDayTheoVung([[element.relationNameVn, "", "", element.year]], SheetHelper.sheetName.sheetChiTietMa, `A${index}:D${index}`);
+    sheetHelper.ghiDuLieuVaoDayTheoVung([[element.relationNameVn, "", "", element.year]], SheetHelper.sheetName.sheetDuLieu, `AH${index}:AK${index}`);
     index++;
   });
 }
@@ -244,29 +244,29 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
   const response = httpHelper.sendGetRequest(URL);
   const datas = response.data;
   if (datas.length <= 0) {
-    sheetHelper.ghiDuLieuVaoO('Lỗi dữ liệu', SheetHelper.sheetName.sheetChiTietMa, 'E67');
+    sheetHelper.ghiDuLieuVaoO('Lỗi dữ liệu', SheetHelper.sheetName.sheetDuLieu, 'AH29');
   } else {
-    let index = 67;
+    let index = 29;
     datas.forEach(function (element: ResponseVndirect) {
       // Tiền và tương đương tiền
       if (element.itemCode === 37000) {
-        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
+        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
         index++;
       }
     });
-    index = 70;
+    index = 32;
     datas.forEach(function (element: ResponseVndirect) {
       // Tổng tài sản
       if (element.itemCode === 12700) {
-        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
+        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
         index++;
       }
     });
-    index = 73;
+    index = 35;
     datas.forEach(function (element: ResponseVndirect) {
       // Nợ ngắn hạn
       if (element.itemCode === 13100) {
-        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetChiTietMa, `E${index}:G${index}`);
+        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
         index++;
       }
     });
