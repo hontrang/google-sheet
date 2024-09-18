@@ -8,7 +8,7 @@ export class DateHelper {
   }
 
   public static doiDinhDangNgay(date: string, formatFrom: string, formatTo: string, opts?: LocaleOptions): string {
-    return luxon.DateTime.fromFormat(date, formatFrom).toFormat(formatTo, opts).toString();
+    return luxon.DateTime.fromFormat(date, formatFrom, { zone: 'utc' }).setZone('Asia/Bangkok').toFormat(formatTo, opts).toString();
   }
 
   public static layNgayHienTai(format: string): string {

@@ -345,13 +345,13 @@ function LAY_SU_KIEN() {
   let date: string;
   $('table#calendar>thead.table-header,table#calendar>tbody').each(function () {
     if ($(this).attr('class') !== undefined) {
-      date = DateHelper.doiDinhDangNgay($(this).find('tr>th:nth-child(1)').text().trim(), 'EEEE MMMM dd yyyy', 'EEEE yyyy/MM/dd', { locale: 'vi-VN' });
+      date = $(this).find('tr>th:nth-child(1)').text().trim();
     } else {
       $(this)
         .children('tr')
         .each(function () {
           const timeValue = $(this).find('td:nth-child(1)').text().trim() || '00:00 AM';
-          const thoigian = `${date} ${timeValue}`;
+          const thoigian = DateHelper.doiDinhDangNgay(`${date} ${timeValue}`, 'EEEE MMMM dd yyyy hh:mm a', 'EEEE yyyy/MM/dd hh:mm a', { locale: 'vi-VN' });
           const currency = $(this).find('td:nth-child(2) td.calendar-iso').text().trim();
           const name = $(this).find('td:nth-child(3)').text().trim();
           const actual = $(this).find('td:nth-child(4)').text().trim();
