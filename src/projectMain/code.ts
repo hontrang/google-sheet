@@ -19,7 +19,7 @@ function getDataHose(): void {
   const response = httpHelper.sendGetRequest(url);
 
   const priceMap: Record<string, number> = {};
-  response.forEach((object: { sym: string, lastPrice: number }) => {
+  response.forEach((object: { sym: string; lastPrice: number }) => {
     priceMap[object.sym] = object.lastPrice * 1000;
   });
   sheetHelper.xoaDuLieuTrongCot(SheetHelper.sheetName.sheetThamChieu, 'A', 1, 4);
@@ -236,7 +236,7 @@ function layDonViKiemToan(tenMa = 'FRT') {
   const datas = response.data;
   let index = 29;
   datas.forEach(function (element: ResponseVndirect) {
-    sheetHelper.ghiDuLieuVaoDayTheoVung([[element.relationNameVn, "", "", element.year]], SheetHelper.sheetName.sheetDuLieu, `AH${index}:AK${index}`);
+    sheetHelper.ghiDuLieuVaoDayTheoVung([[element.relationNameVn, '', '', element.year]], SheetHelper.sheetName.sheetDuLieu, `AH${index}:AK${index}`);
     index++;
   });
 }
@@ -254,7 +254,7 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
     datas.forEach(function (element: ResponseVndirect) {
       // Tiền và tương đương tiền
       if (element.itemCode === 37000) {
-        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
+        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, '', element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
         index++;
       }
     });
@@ -262,7 +262,7 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
     datas.forEach(function (element: ResponseVndirect) {
       // Tổng tài sản
       if (element.itemCode === 12700) {
-        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
+        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, '', element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
         index++;
       }
     });
@@ -270,7 +270,7 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
     datas.forEach(function (element: ResponseVndirect) {
       // Nợ ngắn hạn
       if (element.itemCode === 13100) {
-        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, "", element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
+        sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, '', element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
         index++;
       }
     });
