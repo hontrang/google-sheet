@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { SheetSpread } from "@src/types/types";
+import { SheetSpread } from '@src/types/types';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-extraneous-class
 export class SheetHelper implements SheetSpread {
@@ -30,7 +30,6 @@ export class SheetHelper implements SheetSpread {
     sheet.getRange(row, column, data.length, data[0].length).clearContent();
     sheet.getRange(row, column, data.length, data[0].length).setValues(data);
   }
-
 
   ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);

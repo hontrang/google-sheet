@@ -1,5 +1,5 @@
-import * as luxon from "luxon";
-import { LocaleOptions } from "luxon";
+import * as luxon from 'luxon';
+import { LocaleOptions } from 'luxon';
 
 export class DateHelper {
   public static layNgay(ngay: string): string {
