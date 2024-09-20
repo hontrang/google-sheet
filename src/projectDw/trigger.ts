@@ -10,13 +10,9 @@
 function dwCreateTriggers() {
   // Tạo trigger chạy theo thời gian
   ScriptApp.newTrigger('layChiSoVnIndex').timeBased().everyMinutes(1).create();
-
-  ScriptApp.newTrigger('layTyGiaUSDVND').timeBased().everyMinutes(1).create();
-
   ScriptApp.newTrigger('layThongTinCoBan').timeBased().everyDays(1).atHour(18).nearMinute(0).create();
-
   ScriptApp.newTrigger('layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay').timeBased().everyDays(1).atHour(15).nearMinute(0).create();
-
+  ScriptApp.newTrigger('LAY_SU_KIEN').timeBased().everyDays(1).atHour(1).nearMinute(0).create();
   Logger.log('Các trigger đã được tạo!');
 }
 
