@@ -33,11 +33,10 @@ export class HttpHelper implements Http {
     }
   }
   async getToken(): Promise<string> {
-    const sheetHelper = new SheetHelper();
     if (this.token !== undefined) return this.token;
     else {
-      const consumerID = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B7');
-      const consumerSecret = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B8');
+      const consumerID = PropertiesService.getScriptProperties().getProperty("consumerID");
+      const consumerSecret = PropertiesService.getScriptProperties().getProperty("consumerSecret");
       const OPTIONS_POST_TOKEN_SSI = {
         method: 'post',
         // eslint-disable-next-line @typescript-eslint/naming-convention
