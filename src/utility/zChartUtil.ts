@@ -19,12 +19,11 @@ export class ZchartHelper {
       return;
     }
     sheet.removeChart(chart);
-    chart = sheet
-      .newChart()
+    chart = sheet.newChart()
       .asLineChart()
       .setRange(LOW_MA - ABS_MA * 2, HIGH_MA + ABS_MA * 2)
       .addRange(sheet.getRange('A16:B35'))
-      .addRange(sheet.getRange("'dữ liệu'!AD18:AE37"))
+      .addRange(sheet.getRange('\'dữ liệu\'!AD18:AE37'))
       .setMergeStrategy(Charts.ChartMergeStrategy.MERGE_COLUMNS)
       .setTransposeRowsAndColumns(false)
       .setNumHeaders(0)
