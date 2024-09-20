@@ -2,7 +2,6 @@
   "title": "Quản lý chứng khoán bằng google sheet",
   "name": "google-sheet",
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
     "build:main": "npm run clean && npm run build:assets && npm run cpMain && npm run removeImport && npm run prettier && npm run build:clasp:main",
     "build:dw": "npm run clean  && npm run build:assets && npm run cpDW && npm run removeImport && npm run prettier && npm run build:clasp:dw",
