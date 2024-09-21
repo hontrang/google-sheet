@@ -10,6 +10,9 @@ export class DateHelper {
   public static doiDinhDangNgay(date: string, formatFrom: string, formatTo: string, opts?: LocaleOptions): string {
     return luxon.DateTime.fromFormat(date, formatFrom, { zone: 'utc' }).setZone('Asia/Bangkok').toFormat(formatTo, opts).toString();
   }
+  public static doiDinhDangNgayISO(date: string, formatTo: string): string {
+    return luxon.DateTime.fromISO(date).toFormat(formatTo).toString();
+  }
 
   public static layNgayHienTai(format: string): string {
     return luxon.DateTime.now().toFormat(format).toString();

@@ -68,18 +68,19 @@ export interface ResponseDC {
   fund_id?: number;
   created?: string;
   modified?: string;
-  stock?: string;
-  sector_vi?: string;
+  assetId?: string;
+  translation?: string;
   sector_en?: string;
-  bourse_vi?: string;
+  exchange?: string;
   bourse_en?: string;
   per_nav?: number;
   data_index_id?: number;
   shares?: number;
   market_value?: number;
   foreign_ownership?: number;
-  name_vi: string;
-  weight: number;
+  name_vi?: string;
+  weight?: number;
+  fundWeight?: string;
 }
 
 export interface HttpResponse {

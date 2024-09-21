@@ -299,16 +299,18 @@ async function layDanhSachMa(): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function LAY_THONG_TIN_DANH_MUC_DC(URL: string) {
   const httpHelper = new HttpHelper();
+  const sheetHelper = new SheetHelper();
+  const DEFAULT_FORMAT = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   const result: string[][] = [];
   const response = httpHelper.sendRequest(URL);
-  const data = response.ffs_holding;
+  const data = response.returnValue.top10Holding;
+  const capNhatLuc = DateHelper.doiDinhDangNgayISO(response.returnValue.tradingDate, DEFAULT_FORMAT);
   // eslint-disable-next-line @typescript-eslint/naming-convention
   data.forEach((element: ResponseDC) => {
-    const tenMa = element.stock ?? '_';
-    const nhomNganh = element.sector_vi ?? '_';
-    const tyLe = element.per_nav ?? 0;
-    const sanGD = element.bourse_en ?? '_';
-    const capNhatLuc = element.created ?? '_';
+    const tenMa = element.assetId ?? '_';
+    const nhomNganh = element.translation?.vi?.sectorLevel ?? '_';
+    const tyLe = element.weight ?? 0;
+    const sanGD = element.exchange ?? '_';
     result.push([tenMa, nhomNganh, sanGD, String(tyLe), capNhatLuc]);
   });
   return result;
@@ -320,15 +322,16 @@ function LAY_THONG_TIN_DANH_MUC_DC(URL: string) {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function LAY_THONG_TIN_TAI_SAN_DC(URL: string) {
   const httpHelper = new HttpHelper();
+  const sheetHelper = new SheetHelper();
+  const DEFAULT_FORMAT = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   const result: string[][] = [];
   const response = httpHelper.sendRequest(URL);
-  const data = response.ffs_asset;
-  console.log(response);
+  const data = response.returnValue.allocationBySectors;
+  const capNhatLuc = DateHelper.doiDinhDangNgayISO(response.returnValue.tradingDate, DEFAULT_FORMAT);
   // eslint-disable-next-line @typescript-eslint/naming-convention
   data.forEach((element: ResponseDC) => {
-    const tenTaiSan = element.name_vi ?? '_';
-    const tyLe = element.weight ?? '_';
-    const capNhatLuc = element.created ?? '_';
+    const tenTaiSan = element.translation?.vi.industryLevel2 ?? '_';
+    const tyLe = element.fundWeight?.VF1 ?? element.fundWeight?.VF4 ?? '_';
     result.push([tenTaiSan, String(tyLe), capNhatLuc]);
   });
   return result;
