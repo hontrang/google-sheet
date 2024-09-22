@@ -48,6 +48,7 @@ export interface ResponseVndirect {
   numericValue: number;
   date?: string;
   close?: number;
+  ratioCode?: string;
 }
 
 export interface ResponseSsi {
@@ -68,18 +69,19 @@ export interface ResponseDC {
   fund_id?: number;
   created?: string;
   modified?: string;
-  stock?: string;
-  sector_vi?: string;
+  assetId?: string;
+  translation?: string;
   sector_en?: string;
-  bourse_vi?: string;
+  exchange?: string;
   bourse_en?: string;
   per_nav?: number;
   data_index_id?: number;
   shares?: number;
   market_value?: number;
   foreign_ownership?: number;
-  name_vi: string;
-  weight: number;
+  name_vi?: string;
+  weight?: number;
+  fundWeight?: string;
 }
 
 export interface HttpResponse {
@@ -116,3 +118,12 @@ export interface ResponseSimplize {
 }
 
 export type RecommendSimplize = 'TRUNG LẬP' | 'MUA' | 'KHÁC';
+
+export interface ResponseVPS {
+  sym?: string;
+  lastVolume?: number;
+  lastPrice?: number;
+}
+export interface ResponseTCBS {
+  ticker?: string;
+}

@@ -5,5 +5,5 @@ html-report/*
 **/config.ts
 .DS_Store
 **/playwright-report/*
-.env
 **/*/index.html
+.env
