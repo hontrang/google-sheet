@@ -48,6 +48,7 @@ export interface ResponseVndirect {
   numericValue: number;
   date?: string;
   close?: number;
+  ratioCode?: string;
 }
 
 export interface ResponseSsi {
@@ -117,3 +118,12 @@ export interface ResponseSimplize {
 }
 
 export type RecommendSimplize = 'TRUNG LẬP' | 'MUA' | 'KHÁC';
+
+export interface ResponseVPS {
+  sym?: string;
+  lastVolume?: number;
+  lastPrice?: number;
+}
+export interface ResponseTCBS {
+  ticker?: string;
+}

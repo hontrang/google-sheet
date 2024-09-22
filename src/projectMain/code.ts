@@ -99,13 +99,13 @@ function layTinTucSheetChiTietMa(tenMa = 'FRT'): void {
   const baseUrl = 'https://s.cafef.vn';
   const queryUrl = `${baseUrl}/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
   const content: string = UrlFetchApp.fetch(queryUrl).getContentText();
-  const DEFAULT_FORMAT = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
+  const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   let index = 2;
   const $ = Cheerio.load(content);
   $('a').each(function () {
     const title = $(this).attr('title') ?? '';
     const link = `${baseUrl}${$(this).attr('href') ?? ''}`;
-    const date = DateHelper.doiDinhDangNgay($(this).siblings('span').text().substring(0, 10), 'dd/MM/yyyy', DEFAULT_FORMAT);
+    const date = DateHelper.doiDinhDangNgay($(this).siblings('span').text().substring(0, 10), 'dd/MM/yyyy', defaultFormat);
     sheetHelper.ghiDuLieuVaoDayTheoVung([[tenMa.toUpperCase(), title, link, date]], SheetHelper.sheetName.sheetDuLieu, `AH${index}:AK${index}`);
     index++;
   });
@@ -134,7 +134,7 @@ function layBaoCaoPhanTich(tenMa = 'FRT'): void {
   const httpHelper = new HttpHelper();
   const url = `https://api.simplize.vn/api/company/analysis-report/list?ticker=${tenMa}&isWl=false&page=0&size=10`;
   const object = httpHelper.sendGetRequest(url);
-  const DEFAULT_FORMAT = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
+  const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   let index = 2;
   const datas: [ResponseSimplize] = object.data;
   for (const element of datas) {
@@ -145,7 +145,7 @@ function layBaoCaoPhanTich(tenMa = 'FRT'): void {
     const url: string = element.attachedLink ?? '_';
     const khuyenNghi: string = element.recommend ?? 'Không Có';
     sheetHelper.ghiDuLieuVaoDayTheoVung(
-      [[sourceName, title, `${targetPrice}`, DateHelper.doiDinhDangNgay(lastUpdate, 'dd/MM/yyyy', DEFAULT_FORMAT), url, khuyenNghi]],
+      [[sourceName, title, `${targetPrice}`, DateHelper.doiDinhDangNgay(lastUpdate, 'dd/MM/yyyy', defaultFormat), url, khuyenNghi]],
       SheetHelper.sheetName.sheetDuLieu,
       `AL${index}:AQ${index}`
     );
@@ -166,7 +166,7 @@ function layThongTinCoDong(tenMa = 'FRT'): void {
 function layThongTinCoTuc(tenMa = 'FRT'): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const DEFAULT_FORMAT = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
+  const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   let index = 18;
   const OPTIONS_CO_TUC: URLFetchRequestOptions = {
     method: 'post',
@@ -185,11 +185,7 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
   for (const element of datas) {
     const content: string = element.content ?? '_';
     const date: string = element.date ?? '_';
-    sheetHelper.ghiDuLieuVaoDayTheoVung(
-      [[content, '', DateHelper.doiDinhDangNgay(date, 'dd/MM/yyyy', DEFAULT_FORMAT)]],
-      SheetHelper.sheetName.sheetDuLieu,
-      `AO${index}:AQ${index}`
-    );
+    sheetHelper.ghiDuLieuVaoDayTheoVung([[content, '', DateHelper.doiDinhDangNgay(date, 'dd/MM/yyyy', defaultFormat)]], SheetHelper.sheetName.sheetDuLieu, `AO${index}:AQ${index}`);
     index++;
   }
 }
@@ -215,7 +211,7 @@ function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
   const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B17');
   const URL = `https://finfo-api.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
   const response = httpHelper.sendGetRequest(URL);
-  const datas = response.data;
+  const datas: [ResponseVndirect] = response.data;
   for (const element of datas) {
     if (element.ratioCode === 'BETA') {
       const value = element.value;
