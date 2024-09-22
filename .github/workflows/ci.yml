@@ -17,15 +17,12 @@ jobs:
         with:
           node-version: 16
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npx playwright test --project test
       
-      - name: Run Test with Jest
-        run: npm test
-        env:
-          CONSUMERID: ${{ secrets.CONSUMERID }}
-          CONSUMERSECRET: ${{ secrets.CONSUMERSECRET }}
-      
-
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
