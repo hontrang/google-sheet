@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Configuration } from '@src/configuration/Configuration';
 import { test, expect } from '@playwright/test';
 
 let TOKEN: string | undefined;
@@ -160,8 +159,8 @@ test.describe('kiểm tra url ssi chạy chính xác', () => {
 async function getToken(): Promise<string> {
   if (TOKEN !== undefined) return TOKEN;
   else {
-    const consumerID = Configuration.consumerID;
-    const consumerSecret = Configuration.consumerSecret;
+    const consumerID = process.env.consumerID;
+    const consumerSecret = process.env.consumerSecret;
     const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
     const response = await axios.post(URL, { consumerID: consumerID, consumerSecret: consumerSecret });
     TOKEN = 'Bearer ' + response.data.data.accessToken;

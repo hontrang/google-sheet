@@ -35,8 +35,8 @@ export class HttpHelper implements Http {
   async getToken(): Promise<string> {
     if (this.token !== undefined) return this.token;
     else {
-      const consumerID = PropertiesService.getScriptProperties().getProperty("consumerID");
-      const consumerSecret = PropertiesService.getScriptProperties().getProperty("consumerSecret");
+      const consumerID = PropertiesService.getScriptProperties().getProperty('consumerID');
+      const consumerSecret = PropertiesService.getScriptProperties().getProperty('consumerSecret');
       const OPTIONS_POST_TOKEN_SSI = {
         method: 'post',
         // eslint-disable-next-line @typescript-eslint/naming-convention
