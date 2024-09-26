@@ -82,6 +82,9 @@ export interface ResponseDC {
   name_vi?: string;
   weight?: number;
   fundWeight?: string;
+  Name?: string;
+  downloadUrl__c?: string;
+  displayDate__c?: string;
 }
 
 export interface HttpResponse {

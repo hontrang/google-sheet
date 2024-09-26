@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { test, expect } from '@playwright/test';
-import { ResponseSimplize, ResponseSsi, ResponseTCBS, ResponseVndirect, ResponseVPS } from '@src/types/types';
+import { ResponseDC, ResponseSimplize, ResponseSsi, ResponseTCBS, ResponseVndirect, ResponseVPS } from '@src/types/types';
+import { data } from 'cheerio/dist/commonjs/api/attributes';
 
 let TOKEN: string | undefined;
 test.describe('kiểm tra url vndirect chạy chính xác', () => {
@@ -182,6 +183,43 @@ test.describe('kiểm tra url ssi chạy chính xác', () => {
     const response = await axios.get(url, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
+  });
+});
+
+test.describe('kiểm tra url dragon capital chạy chính xác', () => {
+  test('kiểm tra phản hồi báo cáo danh mục', async () => {
+    const URL = `https://www.dragoncapital.com.vn/individual/vi/webruntime/api/apex/execute?language=vi&asGuest=true&htmlEncode=false`;
+    let option = JSON.stringify({
+      "namespace": "",
+      "classname": "@udd/01pJ2000000CgR7",
+      "method": "getDocumentContentsV2",
+      "isContinuation": false,
+      "params": {
+        "siteId": "0DMJ2000000oLukOAE",
+        "fundCodeOrReportCode": "VF1",
+        "documentType": null,
+        "targetYear": "2024",
+        "language": "vi"
+      },
+      "cacheable": false
+    });
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${URL}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cookie': 'CookieConsentPolicy=0:1; LSKey-c$CookieConsentPolicy=0:1'
+      },
+      data: option
+    };
+    const response = await axios.request(config);
+    const datas = response.data.returnValue;
+    const baoCao: ResponseDC = datas[5].files[0];
+    expect(response.status).toBe(200);
+    expect(baoCao.Name).toContain("Báo cáo");
+    expect(baoCao.downloadUrl__c).toContain("dragoncapitalprod");
+    expect(baoCao.displayDate__c).toContain("2024-09-26");
   });
 });
 
