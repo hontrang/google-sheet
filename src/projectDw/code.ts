@@ -412,3 +412,23 @@ function LAY_BAO_CAO_DC(url: string) {
   });
   return result;
 }
+
+/**
+ * @customfunction
+ */
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function LAY_THONG_TIN_PHAI_SINH() {
+  const result: string[][] = [];
+  const httpHelper = new HttpHelper();
+  const sheetHelper = new SheetHelper();
+  const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
+  const url = `https://api-finfo.vndirect.com.vn/v4/derivative_mappings`;
+  const response = httpHelper.sendGetRequest(url);
+  const datas: ResponseVndirect[] = response.data;
+  datas.forEach((data) => {
+    if (data.underlyingType === 'INDEX') {
+      result.push([DateHelper.doiDinhDangNgay(data.expirationDate ?? '_', defaultFormat, 'EEEE yyyy/MM/dd', { locale: 'vi-VN' })]);
+    }
+  });
+  return result;
+}

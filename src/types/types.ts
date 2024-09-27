@@ -49,6 +49,8 @@ export interface ResponseVndirect {
   date?: string;
   close?: number;
   ratioCode?: string;
+  underlyingType?: string;
+  expirationDate?: string;
 }
 
 export interface ResponseSsi {

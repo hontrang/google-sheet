@@ -7,8 +7,13 @@ export class DateHelper {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
 
-  public static doiDinhDangNgay(date: string, formatFrom: string, formatTo: string, opts?: LocaleOptions): string {
-    return luxon.DateTime.fromFormat(date, formatFrom, { zone: 'utc' }).setZone('Asia/Bangkok').toFormat(formatTo, opts).toString();
+  public static doiDinhDangNgay(date: string, formatFrom: string, formatTo: string, opts?: LocaleOptions, zone?: string): string {
+    let fromeZone = 'utc';
+    let defaultZone = 'Asia/Bangkok';
+    if (zone !== undefined) {
+      defaultZone = zone;
+    }
+    return luxon.DateTime.fromFormat(date, formatFrom, { zone: fromeZone }).setZone(defaultZone).toFormat(formatTo, opts).toString();
   }
   public static doiDinhDangNgayISO(date: string, formatTo: string): string {
     return luxon.DateTime.fromISO(date).toFormat(formatTo).toString();

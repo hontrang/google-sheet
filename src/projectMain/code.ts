@@ -65,7 +65,7 @@ function layThongTinChiTietMa(): void {
   layTinTucSheetChiTietMa(tenMa);
   layBaoCaoTaiChinh(tenMa);
   layThongTinCoDong(tenMa);
-  layThongTongSoLuongCoPhieuDangNiemYet(tenMa);
+  layTongSoLuongCoPhieuDangNiemYet(tenMa);
   layThongTinCoTuc(tenMa);
   layHeSoBetaVaFreeFloat(tenMa);
   layDonViKiemToan(tenMa);
@@ -190,7 +190,7 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
   }
 }
 
-async function layThongTongSoLuongCoPhieuDangNiemYet(tenMa = 'FRT'): Promise<void> {
+async function layTongSoLuongCoPhieuDangNiemYet(tenMa = 'FRT'): Promise<void> {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const market = 'HOSE';
