@@ -367,3 +367,48 @@ function LAY_SU_KIEN() {
   });
   return result;
 }
+
+/**
+ * @customfunction
+ */
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function LAY_BAO_CAO_DC(url: string) {
+  const httpHelper = new HttpHelper();
+  const result: string[][] = [];
+  const option = JSON.stringify({
+    "namespace": "",
+    "classname": "@udd/01pJ2000000CgR7",
+    "method": "getDocumentContentsV2",
+    "isContinuation": false,
+    "params": {
+      "siteId": "0DMJ2000000oLukOAE",
+      "fundCodeOrReportCode": "VF1",
+      "documentType": null,
+      "targetYear": "2024",
+      "language": "vi"
+    },
+    "cacheable": false
+  });
+
+  const configs = {
+    "method": "post",
+    "contentType": "application/json",
+    "payload": option,
+    "headers": {
+      'Content-Type': 'application/json',
+      'Cookie': 'CookieConsentPolicy=0:1; LSKey-c$CookieConsentPolicy=0:1'
+    },
+    "maxBodyLength": "Infinity",
+  };
+
+  const response = httpHelper.sendPostRequest(url, configs);
+  const data = response.returnValue;
+  const danhSachBaoCao: ResponseDC[] = data[5].files;
+  danhSachBaoCao.forEach((baoCao) => {
+    const tenBaoCao = baoCao.activeFileName__c ?? '_';
+    const dlc = baoCao.downloadUrl__c ?? '_';
+    const capNhatLuc = baoCao.displayDate__c ?? '_';
+    result.push([tenBaoCao, dlc, capNhatLuc]);
+  });
+  return result;
+}

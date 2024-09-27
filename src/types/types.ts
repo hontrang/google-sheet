@@ -82,7 +82,7 @@ export interface ResponseDC {
   name_vi?: string;
   weight?: number;
   fundWeight?: string;
-  Name?: string;
+  activeFileName__c?: string;
   downloadUrl__c?: string;
   displayDate__c?: string;
 }
