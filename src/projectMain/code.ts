@@ -86,9 +86,9 @@ function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa = 'FRT'): void {
   const object = httpHelper.sendGetRequest(url);
   const datas: [ResponseVndirect] = object.data;
   for (const element of datas) {
-    const ngay = element.date || '_';
-    const gia = element.close || 0;
-    const khoiLuong = element.nmVolume || '_';
+    const ngay = element.date ?? '_';
+    const gia = element.close ?? 0;
+    const khoiLuong = element.nmVolume ?? '_';
     sheetHelper.ghiDuLieuVaoDayTheoVung([[ngay, gia * 1000, khoiLuong]], SheetHelper.sheetName.sheetDuLieu, `P${index}:R${index}`);
     index++;
   }

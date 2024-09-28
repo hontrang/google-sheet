@@ -24,7 +24,7 @@ export interface Http {
   getToken(): Promise<string>;
 }
 
-export interface ResponseVndirect {
+export type ResponseVndirect = {
   code?: string;
   type?: string;
   tradingDate?: string;
@@ -53,7 +53,7 @@ export interface ResponseVndirect {
   expirationDate?: string;
 }
 
-export interface ResponseSsi {
+export type ResponseSsi = {
   Symbol?: string;
   ClosePrice?: number;
   Market?: string;
@@ -66,13 +66,13 @@ export interface ResponseSsi {
   TradingDate?: string;
 }
 
-export interface ResponseDC {
+export type ResponseDC = {
   id?: number;
   fund_id?: number;
   created?: string;
   modified?: string;
   assetId?: string;
-  translation?: string;
+  translation?: DCTranslation;
   sector_en?: string;
   exchange?: string;
   bourse_en?: string;
@@ -83,19 +83,34 @@ export interface ResponseDC {
   foreign_ownership?: number;
   name_vi?: string;
   weight?: number;
-  fundWeight?: string;
+  fundWeight?: DCFundWeight;
   activeFileName__c?: string;
   downloadUrl__c?: string;
   displayDate__c?: string;
 }
 
-export interface HttpResponse {
+export type DCTranslation = {
+  vi?: DCSectorLevel & DCIndustryLevel2;
+}
+export type DCSectorLevel = {
+  sectorLevel?: string;
+}
+export type DCIndustryLevel2 = {
+  industryLevel2?: string;
+}
+
+export type DCFundWeight = {
+  VF1?: string;
+  VF4?: string;
+}
+
+export type HttpResponse = {
   data?: any;
   status?: number;
   statusText?: string;
 }
 
-export interface ResponseSimplize {
+export type ResponseSimplize = {
   date?: string;
   priceClose?: number;
   priceOpen?: number;
@@ -124,11 +139,11 @@ export interface ResponseSimplize {
 
 export type RecommendSimplize = 'TRUNG LẬP' | 'MUA' | 'KHÁC';
 
-export interface ResponseVPS {
+export type ResponseVPS = {
   sym?: string;
   lastVolume?: number;
   lastPrice?: number;
 }
-export interface ResponseTCBS {
+export type ResponseTCBS = {
   ticker?: string;
 }

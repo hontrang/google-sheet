@@ -43,7 +43,7 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
   test('kiểm tra thông tin phái sinh từ vndirect', async () => {
     const url = `https://api-finfo.vndirect.com.vn/v4/derivative_mappings`;
     const response = await axios.get(url);
-    const datas: [ResponseVndirect] = response.data.data;
+    const datas: ResponseVndirect[] = response.data.data;
     expect(datas[0].code).not.toBeNull();
     expect(response.status).toBe(200);
   });

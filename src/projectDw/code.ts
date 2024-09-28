@@ -305,7 +305,6 @@ function LAY_THONG_TIN_DANH_MUC_DC(URL: string) {
   const response = httpHelper.sendRequest(URL);
   const data = response.returnValue.top10Holding;
   const capNhatLuc = DateHelper.doiDinhDangNgayISO(response.returnValue.tradingDate, defaultFormat);
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   data.forEach((element: ResponseDC) => {
     const tenMa = element.assetId ?? '_';
     const nhomNganh = element.translation?.vi?.sectorLevel ?? '_';
@@ -328,9 +327,8 @@ function LAY_THONG_TIN_TAI_SAN_DC(URL: string) {
   const response = httpHelper.sendRequest(URL);
   const data = response.returnValue.allocationBySectors;
   const capNhatLuc = DateHelper.doiDinhDangNgayISO(response.returnValue.tradingDate, defaultFormat);
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   data.forEach((element: ResponseDC) => {
-    const tenTaiSan = element.translation?.vi.industryLevel2 ?? '_';
+    const tenTaiSan = element.translation?.vi?.industryLevel2 ?? '_';
     const tyLe = element.fundWeight?.VF1 ?? element.fundWeight?.VF4 ?? '_';
     result.push([tenTaiSan, String(tyLe), capNhatLuc]);
   });
@@ -372,9 +370,10 @@ function LAY_SU_KIEN() {
  * @customfunction
  */
 // eslint-disable-next-line @typescript-eslint/naming-convention
-function LAY_BAO_CAO_DC(url: string) {
+function LAY_BAO_CAO_DC() {
   const httpHelper = new HttpHelper();
   const result: string[][] = [];
+  const url = `https://www.dragoncapital.com.vn/individual/vi/webruntime/api/apex/execute?language=vi&asGuest=true&htmlEncode=false`;
   const option = JSON.stringify({
     "namespace": "",
     "classname": "@udd/01pJ2000000CgR7",

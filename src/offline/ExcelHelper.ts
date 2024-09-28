@@ -4,8 +4,8 @@ import { Cell, Workbook, Worksheet } from 'exceljs';
 import { SheetSpread } from '@src/types/types';
 
 export class ExcelHelper implements SheetSpread {
-  readonly filePath = path.resolve(process.cwd(), process.env.xlsxInput || '');
-  readonly outPath = path.resolve(process.cwd(), process.env.xlsxOutput || '');
+  readonly filePath = path.resolve(process.cwd(), process.env.xlsxInput ?? '');
+  readonly outPath = path.resolve(process.cwd(), process.env.xlsxOutput ?? '');
   private workBook!: Workbook;
   private workSheet!: Worksheet;
 
