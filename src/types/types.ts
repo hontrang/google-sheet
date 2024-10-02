@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
 export interface SheetSpread {
   layDuLieuTrongO(sheetName: string, cell: string): string;
