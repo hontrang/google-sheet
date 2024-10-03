@@ -6,6 +6,10 @@ export class DateHelper {
     const date: Date = new Date(ngay);
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
+  public static layNamHienTai(): number {
+    const date: Date = new Date();
+    return date.getFullYear();
+  }
 
   public static doiDinhDangNgay(date: string, formatFrom: string, formatTo: string, opts?: LocaleOptions, zone?: string): string {
     let fromeZone = 'utc';

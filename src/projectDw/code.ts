@@ -366,12 +366,9 @@ function LAY_SU_KIEN() {
   return result;
 }
 
-/**
- * @customfunction
- */
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function LAY_BAO_CAO_DC() {
+function layBaoCaoDC() {
   const httpHelper = new HttpHelper();
+  const sheetHelper = new SheetHelper();
   const result: string[][] = [];
   const url = `https://www.dragoncapital.com.vn/individual/vi/webruntime/api/apex/execute?language=vi&asGuest=true&htmlEncode=false`;
   const option = JSON.stringify({
@@ -383,7 +380,7 @@ function LAY_BAO_CAO_DC() {
       "siteId": "0DMJ2000000oLukOAE",
       "fundCodeOrReportCode": "VF1",
       "documentType": null,
-      "targetYear": "2024",
+      "targetYear": `${DateHelper.layNamHienTai()}`,
       "language": "vi"
     },
     "cacheable": false
@@ -409,14 +406,10 @@ function LAY_BAO_CAO_DC() {
     const capNhatLuc = baoCao.displayDate__c ?? '_';
     result.push([tenBaoCao, dlc, capNhatLuc]);
   });
-  return result;
+  sheetHelper.ghiDuLieuVaoDay(result, SheetHelper.sheetName.sheetDC, 2, 17);
 }
 
-/**
- * @customfunction
- */
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function LAY_THONG_TIN_PHAI_SINH() {
+function layThongTinPhaiSinh() {
   const result: string[][] = [];
   const httpHelper = new HttpHelper();
   const sheetHelper = new SheetHelper();
@@ -429,5 +422,5 @@ function LAY_THONG_TIN_PHAI_SINH() {
       result.push([DateHelper.doiDinhDangNgay(data.expirationDate ?? '_', defaultFormat, 'EEEE yyyy/MM/dd', { locale: 'vi-VN' })]);
     }
   });
-  return result;
+  sheetHelper.ghiDuLieuVaoDay(result, SheetHelper.sheetName.sheetDuLieu, 2, 74);
 }
