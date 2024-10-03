@@ -424,3 +424,28 @@ function layThongTinPhaiSinh() {
   });
   sheetHelper.ghiDuLieuVaoDay(result, SheetHelper.sheetName.sheetDuLieu, 2, 74);
 }
+
+/**
+ * @customfunction
+ */
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function layTinTucHSX() {
+  const httpHelper = new HttpHelper();
+  const sheetHelper = new SheetHelper();
+  const result: string[][] = [];
+  const fromDate = DateHelper.layNgayHienTaiTruSoNgay("dd.MM.yyyy", 1);
+  const toDate = DateHelper.layNgayHienTai("dd.MM.yyyy");
+  const maxRow = 200;
+  const url = `https://www.hsx.vn/Modules/CMS/Web/ArticleInCategory/dca0933e-a578-4eaf-8b29-beb4575052c5?exclude=00000000-0000-0000-0000-000000000000&lim=True&pageFieldName1=FromDate&pageFieldValue1=${fromDate}&pageFieldOperator1=eq&pageFieldName2=ToDate&pageFieldValue2=${toDate}&pageFieldOperator2=eq&pageFieldName3=TokenCode&pageFieldValue3=&pageFieldOperator3=eq&pageFieldName4=CategoryId&pageFieldValue4=dca0933e-a578-4eaf-8b29-beb4575052c5&pageFieldOperator4=eq&pageCriteriaLength=4&_search=false&rows=${maxRow}&page=1&sidx=id&sord=desc`;
+  const response = httpHelper.sendRequest(url);
+  const data = response.rows;
+  data.forEach((element: any) => {
+    const thoiGian = element.cell[1] ?? '_';
+    const noiDung = element.cell[2].split(">")[1].split("</")[0] ?? '_';
+    const tenMa = noiDung.split(":")[0].trim();
+    const tuaDe = noiDung.split(":")[1].trim();
+    console.log(noiDung);
+    result.push([thoiGian, tenMa, tuaDe]);
+  });
+  sheetHelper.ghiDuLieuVaoDay(result, SheetHelper.sheetName.sheetDuLieu, 2, 75);
+}

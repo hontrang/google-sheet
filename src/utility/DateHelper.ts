@@ -23,6 +23,9 @@ export class DateHelper {
     return luxon.DateTime.fromISO(date).toFormat(formatTo).toString();
   }
 
+  public static layNgayHienTaiTruSoNgay(format: string, days: number): string {
+    return luxon.DateTime.now().minus({ days: days }).toFormat(format).toString();
+  }
   public static layNgayHienTai(format: string): string {
     return luxon.DateTime.now().toFormat(format).toString();
   }
