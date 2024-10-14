@@ -29,6 +29,9 @@ export class DateHelper {
   public static layNgayHienTai(format: string): string {
     return luxon.DateTime.now().toFormat(format).toString();
   }
+  public static doiTuMillisSangNgay(millis: number, format: string): string {
+    return luxon.DateTime.fromMillis(millis).toFormat(format).toString();
+  }
 
   public static layKiTaiChinhTheoQuy(): string {
     const currentDate = luxon.DateTime.now().toFormat('yyyy-MM-dd').toString();

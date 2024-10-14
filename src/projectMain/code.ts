@@ -7,7 +7,7 @@ import { DateHelper } from '@utils/DateHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
 import { ZchartHelper } from '@utils/zChartUtil';
-import { ResponseSimplize, ResponseVndirect } from '@src/types/types';
+import { ResponseSimplize, ResponseVietStock, ResponseVndirect } from '@src/types/types';
 
 function getDataHose(): void {
   const sheetHelper = new SheetHelper();
@@ -70,6 +70,7 @@ function layThongTinChiTietMa(): void {
   layHeSoBetaVaFreeFloat(tenMa);
   layDonViKiemToan(tenMa);
   layChiTietBaoCaoTaiChinh(tenMa);
+  layThongTinTraiPhieu(tenMa);
   ZchartHelper.updateChart();
   LogHelper.logTime(SheetHelper.sheetName.sheetChiTietMa, 'I1');
   Logger.log('Hàm layThongTinChiTietMa chạy thành công');
@@ -156,9 +157,10 @@ function layBaoCaoPhanTich(tenMa = 'FRT'): void {
 function layThongTinCoDong(tenMa = 'FRT'): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const url = `https://apipubaws.tcbs.com.vn/tcanalysis/v1/company/${tenMa}/large-share-holders`;
-  const object = httpHelper.sendRequest(url);
-  const mangDuLieuChinh = object.listShareHolder.map(({ ticker, name, ownPercent }: { ticker: string; name: string; ownPercent: string }) => [ticker, name, ownPercent]);
+  const url = `https://api.simplize.vn/api/company/ownership/shareholder-fund-details/${tenMa}`;
+  const response = httpHelper.sendRequest(url);
+  const danhSach = response.data.shareholderDetails.slice(0, 10);
+  const mangDuLieuChinh = danhSach.map(({ investorFullName, pctOfSharesOutHeld, changeValue, countryOfInvestor }: ResponseSimplize) => [investorFullName, `${pctOfSharesOutHeld}`, `${changeValue}`, countryOfInvestor]);
 
   sheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.sheetName.sheetDuLieu, 2, 'AD');
 }
@@ -271,6 +273,98 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
       }
     });
   }
+}
+
+function vietstock() {
+  const sheetHelper = new SheetHelper();
+  const tenMa = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1');
+  const response = UrlFetchApp.fetch(`https://finance.vietstock.vn/${tenMa}/trai-phieu-lien-quan.htm`);
+  const htmlContent = response.getContentText();
+  const regex = `<input.*name=__RequestVerificationToken.*value=([^ >]+)`;
+  const match = RegExp(regex).exec(htmlContent);
+  const token = match?.[1] ?? "Lỗi dữ liệu";
+  sheetHelper.ghiDuLieuVaoO(token, SheetHelper.sheetName.sheetCauHinh, 'B19');
+}
+
+function derivative() {
+  const sheetHelper = new SheetHelper();
+  const httpHelper = new HttpHelper();
+  const url = 'https://finance.vietstock.vn/Data/GetBondRelated';
+  const tenMa = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1');
+  const headers = {
+    'Accept': '*/*',
+    'Accept-Language': 'vi',
+    'Connection': 'keep-alive',
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'Cookie': 'language=vi-VN; __RequestVerificationToken=HOrcaOV9AyD405rXuf5nsBOVwtGAq27usAhYlUknoiTKB9BeVyBMRxdfbnJSEF-fqekKEKIYAJHq6rPRoQz5H0Sz90s7OdoD7WSNLgfcnUc1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+  };
+
+  const payload = {
+    '__RequestVerificationToken': 'CXImyVGvqSldrS6OJYhhxioGCJYHWNA3Z5DaNLDrwRFZMEKaSTeJWi21Utfue-GpXm3Yb4poiDsRmvrjs01y1rCtZCmd3mfbx7WgjnIMB5Q1',
+    'code': `${tenMa}`,
+    'orderBy': 'ReleaseDate',
+    'orderDir': 'DESC',
+    'page': 1,
+    'pageSize': 20
+  };
+
+  const options = {
+    'method': 'post',
+    'headers': headers,
+    'payload': payload,
+    'muteHttpExceptions': true
+  };
+
+  const response = httpHelper.sendPostRequest(url, options);
+  sheetHelper.ghiDuLieuVaoO(response, SheetHelper.sheetName.sheetCauHinh, 'B20');
+}
+
+function layThongTinTraiPhieu(tenMa = 'FRT') {
+  const sheetHelper = new SheetHelper();
+  const httpHelper = new HttpHelper();
+  const result: string[][] = [];
+  const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
+  const url = 'https://finance.vietstock.vn/Data/GetBondRelated';
+  const headers = {
+    'Accept': '*/*',
+    'Accept-Language': 'vi',
+    'Connection': 'keep-alive',
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'Cookie': 'language=vi-VN; __RequestVerificationToken=HOrcaOV9AyD405rXuf5nsBOVwtGAq27usAhYlUknoiTKB9BeVyBMRxdfbnJSEF-fqekKEKIYAJHq6rPRoQz5H0Sz90s7OdoD7WSNLgfcnUc1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+  };
+
+  const payload = {
+    '__RequestVerificationToken': 'CXImyVGvqSldrS6OJYhhxioGCJYHWNA3Z5DaNLDrwRFZMEKaSTeJWi21Utfue-GpXm3Yb4poiDsRmvrjs01y1rCtZCmd3mfbx7WgjnIMB5Q1',
+    'code': `${tenMa}`,
+    'orderBy': 'ReleaseDate',
+    'orderDir': 'DESC',
+    'page': 1,
+    'pageSize': 20
+  };
+
+  const options = {
+    'method': 'post',
+    'headers': headers,
+    'payload': payload,
+    'muteHttpExceptions': true
+  };
+
+  const response = httpHelper.sendPostRequest(url, options);
+  sheetHelper.xoaDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, `S`, 5, 40, 30);
+  response.forEach(function (element: ResponseVietStock) {
+    const tenTP = element.KeyCode ?? '_';
+    const ngayPhatHanh = DateHelper.doiTuMillisSangNgay(Number(element.ReleaseDate?.replace('/Date(', '').replace(')/', '')), defaultFormat) ?? '_';
+    const ngayDenHan = DateHelper.doiTuMillisSangNgay(Number(element.DueDate?.replace('/Date(', '').replace(')/', '')), defaultFormat) ?? '_';
+    const menhGia = element.FaceValue ?? 0;
+    const khoiLuong = element.IssuaVolume ?? 0;
+    console.log(`${Number(element.ReleaseDate?.replace('/Date(', '').replace(')/', ''))} - ${Number(element.DueDate?.replace('/Date(', '').replace(')/', ''))}`);
+    result.push([tenTP, ngayPhatHanh, ngayDenHan, `${menhGia}`, `${khoiLuong}`]);
+  });
+  // ghi dữ liệu từ ô S40
+  sheetHelper.ghiDuLieuVaoDay(result, SheetHelper.sheetName.sheetDuLieu, 40, 19);
+
 }
 
 function batSukienSuaThongTinO(e: GoogleAppsScript.Events.SheetsOnEdit) {

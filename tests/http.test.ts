@@ -66,6 +66,14 @@ test.describe('kiểm tra url simplize chạy chính xác', () => {
     const datas: [ResponseSimplize] = response.data.data;
     expect(datas[0].ticker).toEqual(tenMa);
   });
+
+  test('kiểm tra danh sách cổ đông lớn', async () => {
+    const tenMa = 'HPG';
+    const url = `https://api.simplize.vn/api/company/ownership/shareholder-fund-details/${tenMa}`;
+    const response = await axios.get(url);
+    const datas: ResponseSimplize[] = response.data.data.shareholderDetails;
+    expect(datas[0]).toHaveProperty(`investorFullName`);
+  });
 });
 
 test.describe('kiểm tra url vps chạy chính xác', () => {
@@ -97,16 +105,6 @@ test.describe('kiểm tra url cafef chạy chính xác', () => {
     const response = await axios.get(url);
     const data = response.data;
     expect(data).toContain('Báo cáo tài chính');
-  });
-});
-
-test.describe('kiểm tra url tcbs chạy chính xác', () => {
-  test('kiểm tra phản hồi từ api tcbs', async () => {
-    const tenMa = 'HPG';
-    const url = `https://apipubaws.tcbs.com.vn/tcanalysis/v1/company/${tenMa}/large-share-holders`;
-    const response = await axios.get(url);
-    const datas: [ResponseTCBS] = response.data.listShareHolder;
-    expect(datas[0].ticker).toBe(tenMa);
   });
 });
 
@@ -189,6 +187,64 @@ test.describe('kiểm tra url ssi chạy chính xác', () => {
     const response = await axios.get(url, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
+  });
+});
+
+test.describe('kiểm tra url vietstock chạy chính xác', () => {
+  test('kiểm tra phản hồi về vietstock token', async () => {
+    const tenMa = `VND`;
+    const headers = {
+      Accept: '*/*',
+      'Accept-Language': 'vi',
+      Connection: 'keep-alive',
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      Cookie: 'language=vi-VN; __RequestVerificationToken=HOrcaOV9AyD405rXuf5nsBOVwtGAq27usAhYlUknoiTKB9BeVyBMRxdfbnJSEF-fqekKEKIYAJHq6rPRoQz5H0Sz90s7OdoD7WSNLgfcnUc1',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+    };
+
+    const options = {
+      method: 'get',
+      headers: headers,
+      muteHttpExceptions: true
+    };
+    const response = await axios.get(`https://finance.vietstock.vn/${tenMa}/trai-phieu-lien-quan.htm`, options);
+    const htmlContent = response.data;
+    const regex = `<input.*name=__RequestVerificationToken.*value=([^ >]+)`;
+    const match = RegExp(regex).exec(htmlContent);
+    expect(response.status).toBe(200);
+    expect(match).toHaveLength(2);
+  });
+  test('kiểm tra phản hồi danh mục trái phiếu', async () => {
+    const url = 'https://finance.vietstock.vn/Data/GetBondRelated';
+    const tenMa = `VND`;
+    const headers = {
+      Accept: '*/*',
+      'Accept-Language': 'vi',
+      Connection: 'keep-alive',
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      Cookie: 'language=vi-VN; __RequestVerificationToken=HOrcaOV9AyD405rXuf5nsBOVwtGAq27usAhYlUknoiTKB9BeVyBMRxdfbnJSEF-fqekKEKIYAJHq6rPRoQz5H0Sz90s7OdoD7WSNLgfcnUc1',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+    };
+
+    const data = {
+      __RequestVerificationToken: 'CXImyVGvqSldrS6OJYhhxioGCJYHWNA3Z5DaNLDrwRFZMEKaSTeJWi21Utfue-GpXm3Yb4poiDsRmvrjs01y1rCtZCmd3mfbx7WgjnIMB5Q1',
+      code: `${tenMa}`,
+      orderBy: 'ReleaseDate',
+      orderDir: 'DESC',
+      page: 1,
+      pageSize: 20
+    };
+
+    const options = {
+      url: url,
+      method: 'post',
+      headers: headers,
+      data: data,
+      muteHttpExceptions: true
+    };
+    const response = await axios.request(options);
+    expect(response.status).toBe(200);
+    expect(response.data[0]).toHaveProperty('KeyCode');
   });
 });
 

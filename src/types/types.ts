@@ -133,6 +133,10 @@ export type ResponseSimplize = {
   recommend?: RecommendSimplize;
   source?: string;
   content?: string;
+  investorFullName?: string;
+  pctOfSharesOutHeld?: number;
+  changeValue?: number;
+  countryOfInvestor?: string;
 }
 
 export type RecommendSimplize = 'TRUNG LẬP' | 'MUA' | 'KHÁC';
@@ -144,4 +148,17 @@ export type ResponseVPS = {
 }
 export type ResponseTCBS = {
   ticker?: string;
+}
+export type ResponseVietStock = {
+  KeyCode?: string;
+  StockCode?: string;
+  BondCode?: string;
+  ReleaseDate?: string;
+  DueDate?: string;
+  FaceValue?: number;
+  IssueRate?: number;
+  IssuaVolume?: number;
+  InterestRateType?: string;
+  InterestPeriod?: string;
+  TotalRecord?: number;
 }

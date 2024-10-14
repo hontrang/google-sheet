@@ -147,15 +147,20 @@ export class SheetHelper implements SheetSpread {
     return true;
   }
 
-  xoaDuLieuTrongCot(sheetName: string, column: string, numOfCol: number, startRow: number): boolean {
+  xoaDuLieuTrongCot(sheetName: string, column: string, numOfCol: number, startRow: number, endRow?: number): boolean {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+    let numRows;
     if (!sheet) {
       console.log('Sheet không tồn tại');
       return false;
     }
-    const numRows = sheet.getLastRow() - startRow + 1;
+    if (endRow !== undefined) {
+      numRows = endRow;
+    } else {
+      numRows = sheet.getLastRow() - startRow + 1;
+    }
     const range = sheet.getRange(startRow, this.doiTenCotThanhChiSo(column), numRows, numOfCol);
-    range.clear();
+    range.clearContent();
     return true;
   }
 }

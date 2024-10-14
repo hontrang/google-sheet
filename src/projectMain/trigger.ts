@@ -16,6 +16,8 @@ function mainCreateTriggers(): void {
   ScriptApp.newTrigger('batSukienSuaThongTinO').forSpreadsheet(SpreadsheetApp.getActive()).onEdit().create();
 
   ScriptApp.newTrigger('getDataHose').forSpreadsheet(SpreadsheetApp.getActive()).onOpen().create();
+  ScriptApp.newTrigger('vietstock').timeBased().everyMinutes(5).create();
+  ScriptApp.newTrigger('derivative').timeBased().everyMinutes(5).create();
 
   Logger.log('Các trigger đã được tạo!');
 }
