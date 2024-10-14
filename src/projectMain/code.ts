@@ -359,9 +359,12 @@ function layThongTinTraiPhieu(tenMa = 'FRT') {
     const ngayDenHan = DateHelper.doiTuMillisSangNgay(Number(element.DueDate?.replace('/Date(', '').replace(')/', '')), defaultFormat) ?? '_';
     const menhGia = element.FaceValue ?? 0;
     const khoiLuong = element.IssuaVolume ?? 0;
-    console.log(`${Number(element.ReleaseDate?.replace('/Date(', '').replace(')/', ''))} - ${Number(element.DueDate?.replace('/Date(', '').replace(')/', ''))}`);
     result.push([tenTP, ngayPhatHanh, ngayDenHan, `${menhGia}`, `${khoiLuong}`]);
   });
+  if (result.length === 0) {
+    console.log(`Không có dữ liệu`);
+    return;
+  };
   // ghi dữ liệu từ ô S40
   sheetHelper.ghiDuLieuVaoDay(result, SheetHelper.sheetName.sheetDuLieu, 40, 19);
 
