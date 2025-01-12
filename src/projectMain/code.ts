@@ -38,16 +38,18 @@ function layTinTucSheetBangThongTin(): void {
   const sheetHelper = new SheetHelper();
   const mangDuLieuChinh: Array<[string, string, string, string, string, string]> = [];
   const danhSachMa: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetCauHinh, 'E');
-  const baseUrl = 'https://s.cafef.vn';
+  const baseUrl = 'https://cafef.vn';
   danhSachMa.forEach((tenMa: string) => {
-    const url = `${baseUrl}/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
+    const url = `${baseUrl}/du-lieu/tin-doanh-nghiep/${tenMa}/event.chn`;
     const content: string = UrlFetchApp.fetch(url).getContentText();
     const $ = Cheerio.load(content);
-    $('a').each(function () {
-      const title: string = $(this).attr('title') ?? '_';
-      const link: string = baseUrl + ($(this).attr('href') ?? '_');
-      const date: string = $(this).siblings('span').text().substring(0, 10);
-      mangDuLieuChinh.push([tenMa, title, '', link, '', date]);
+    $('a.docnhanhTitle').each(function (i) {
+      if (i < 10) {
+        const title: string = $(this).attr('title') ?? '_';
+        const link: string = baseUrl + ($(this).attr('href') ?? '_');
+        const date: string = $(this).siblings('span').text().substring(0, 10);
+        mangDuLieuChinh.push([tenMa, title, '', link, '', date]);
+      }
     });
   });
   sheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.sheetName.sheetBangThongTin, 35, 'A');
@@ -83,7 +85,7 @@ function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa = 'FRT'): void {
   const toDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B18');
   let index = 2;
   sheetHelper.ghiDuLieuVaoDayTheoVung([['chi tiết mã', '', '']], SheetHelper.sheetName.sheetDuLieu, 'P1:R1');
-  const url = `https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
+  const url = `https://api-finfo.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
   const object = httpHelper.sendGetRequest(url);
   const datas: [ResponseVndirect] = object.data;
   for (const element of datas) {
@@ -211,7 +213,7 @@ function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B17');
-  const URL = `https://finfo-api.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
+  const URL = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
   const response = httpHelper.sendGetRequest(URL);
   const datas: [ResponseVndirect] = response.data;
   for (const element of datas) {
@@ -241,7 +243,7 @@ function layDonViKiemToan(tenMa = 'FRT') {
 function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const URL = `https://finfo-api.vndirect.com.vn/v4/financial_statements?q=code:${tenMa}~reportType:QUARTER~modelType:1,89,3,91~fiscalDate:${DateHelper.layKiTaiChinhTheoQuy()}&sort=fiscalDate&size=2000`;
+  const URL = `https://api-finfo.vndirect.com.vn/v4/financial_statements?q=code:${tenMa}~reportType:QUARTER~modelType:1,89,3,91~fiscalDate:${DateHelper.layKiTaiChinhTheoQuy()}&sort=fiscalDate&size=2000`;
 
   const response = httpHelper.sendGetRequest(URL);
   const datas = response.data;
