@@ -99,13 +99,13 @@ function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa = 'FRT'): void {
 
 function layTinTucSheetChiTietMa(tenMa = 'FRT'): void {
   const sheetHelper = new SheetHelper();
-  const baseUrl = 'https://s.cafef.vn';
-  const queryUrl = `${baseUrl}/Ajax/Events_RelatedNews_New.aspx?symbol=${tenMa}&floorID=0&configID=0&PageIndex=1&PageSize=10&Type=2`;
-  const content: string = UrlFetchApp.fetch(queryUrl).getContentText();
+  const baseUrl = 'https://cafef.vn';
+  const url = `${baseUrl}/du-lieu/tin-doanh-nghiep/${tenMa}/event.chn`;
+  const content: string = UrlFetchApp.fetch(url).getContentText();
   const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   let index = 2;
   const $ = Cheerio.load(content);
-  $('a').each(function () {
+  $('a.docnhanhTitle').each(function () {
     const title = $(this).attr('title') ?? '';
     const link = `${baseUrl}${$(this).attr('href') ?? ''}`;
     const date = DateHelper.doiDinhDangNgay($(this).siblings('span').text().substring(0, 10), 'dd/MM/yyyy', defaultFormat);
