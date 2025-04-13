@@ -8,7 +8,7 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
     const tenMa = 'HPG';
     const fromDate = '2024-04-08';
     const toDate = '2024-04-08';
-    const URL = `https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
+    const URL = `https://api-finfo.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
     const response = await axios.get(URL);
     const datas: [ResponseVndirect] = response.data.data;
     expect(datas[0].code).toEqual(tenMa);
@@ -25,7 +25,7 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
   test('kiểm tra các chỉ số tài chính từ api vndirect', async () => {
     const tenMa = 'HPG';
     const fiscalDate = '2023-09-30';
-    const url = `https://finfo-api.vndirect.com.vn/v4/financial_statements?q=code:${tenMa}~reportType:QUARTER~modelType:1,89,3,91~fiscalDate:${fiscalDate}&sort=fiscalDate&size=2000`;
+    const url = `https://api-finfo.vndirect.com.vn/v4/financial_statements?q=code:${tenMa}~reportType:QUARTER~modelType:1,89,3,91~fiscalDate:${fiscalDate}&sort=fiscalDate&size=2000`;
     const response = await axios.get(url);
     const datas: [ResponseVndirect] = response.data.data;
     expect(datas[0].code).toEqual(tenMa);
@@ -34,7 +34,7 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
   test('kiểm tra hệ số beta và free float từ vndirect', async () => {
     const tenMa = 'HPG';
     const fromDate = '2023-09-30';
-    const url = `https://finfo-api.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
+    const url = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
     const response = await axios.get(url);
     const datas: [ResponseVndirect] = response.data.data;
     expect(datas[0].ratioCode).toEqual('MARKETCAP');
@@ -108,7 +108,7 @@ test.describe('kiểm tra url cafef chạy chính xác', () => {
   });
 });
 
-test.describe('kiểm tra url ssi chạy chính xác', () => {
+test.skip('kiểm tra url ssi chạy chính xác', () => {
   test('kiểm tra url lấy tên mã trên HOSE', async () => {
     const market = 'HOSE';
     const pageIndex = 1;
