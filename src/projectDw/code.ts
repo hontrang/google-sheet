@@ -112,7 +112,7 @@ function layThongTinPE(danhSachMa: string[]): void {
 function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const QUERY_API = 'https://finfo-api.vndirect.com.vn/v4';
+  const QUERY_API = 'https://api-finfo.vndirect.com.vn/v4';
   const duLieuCotThamChieu = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
 
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
@@ -163,7 +163,7 @@ export function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.sheetName.sheetK
   const hangCuoi = sheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = sheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
-    const URL = `https://finfo-api.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${headers.join(',')}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
+    const URL = `https://api-finfo.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${headers.join(',')}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
     const object = httpHelper.sendGetRequest(URL);
     if (object?.data.length > 0) {
       const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
@@ -189,7 +189,7 @@ function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.sheetName.sheetKhoiNgoa
   const hangCuoi = sheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = sheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
-    const url = `https://finfo-api.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${headers.join(',')}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
+    const url = `https://api-finfo.vndirect.com.vn/v4/foreigns?size=10000&sort=tradingDate&q=code:${headers.join(',')}~tradingDate:gte:${date}~tradingDate:lte:${date}`;
     const object = httpHelper.sendGetRequest(url);
     if (object?.data.length > 0) {
       const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
@@ -215,7 +215,7 @@ function layKhoiLuongHangNgay(sheetName = SheetHelper.sheetName.sheetKhoiLuong, 
   const hangCuoi = sheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = sheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
   if (duLieuNgayMoiNhat !== date) {
-    const URL = `https://finfo-api.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${headers.join(',')}~date:gte:${date}~date:lte:${date}`;
+    const URL = `https://api-finfo.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${headers.join(',')}~date:gte:${date}~date:lte:${date}`;
     const object = httpHelper.sendGetRequest(URL);
     if (object?.data.length > 0) {
       const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
@@ -233,36 +233,27 @@ function layKhoiLuongHangNgay(sheetName = SheetHelper.sheetName.sheetKhoiLuong, 
     console.log('done');
   }
 }
-async function layGiaHangNgay(sheetName = SheetHelper.sheetName.sheetGia, date = new SheetHelper().layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'A1')) {
+function layGiaHangNgay(sheetName = SheetHelper.sheetName.sheetGia, date = new SheetHelper().layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'A1')) {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
-  const fromDate = DateHelper.doiDinhDangNgay(date, defaultFormat, 'dd/MM/yyyy');
-  const toDate = DateHelper.doiDinhDangNgay(date, defaultFormat, 'dd/MM/yyyy');
+  const headers: string[] = sheetHelper.layDuLieuTrongHang(SheetHelper.sheetName.sheetKhoiLuong, 1).slice(1);
   const hangCuoi = sheetHelper.laySoHangTrongSheet(sheetName);
   const duLieuNgayMoiNhat = sheetHelper.layDuLieuTrongO(sheetName, 'A' + hangCuoi);
-  const market = 'HOSE';
   if (duLieuNgayMoiNhat !== date) {
-    const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.market=${market}`;
-    const token = await httpHelper.getToken();
-    const OPTION: URLFetchRequestOptions = {
-      method: 'get',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
-    };
-    const object = httpHelper.sendRequest(URL, OPTION);
+    const URL = `https://api-finfo.vndirect.com.vn/v4/stock_prices?size=1000&sort=date&q=code:${headers.join(',')}~date:gte:${date}~date:lte:${date}`;
+    const object = httpHelper.sendGetRequest(URL);
     if (object?.data.length > 0) {
       const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
       sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
-      object.data.map((item: ResponseSsi) => {
+      object.data.map((item: ResponseVndirect) => {
         for (let i = 0; i < header.length; i++) {
-          if (header[i] === item.Symbol) {
-            sheetHelper.ghiDuLieuVaoDay([[item.ClosePrice]], sheetName, hangCuoi + 1, i + 1);
+          if (header[i] === item.code) {
+            sheetHelper.ghiDuLieuVaoDay([[item.close * 1000]], sheetName, hangCuoi + 1, i + 1);
           }
         }
       });
     }
-    console.log('Lấy giá hàng ngày thành công');
+    console.log('Lấy giá hàng ngày thành công');
   } else {
     console.log('done');
   }
@@ -305,7 +296,6 @@ function LAY_THONG_TIN_DANH_MUC_DC(URL: string) {
   const response = httpHelper.sendRequest(URL);
   const data = response.returnValue.top10Holding;
   const capNhatLuc = DateHelper.doiDinhDangNgayISO(response.returnValue.tradingDate, defaultFormat);
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   data.forEach((element: ResponseDC) => {
     const tenMa = element.assetId ?? '_';
     const nhomNganh = element.translation?.vi?.sectorLevel ?? '_';
@@ -328,9 +318,8 @@ function LAY_THONG_TIN_TAI_SAN_DC(URL: string) {
   const response = httpHelper.sendRequest(URL);
   const data = response.returnValue.allocationBySectors;
   const capNhatLuc = DateHelper.doiDinhDangNgayISO(response.returnValue.tradingDate, defaultFormat);
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   data.forEach((element: ResponseDC) => {
-    const tenTaiSan = element.translation?.vi.industryLevel2 ?? '_';
+    const tenTaiSan = element.translation?.vi?.industryLevel2 ?? '_';
     const tyLe = element.fundWeight?.VF1 ?? element.fundWeight?.VF4 ?? '_';
     result.push([tenTaiSan, String(tyLe), capNhatLuc]);
   });
@@ -366,4 +355,88 @@ function LAY_SU_KIEN() {
     }
   });
   return result;
+}
+
+function layBaoCaoDC() {
+  const httpHelper = new HttpHelper();
+  const sheetHelper = new SheetHelper();
+  const result: string[][] = [];
+  const url = `https://www.dragoncapital.com.vn/individual/vi/webruntime/api/apex/execute?language=vi&asGuest=true&htmlEncode=false`;
+  const option = JSON.stringify({
+    "namespace": "",
+    "classname": "@udd/01pJ2000000CgR7",
+    "method": "getDocumentContentsV2",
+    "isContinuation": false,
+    "params": {
+      "siteId": "0DMJ2000000oLukOAE",
+      "fundCodeOrReportCode": "VF1",
+      "documentType": null,
+      "targetYear": `${DateHelper.layNamHienTai()}`,
+      "language": "vi"
+    },
+    "cacheable": false
+  });
+
+  const configs = {
+    "method": "post",
+    "contentType": "application/json",
+    "payload": option,
+    "headers": {
+      'Content-Type': 'application/json',
+      'Cookie': 'CookieConsentPolicy=0:1; LSKey-c$CookieConsentPolicy=0:1'
+    },
+    "maxBodyLength": "Infinity",
+  };
+
+  const response = httpHelper.sendPostRequest(url, configs);
+  const data = response.returnValue;
+  const danhSachBaoCao: ResponseDC[] = data[5].files;
+  danhSachBaoCao.forEach((baoCao) => {
+    const tenBaoCao = baoCao.activeFileName__c ?? '_';
+    const dlc = baoCao.downloadUrl__c ?? '_';
+    const capNhatLuc = baoCao.displayDate__c ?? '_';
+    result.push([tenBaoCao, dlc, capNhatLuc]);
+  });
+  sheetHelper.ghiDuLieuVaoDay(result, SheetHelper.sheetName.sheetDC, 2, 17);
+}
+
+function layThongTinPhaiSinh() {
+  const result: string[][] = [];
+  const httpHelper = new HttpHelper();
+  const sheetHelper = new SheetHelper();
+  const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
+  const url = `https://api-finfo.vndirect.com.vn/v4/derivative_mappings`;
+  const response = httpHelper.sendGetRequest(url);
+  const datas: ResponseVndirect[] = response.data;
+  datas.forEach((data) => {
+    if (data.underlyingType === 'INDEX') {
+      result.push([DateHelper.doiDinhDangNgay(data.expirationDate ?? '_', defaultFormat, 'EEEE yyyy/MM/dd', { locale: 'vi-VN' })]);
+    }
+  });
+  sheetHelper.ghiDuLieuVaoDay(result, SheetHelper.sheetName.sheetDuLieu, 2, 74);
+}
+
+/**
+ * @customfunction
+ */
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function layTinTucHSX() {
+  const httpHelper = new HttpHelper();
+  const sheetHelper = new SheetHelper();
+  const result: string[][] = [];
+  const fromDate = DateHelper.layNgayHienTaiTruSoNgay("dd.MM.yyyy", 1);
+  const toDate = DateHelper.layNgayHienTai("dd.MM.yyyy");
+  const maxRow = 200;
+  const url = `https://www.hsx.vn/Modules/CMS/Web/ArticleInCategory/dca0933e-a578-4eaf-8b29-beb4575052c5?exclude=00000000-0000-0000-0000-000000000000&lim=True&pageFieldName1=FromDate&pageFieldValue1=${fromDate}&pageFieldOperator1=eq&pageFieldName2=ToDate&pageFieldValue2=${toDate}&pageFieldOperator2=eq&pageFieldName3=TokenCode&pageFieldValue3=&pageFieldOperator3=eq&pageFieldName4=CategoryId&pageFieldValue4=dca0933e-a578-4eaf-8b29-beb4575052c5&pageFieldOperator4=eq&pageCriteriaLength=4&_search=false&rows=${maxRow}&page=1&sidx=id&sord=desc`;
+  const response = httpHelper.sendRequest(url);
+  const data = response.rows;
+  data.forEach((element: any) => {
+    const thoiGian = element.cell[1] ?? '_';
+    const noiDung = element.cell[2].split(">")[1].split("</")[0] ?? '_';
+    const tenMa = noiDung.split(":")[0].trim();
+    const tuaDe = noiDung.split(":")[1].trim();
+    console.log(noiDung);
+    result.push([thoiGian, tenMa, tuaDe]);
+  });
+  sheetHelper.ghiDuLieuVaoDay(result, SheetHelper.sheetName.sheetDuLieu, 2, 75);
 }

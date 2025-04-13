@@ -101,7 +101,7 @@ Thực hiện các bước sau đây để cài đặt ứng dụng
    npm run deploy
    ```
 ### 4. Test
-  Mở file config.ts, đổi thông tin consumerID và consumerSecret bằng key lấy từ SSI.
+  Copy file .env được chuẩn bị sẵn ghi đè vào dự án
   ```sh
    npm run test
    ```

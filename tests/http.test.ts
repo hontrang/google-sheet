@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { test, expect } from '@playwright/test';
-import { ResponseSimplize, ResponseSsi, ResponseTCBS, ResponseVndirect, ResponseVPS } from '@src/types/types';
+import { ResponseDC, ResponseSimplize, ResponseSsi, ResponseTCBS, ResponseVndirect, ResponseVPS } from '@src/types/types';
 
 let TOKEN: string | undefined;
 test.describe('kiểm tra url vndirect chạy chính xác', () => {
@@ -8,7 +8,7 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
     const tenMa = 'HPG';
     const fromDate = '2024-04-08';
     const toDate = '2024-04-08';
-    const URL = `https://finfo-api.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
+    const URL = `https://api-finfo.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
     const response = await axios.get(URL);
     const datas: [ResponseVndirect] = response.data.data;
     expect(datas[0].code).toEqual(tenMa);
@@ -25,7 +25,7 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
   test('kiểm tra các chỉ số tài chính từ api vndirect', async () => {
     const tenMa = 'HPG';
     const fiscalDate = '2023-09-30';
-    const url = `https://finfo-api.vndirect.com.vn/v4/financial_statements?q=code:${tenMa}~reportType:QUARTER~modelType:1,89,3,91~fiscalDate:${fiscalDate}&sort=fiscalDate&size=2000`;
+    const url = `https://api-finfo.vndirect.com.vn/v4/financial_statements?q=code:${tenMa}~reportType:QUARTER~modelType:1,89,3,91~fiscalDate:${fiscalDate}&sort=fiscalDate&size=2000`;
     const response = await axios.get(url);
     const datas: [ResponseVndirect] = response.data.data;
     expect(datas[0].code).toEqual(tenMa);
@@ -34,10 +34,17 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
   test('kiểm tra hệ số beta và free float từ vndirect', async () => {
     const tenMa = 'HPG';
     const fromDate = '2023-09-30';
-    const url = `https://finfo-api.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
+    const url = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
     const response = await axios.get(url);
     const datas: [ResponseVndirect] = response.data.data;
     expect(datas[0].ratioCode).toEqual('MARKETCAP');
+    expect(response.status).toBe(200);
+  });
+  test('kiểm tra thông tin phái sinh từ vndirect', async () => {
+    const url = `https://api-finfo.vndirect.com.vn/v4/derivative_mappings`;
+    const response = await axios.get(url);
+    const datas: ResponseVndirect[] = response.data.data;
+    expect(datas[0].code).not.toBeNull();
     expect(response.status).toBe(200);
   });
 });
@@ -58,6 +65,14 @@ test.describe('kiểm tra url simplize chạy chính xác', () => {
     const response = await axios.get(url);
     const datas: [ResponseSimplize] = response.data.data;
     expect(datas[0].ticker).toEqual(tenMa);
+  });
+
+  test('kiểm tra danh sách cổ đông lớn', async () => {
+    const tenMa = 'HPG';
+    const url = `https://api.simplize.vn/api/company/ownership/shareholder-fund-details/${tenMa}`;
+    const response = await axios.get(url);
+    const datas: ResponseSimplize[] = response.data.data.shareholderDetails;
+    expect(datas[0]).toHaveProperty(`investorFullName`);
   });
 });
 
@@ -93,17 +108,7 @@ test.describe('kiểm tra url cafef chạy chính xác', () => {
   });
 });
 
-test.describe('kiểm tra url tcbs chạy chính xác', () => {
-  test('kiểm tra phản hồi từ api tcbs', async () => {
-    const tenMa = 'HPG';
-    const url = `https://apipubaws.tcbs.com.vn/tcanalysis/v1/company/${tenMa}/large-share-holders`;
-    const response = await axios.get(url);
-    const datas: [ResponseTCBS] = response.data.listShareHolder;
-    expect(datas[0].ticker).toBe(tenMa);
-  });
-});
-
-test.describe('kiểm tra url ssi chạy chính xác', () => {
+test.skip('kiểm tra url ssi chạy chính xác', () => {
   test('kiểm tra url lấy tên mã trên HOSE', async () => {
     const market = 'HOSE';
     const pageIndex = 1;
@@ -182,6 +187,101 @@ test.describe('kiểm tra url ssi chạy chính xác', () => {
     const response = await axios.get(url, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
+  });
+});
+
+test.describe('kiểm tra url vietstock chạy chính xác', () => {
+  test('kiểm tra phản hồi về vietstock token', async () => {
+    const tenMa = `VND`;
+    const headers = {
+      Accept: '*/*',
+      'Accept-Language': 'vi',
+      Connection: 'keep-alive',
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      Cookie: 'language=vi-VN; __RequestVerificationToken=HOrcaOV9AyD405rXuf5nsBOVwtGAq27usAhYlUknoiTKB9BeVyBMRxdfbnJSEF-fqekKEKIYAJHq6rPRoQz5H0Sz90s7OdoD7WSNLgfcnUc1',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+    };
+
+    const options = {
+      method: 'get',
+      headers: headers,
+      muteHttpExceptions: true
+    };
+    const response = await axios.get(`https://finance.vietstock.vn/${tenMa}/trai-phieu-lien-quan.htm`, options);
+    const htmlContent = response.data;
+    const regex = `<input.*name=__RequestVerificationToken.*value=([^ >]+)`;
+    const match = RegExp(regex).exec(htmlContent);
+    expect(response.status).toBe(200);
+    expect(match).toHaveLength(2);
+  });
+  test('kiểm tra phản hồi danh mục trái phiếu', async () => {
+    const url = 'https://finance.vietstock.vn/Data/GetBondRelated';
+    const tenMa = `VND`;
+    const headers = {
+      Accept: '*/*',
+      'Accept-Language': 'vi',
+      Connection: 'keep-alive',
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      Cookie: 'language=vi-VN; __RequestVerificationToken=HOrcaOV9AyD405rXuf5nsBOVwtGAq27usAhYlUknoiTKB9BeVyBMRxdfbnJSEF-fqekKEKIYAJHq6rPRoQz5H0Sz90s7OdoD7WSNLgfcnUc1',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+    };
+
+    const data = {
+      __RequestVerificationToken: 'CXImyVGvqSldrS6OJYhhxioGCJYHWNA3Z5DaNLDrwRFZMEKaSTeJWi21Utfue-GpXm3Yb4poiDsRmvrjs01y1rCtZCmd3mfbx7WgjnIMB5Q1',
+      code: `${tenMa}`,
+      orderBy: 'ReleaseDate',
+      orderDir: 'DESC',
+      page: 1,
+      pageSize: 20
+    };
+
+    const options = {
+      url: url,
+      method: 'post',
+      headers: headers,
+      data: data,
+      muteHttpExceptions: true
+    };
+    const response = await axios.request(options);
+    expect(response.status).toBe(200);
+    expect(response.data[0]).toHaveProperty('KeyCode');
+  });
+});
+
+test.describe('kiểm tra url dragon capital chạy chính xác', () => {
+  test('kiểm tra phản hồi báo cáo danh mục', async () => {
+    const URL = `https://www.dragoncapital.com.vn/individual/vi/webruntime/api/apex/execute?language=vi&asGuest=true&htmlEncode=false`;
+    let option = JSON.stringify({
+      namespace: '',
+      classname: '@udd/01pJ2000000CgR7',
+      method: 'getDocumentContentsV2',
+      isContinuation: false,
+      params: {
+        siteId: '0DMJ2000000oLukOAE',
+        fundCodeOrReportCode: 'VF1',
+        documentType: null,
+        targetYear: '2024',
+        language: 'vi'
+      },
+      cacheable: false
+    });
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${URL}`,
+      headers: {
+        'Content-Type': 'application/json',
+        Cookie: 'CookieConsentPolicy=0:1; LSKey-c$CookieConsentPolicy=0:1'
+      },
+      data: option
+    };
+    const response = await axios.request(config);
+    const datas = response.data.returnValue;
+    const baoCao: ResponseDC = datas[5].files[0];
+    expect(response.status).toBe(200);
+    expect(baoCao.activeFileName__c).toContain('Báo cáo');
+    expect(baoCao.downloadUrl__c).toContain('dragoncapitalprod');
+    expect(baoCao.displayDate__c).toContain('2024');
   });
 });
 
