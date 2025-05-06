@@ -5,24 +5,27 @@ import { DateHelper } from '@utils/DateHelper';
 import { HttpHelper } from '@utils/HttpHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
-import { ResponseDC, ResponseSsi, ResponseVndirect } from '@src/types/types';
+import { ResponseDC, ResponseSimplize, ResponseSsi, ResponseVndirect } from '@src/types/types';
 
 function layChiSoVnIndex(): void {
+
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const ngayHienTai: string = DateHelper.layNgayHienTai('yyyy-MM-dd');
   const duLieuNgayMoiNhat: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'A1');
   const thanhKhoanMoiNhat: number = parseFloat(sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetHose, 'D1'));
-  const url = 'https://banggia.cafef.vn/stockhandler.ashx?index=true';
+  const tenMa = 'VNINDEX';
+  const url = `https://api2.simplize.vn/api/historical/quote/${tenMa}?type=index`;
 
-  const object = httpHelper.sendPostRequest(url);
-  const duLieuNhanVe = object[1];
-  const thanhKhoan: number = parseFloat(duLieuNhanVe.value.replace(/,/g, '')) * 1000000000;
+  const response = httpHelper.sendGetRequest(url);
+  const duLieuNhanVe: ResponseSimplize = response.data;
+  const thanhKhoan: number = duLieuNhanVe.totalValue ?? 0;
+  const tiLeThayDoi: number = duLieuNhanVe.pctChange ?? 0;
   if (duLieuNgayMoiNhat === ngayHienTai && thanhKhoan !== thanhKhoanMoiNhat) {
-    sheetHelper.ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SheetHelper.sheetName.sheetHose, 'A1:D1');
+    sheetHelper.ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe?.priceClose, tiLeThayDoi / 100, thanhKhoan]], SheetHelper.sheetName.sheetHose, 'A1:D1');
   } else if (thanhKhoan !== thanhKhoanMoiNhat) {
     sheetHelper.chen1HangVaoDauSheet(SheetHelper.sheetName.sheetHose);
-    sheetHelper.ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe.index, duLieuNhanVe.percent / 100, thanhKhoan]], SheetHelper.sheetName.sheetHose, 'A1:D1');
+    sheetHelper.ghiDuLieuVaoDayTheoVung([[ngayHienTai, duLieuNhanVe?.priceClose, tiLeThayDoi / 100, thanhKhoan]], SheetHelper.sheetName.sheetHose, 'A1:D1');
   } else {
     console.log('No action required');
   }
