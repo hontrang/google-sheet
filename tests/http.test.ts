@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { test, expect } from '@playwright/test';
-import { ResponseDC, ResponseSimplize, ResponseSsi, ResponseTCBS, ResponseVndirect, ResponseVPS } from '@src/types/types';
+import { ResponseDC, ResponseSimplize, ResponseSsi, ResponseVndirect, ResponseVPS } from '@src/types/types';
 
 let TOKEN: string | undefined;
 test.describe('kiểm tra url vndirect chạy chính xác', () => {
@@ -73,6 +73,17 @@ test.describe('kiểm tra url simplize chạy chính xác', () => {
     const response = await axios.get(url);
     const datas: ResponseSimplize[] = response.data.data.shareholderDetails;
     expect(datas[0]).toHaveProperty(`investorFullName`);
+  });
+
+  test('kiểm tra chỉ số và giá trị giao dịch chỉ số VNINDEX', async () => {
+    const tenMa = 'VNINDEX';
+    const url = `https://api2.simplize.vn/api/historical/quote/${tenMa}?type=index`;
+    const response = await axios.get(url);
+    const data: ResponseSimplize = response.data.data;
+    expect(data.ticker).toEqual('VNINDEX');
+    expect(data.priceClose).toBeGreaterThan(0);
+    expect(data.totalValue).toBeGreaterThan(0);
+    expect(data.pctChange).toBeGreaterThan(0);
   });
 });
 

@@ -137,6 +137,7 @@ export type ResponseSimplize = {
   pctOfSharesOutHeld?: number;
   changeValue?: number;
   countryOfInvestor?: string;
+  totalValue?: number
 }
 
 export type RecommendSimplize = 'TRUNG LẬP' | 'MUA' | 'KHÁC';
