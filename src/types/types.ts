@@ -49,6 +49,7 @@ export type ResponseVndirect = {
   ratioCode?: string;
   underlyingType?: string;
   expirationDate?: string;
+  expiryDate?: string;
 }
 
 export type ResponseSsi = {

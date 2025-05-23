@@ -408,13 +408,14 @@ function layThongTinPhaiSinh() {
   const httpHelper = new HttpHelper();
   const sheetHelper = new SheetHelper();
   const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
-  const url = `https://api-finfo.vndirect.com.vn/v4/derivative_mappings`;
+  const url = `https://api-finfo.vndirect.com.vn/v4/derivatives?q=underlyingType:INDEX~status:LISTED&size=10000`;
   const response = httpHelper.sendGetRequest(url);
-  const datas: ResponseVndirect[] = response.data;
+  const datas: ResponseVndirect[] = response.data.filter((d: ResponseVndirect) => new Date(d.expiryDate ?? '').getTime() > Date.now())
+    .sort((a: ResponseVndirect, b: ResponseVndirect) =>
+      new Date(a.expiryDate ?? '').getTime() - new Date(b.expiryDate ?? '').getTime()
+    );
   datas.forEach((data) => {
-    if (data.underlyingType === 'INDEX') {
-      result.push([DateHelper.doiDinhDangNgay(data.expirationDate ?? '_', defaultFormat, 'EEEE yyyy/MM/dd', { locale: 'vi-VN' })]);
-    }
+    result.push([DateHelper.doiDinhDangNgay(data.expiryDate ?? '_', defaultFormat, 'EEEE yyyy/MM/dd', { locale: 'vi-VN' })]);
   });
   sheetHelper.ghiDuLieuVaoDay(result, SheetHelper.sheetName.sheetDuLieu, 2, 74);
 }

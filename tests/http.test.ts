@@ -41,9 +41,11 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
     expect(response.status).toBe(200);
   });
   test('kiểm tra thông tin phái sinh từ vndirect', async () => {
-    const url = `https://api-finfo.vndirect.com.vn/v4/derivative_mappings`;
+    const url = `https://api-finfo.vndirect.com.vn/v4/derivatives?q=underlyingType:INDEX~status:LISTED&size=10000`;
     const response = await axios.get(url);
-    const datas: ResponseVndirect[] = response.data.data;
+    const datas: ResponseVndirect[] = response.data.data
+      .filter((d: ResponseVndirect) => new Date(d.expiryDate ?? '').getTime() > Date.now())
+      .sort((a: ResponseVndirect, b: ResponseVndirect) => new Date(a.expiryDate ?? '').getTime() - new Date(b.expiryDate ?? '').getTime());
     expect(datas[0].code).not.toBeNull();
     expect(response.status).toBe(200);
   });
