@@ -2,17 +2,13 @@ import * as luxon from 'luxon';
 import { LocaleOptions } from 'luxon';
 
 export class DateHelper {
-  public static layNgay(ngay: string): string {
-    const date: Date = new Date(ngay);
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-  }
-  public static layNamHienTai(): number {
+  public static layNamHienTaiAsString(): string {
     const date: Date = new Date();
-    return date.getFullYear();
+    return date.getFullYear().toString();
   }
 
   public static doiDinhDangNgay(date: string, formatFrom: string, formatTo: string, opts?: LocaleOptions, zone?: string): string {
-    let fromeZone = 'utc';
+    const fromeZone = 'utc';
     let defaultZone = 'Asia/Bangkok';
     if (zone !== undefined) {
       defaultZone = zone;
