@@ -203,6 +203,18 @@ test.skip('kiểm tra url ssi chạy chính xác', () => {
   });
 });
 
+async function getToken(): Promise<string> {
+  if (TOKEN !== undefined) return TOKEN;
+  else {
+    const consumerID = process.env.consumerID;
+    const consumerSecret = process.env.consumerSecret;
+    const url = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
+    const response = await axios.post(url, { consumerID: consumerID, consumerSecret: consumerSecret });
+    TOKEN = 'Bearer ' + response.data.data.accessToken;
+    return TOKEN;
+  }
+}
+
 test.describe('kiểm tra url vietstock chạy chính xác', () => {
   test('kiểm tra phản hồi về vietstock token', async () => {
     const tenMa = `VND`;
@@ -297,15 +309,3 @@ test.describe('kiểm tra url dragon capital chạy chính xác', () => {
     expect(baoCao.displayDate__c).toContain('2024');
   });
 });
-
-async function getToken(): Promise<string> {
-  if (TOKEN !== undefined) return TOKEN;
-  else {
-    const consumerID = process.env.consumerID;
-    const consumerSecret = process.env.consumerSecret;
-    const url = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
-    const response = await axios.post(url, { consumerID: consumerID, consumerSecret: consumerSecret });
-    TOKEN = 'Bearer ' + response.data.data.accessToken;
-    return TOKEN;
-  }
-}

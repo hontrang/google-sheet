@@ -51,21 +51,18 @@ function layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay(): void {
 
 async function layGiaThamChieu(): Promise<void> {
   const sheetHelper = new SheetHelper();
-  const httpHelper = new HttpHelper();
-  const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   const DANH_SACH_MA: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
-  const date: string = DateHelper.doiDinhDangNgay(sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B1'), defaultFormat, 'dd/MM/yyyy');
-  const market = 'HOSE';
+  const DANH_SACH_MA_SHEET_GIA = sheetHelper.layDuLieuTrongHang(SheetHelper.sheetName.sheetGia, 1);
+  const MANG_COT_NGAY = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetGia, 'A');
+  const DATE: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B1');
+  // bo cot dau la ngay & so thu tu bat dau tu 0 => +2
+  const VI_TRI_NGAY_CAN_TIM_TRONG_COT_NGAY = MANG_COT_NGAY.indexOf(DATE) + 2;
+  const MANG_GIA_SHEET_GIA = sheetHelper.layDuLieuTrongHang(SheetHelper.sheetName.sheetGia, VI_TRI_NGAY_CAN_TIM_TRONG_COT_NGAY);
   let index = 2;
-  const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${date}&lookupRequest.toDate=${date}&lookupRequest.market=${market}`;
-  const token = await httpHelper.getToken();
-  const OPTION: URLFetchRequestOptions = {
-    method: 'get',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
-  };
-  const object = httpHelper.sendRequest(URL, OPTION);
-  const datas = object.data;
+  const datas = DANH_SACH_MA_SHEET_GIA.map((code, i) => ({
+    Symbol: code,
+    ClosePrice: MANG_GIA_SHEET_GIA[i],
+  }));
   for (const e of datas) {
     const vitri = sheetHelper.layViTriCotThamChieu(e.Symbol, DANH_SACH_MA, 2);
     if (e.Symbol.length === 3 && vitri !== -1) {
