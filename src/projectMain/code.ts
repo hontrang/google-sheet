@@ -67,7 +67,7 @@ function layThongTinChiTietMa(): void {
   layTinTucSheetChiTietMa(tenMa);
   layBaoCaoTaiChinh(tenMa);
   layThongTinCoDong(tenMa);
-  layTongSoLuongCoPhieuDangNiemYet(tenMa);
+  // layTongSoLuongCoPhieuDangNiemYet(tenMa);
   layThongTinCoTuc(tenMa);
   layHeSoBetaVaFreeFloat(tenMa);
   layDonViKiemToan(tenMa);
@@ -355,7 +355,7 @@ function layThongTinTraiPhieu(tenMa = 'FRT') {
 
   const response = httpHelper.sendPostRequest(url, options);
   sheetHelper.xoaDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, `S`, 5, 40, 30);
-  response.forEach(function (element: ResponseVietStock) {
+  response.RelatedBondInfos.forEach(function (element: ResponseVietStock) {
     const tenTP = element.KeyCode ?? '_';
     const ngayPhatHanh = DateHelper.doiTuMillisSangNgay(Number(element.ReleaseDate?.replace('/Date(', '').replace(')/', '')), defaultFormat) ?? '_';
     const ngayDenHan = DateHelper.doiTuMillisSangNgay(Number(element.DueDate?.replace('/Date(', '').replace(')/', '')), defaultFormat) ?? '_';

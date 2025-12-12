@@ -25,7 +25,6 @@
   "devDependencies": {
     "@eslint/js": "^9.2.0",
     "@playwright/test": "^1.46.1",
-    "@types/bun": "^1.1.8",
     "@types/glob": "^8.1.0",
     "@types/google-apps-script": "^1.0.83",
     "@types/gulp": "^4.0.17",
@@ -33,7 +32,6 @@
     "@types/node": "^22.5.0",
     "@types/shelljs": "^0.8.15",
     "axios": "^1.6.8",
-    "bun": "^1.1.26",
     "cheerio": "^1.0.0-rc.12",
     "copyfiles": "^2.4.1",
     "dotenv": "^16.4.5",

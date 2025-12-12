@@ -269,7 +269,7 @@ test.describe('kiểm tra url vietstock chạy chính xác', () => {
     };
     const response = await axios.request(options);
     expect(response.status).toBe(200);
-    expect(response.data[0]).toHaveProperty('KeyCode');
+    expect(response.data.RelatedBondInfos[0]).toHaveProperty('KeyCode');
   });
 });
 
@@ -285,7 +285,7 @@ test.describe('kiểm tra url dragon capital chạy chính xác', () => {
         siteId: '0DMJ2000000oLukOAE',
         fundCodeOrReportCode: 'VF1',
         documentType: null,
-        targetYear: '2024',
+        targetYear: '2025',
         language: 'vi'
       },
       cacheable: false

@@ -371,7 +371,7 @@ function layBaoCaoDC() {
       "siteId": "0DMJ2000000oLukOAE",
       "fundCodeOrReportCode": "VF1",
       "documentType": null,
-      "targetYear": `${DateHelper.layNamHienTai()}`,
+      "targetYear": DateHelper.layNamHienTaiAsString(),
       "language": "vi"
     },
     "cacheable": false
