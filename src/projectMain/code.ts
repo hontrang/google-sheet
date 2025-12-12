@@ -378,7 +378,3 @@ function batSukienSuaThongTinO(e: GoogleAppsScript.Events.SheetsOnEdit) {
     layThongTinChiTietMa();
   }
 }
-//test
-function test() {
-  console.log('test');
-}
