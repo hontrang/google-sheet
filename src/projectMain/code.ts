@@ -379,3 +379,6 @@ function batSukienSuaThongTinO(e: GoogleAppsScript.Events.SheetsOnEdit) {
   }
 }
 //test
+function test() {
+  console.log('test');
+}
