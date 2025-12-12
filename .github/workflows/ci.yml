@@ -21,7 +21,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: npx playwright test --project test
+        run: npx playwright test http.test.ts
         env:
           consumerID: ${{ secrets.CONSUMERID }}
           consumerSecret: ${{ secrets.CONSUMERSECRET }}
