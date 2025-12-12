@@ -1,7 +1,5 @@
 name: Lấy thông tin từ trading economics
 on:
-  pull_request:
-    branches: [main, master]
   schedule:
     - cron: '0 16 * * *'
 jobs:
