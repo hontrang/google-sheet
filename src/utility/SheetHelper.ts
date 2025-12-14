@@ -60,6 +60,37 @@ export class SheetHelper implements SheetSpread {
     return dataArray;
   }
 
+  laySoHangTrongSheet(sheetName: string): number {
+    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+    if (!sheet) return -1;
+    return sheet.getLastRow();
+  }
+
+  taoSheetMoi(sheetName: string) {
+    SpreadsheetApp.getActiveSpreadsheet().insertSheet(sheetName);
+  }
+
+  kiemTraSheetTonTai(sheetName: string) {
+    const sheetApp = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = sheetApp.getSheetByName(sheetName);
+    return sheet !== null;
+  }
+
+  xoaSheet(sheetName: string) {
+    const sheetApp = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = sheetApp.getSheetByName(sheetName);
+    if (sheet) {
+      sheetApp.deleteSheet(sheet);
+    }
+  }
+
+  ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
+    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+    if (!sheet) return false;
+    sheet.getRange(cell).setValue(data);
+    return true;
+  }
+
   ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
@@ -97,19 +128,6 @@ export class SheetHelper implements SheetSpread {
     }
   }
 
-  ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
-    if (!sheet) return false;
-    sheet.getRange(cell).setValue(data);
-    return true;
-  }
-
-  laySoHangTrongSheet(sheetName: string): number {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
-    if (!sheet) return -1;
-    return sheet.getLastRow();
-  }
-
   doiTenCotThanhChiSo(columnName: string): number {
     let index = 0;
     const length = columnName.length;
@@ -120,8 +138,6 @@ export class SheetHelper implements SheetSpread {
     return index;
   }
 
-
-
   chen1HangVaoDauSheet(sheetName: string): boolean {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
@@ -130,6 +146,12 @@ export class SheetHelper implements SheetSpread {
     }
     sheet.insertRowsBefore(1, 1);
     return true;
+  }
+
+  xoaHang(sheetName: string, rowIndex: number) {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+    if (!sheet) return;
+    sheet.deleteRow(rowIndex);
   }
 
   xoaCot(sheetName: string, column: string, numOfCol: number): boolean {
