@@ -33,7 +33,7 @@ function layChiSoVnIndex(): void {
 
 function layThongTinCoBan(): void {
   const sheetHelper = new SheetHelper();
-  const danhSachMa: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
+  const danhSachMa: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A').slice(1);
   layThongTinPB(danhSachMa);
   layThongTinPE(danhSachMa);
   layThongTinRoomNuocNgoai(danhSachMa);
@@ -51,9 +51,9 @@ function layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay(): void {
 
 async function layGiaThamChieu(): Promise<void> {
   const sheetHelper = new SheetHelper();
-  const DANH_SACH_MA: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
+  const DANH_SACH_MA: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A').slice(1);
   const DANH_SACH_MA_SHEET_GIA = sheetHelper.layDuLieuTrongHang(SheetHelper.sheetName.sheetGia, 1);
-  const MANG_COT_NGAY = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetGia, 'A');
+  const MANG_COT_NGAY = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetGia, 'A').slice(1);
   const DATE: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B1');
   // bo cot dau la ngay & so thu tu bat dau tu 0 => +2
   const VI_TRI_NGAY_CAN_TIM_TRONG_COT_NGAY = MANG_COT_NGAY.indexOf(DATE) + 2;
@@ -76,7 +76,7 @@ function layThongTinPB(danhSachMa: string[]): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const QUERY_API = 'https://api-finfo.vndirect.com.vn/v4/ratios/latest';
-  const duLieuCotThamChieu = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
+  const duLieuCotThamChieu = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A').slice(1);
 
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
     const URL = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
@@ -95,7 +95,7 @@ function layThongTinPE(danhSachMa: string[]): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const QUERY_API = 'https://api-finfo.vndirect.com.vn/v4/ratios/latest';
-  const duLieuCotThamChieu = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
+  const duLieuCotThamChieu = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A').slice(1);
 
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
     const URL = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
@@ -113,7 +113,7 @@ function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const QUERY_API = 'https://api-finfo.vndirect.com.vn/v4';
-  const duLieuCotThamChieu = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
+  const duLieuCotThamChieu = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A').slice(1);
 
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
     const URL = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
@@ -132,7 +132,7 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const QUERY_API = 'https://api-finfo.vndirect.com.vn/v4/ratios/latest';
-  const duLieuCotThamChieu = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
+  const duLieuCotThamChieu = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A').slice(1);
 
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
     const url = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
@@ -148,7 +148,7 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
 
 export function duLieuTam(): void {
   const sheetHelper = new SheetHelper();
-  sheetHelper.layDuLieuTrongCot('TRUY VAN', 'A').forEach((date: string) => {
+  sheetHelper.layDuLieuTrongCot('TRUY VAN', 'A').slice(1).forEach((date: string) => {
     layKhoiNgoaiBanHangNgay('Tam', date);
     layKhoiNgoaiMuaHangNgay('Tam', date);
     layKhoiLuongHangNgay('Tam', date);

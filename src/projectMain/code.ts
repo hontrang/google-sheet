@@ -12,7 +12,7 @@ import { ResponseSimplize, ResponseVietStock, ResponseVndirect } from '@src/type
 function getDataHose(): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const DANH_SACH_MA: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
+  const DANH_SACH_MA: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A').slice(1);
   let indexSheetDuLieu = 2;
   let indexSheetThamChieu = 4;
   const url = `https://bgapidatafeed.vps.com.vn/getliststockdata/${DANH_SACH_MA.join(',')}`;
@@ -37,7 +37,7 @@ function getDataHose(): void {
 function layTinTucSheetBangThongTin(): void {
   const sheetHelper = new SheetHelper();
   const mangDuLieuChinh: Array<[string, string, string, string, string, string]> = [];
-  const danhSachMa: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetCauHinh, 'E');
+  const danhSachMa: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetCauHinh, 'E').slice(1);
   const baseUrl = 'https://cafef.vn';
   danhSachMa.forEach((tenMa: string) => {
     const url = `${baseUrl}/du-lieu/tin-doanh-nghiep/${tenMa}/event.chn`;

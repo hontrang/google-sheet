@@ -21,6 +21,44 @@ export class SheetHelper implements SheetSpread {
   };
 
   public static readonly kichThuocMangPhu = 10;
+  layDuLieuTrongO(sheetName: string, cell: string): string {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+    if (!sheet) return '';
+    return sheet.getRange(cell).getValue();
+  }
+
+  layDuLieuTrongHang(sheetName: string, rowIndex: number): string[] {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+    if (!sheet) return [];
+    // Lấy số lượng cột trong Sheet
+    const numColumns = sheet.getLastColumn();
+
+    // Lấy dữ liệu từ hàng
+    const range = sheet.getRange(rowIndex, 1, 1, numColumns);
+    const rowData = range.getValues();
+
+    // rowData là một mảng 2 chiều, chúng ta cần phải lấy phần tử đầu tiên để có mảng 1 chiều
+    return rowData[0];
+  }
+
+  layViTriCotThamChieu(tenMa: string, duLieuCotThamChieu: string[], hangBatDau: number): number {
+    return duLieuCotThamChieu.indexOf(tenMa) + hangBatDau;
+  }
+
+  layDuLieuTrongCot(sheetName: string, column: string): string[] {
+    const dataArray: string[] = [];
+    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
+    if (!sheet) return dataArray;
+    const columnData = sheet.getRange(`${column}:${column}`).getValues();
+
+    for (const element of columnData) {
+      const value = element[0];
+      if (value !== '') {
+        dataArray.push(value);
+      }
+    }
+    return dataArray;
+  }
 
   ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
@@ -59,42 +97,11 @@ export class SheetHelper implements SheetSpread {
     }
   }
 
-  layViTriCotThamChieu(tenMa: string, duLieuCotThamChieu: string[], hangBatDau: number): number {
-    let vitri = -1;
-    for (let i = 0; i < duLieuCotThamChieu.length; i++) {
-      if (duLieuCotThamChieu[i] === tenMa) vitri = i + hangBatDau;
-    }
-    return vitri;
-  }
-
   ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return false;
     sheet.getRange(cell).setValue(data);
     return true;
-  }
-
-  layDuLieuTrongO(sheetName: string, cell: string): string {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
-    if (!sheet) return '';
-    return sheet.getRange(cell).getValue();
-  }
-
-  layDuLieuTrongCot(sheetName: string, column: string): string[] {
-    const dataArray: string[] = [];
-    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
-    if (!sheet) return dataArray;
-    const columnData = sheet.getRange(`${column}:${column}`).getValues();
-
-    for (const element of columnData) {
-      const value = element[0];
-      if (value !== '') {
-        dataArray.push(value);
-      }
-    }
-    // bỏ hàng đầu là tên cột
-    dataArray.shift();
-    return dataArray;
   }
 
   laySoHangTrongSheet(sheetName: string): number {
@@ -113,19 +120,7 @@ export class SheetHelper implements SheetSpread {
     return index;
   }
 
-  layDuLieuTrongHang(sheetName: string, rowIndex: number): string[] {
-    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
-    if (!sheet) return [];
-    // Lấy số lượng cột trong Sheet
-    const numColumns = sheet.getLastColumn();
 
-    // Lấy dữ liệu từ hàng
-    const range = sheet.getRange(rowIndex, 1, 1, numColumns);
-    const rowData = range.getValues();
-
-    // rowData là một mảng 2 chiều, chúng ta cần phải lấy phần tử đầu tiên để có mảng 1 chiều
-    return rowData[0];
-  }
 
   chen1HangVaoDauSheet(sheetName: string): boolean {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
