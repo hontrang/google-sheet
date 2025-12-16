@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { SheetHelper } from '@utils/SheetHelper';
 
-function sheet() {
+function TestSheet() {
     QUnit.module('Sheet helper');
 
     QUnit.test('Test taoSheetMoi', function (assert) {

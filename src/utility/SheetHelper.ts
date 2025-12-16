@@ -22,13 +22,13 @@ export class SheetHelper implements SheetSpread {
 
   public static readonly kichThuocMangPhu = 10;
   layDuLieuTrongO(sheetName: string, cell: string): string {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return '';
     return sheet.getRange(cell).getValue();
   }
 
   layDuLieuTrongHang(sheetName: string, rowIndex: number): string[] {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return [];
     // Lấy số lượng cột trong Sheet
     const numColumns = sheet.getLastColumn();
@@ -67,17 +67,17 @@ export class SheetHelper implements SheetSpread {
   }
 
   taoSheetMoi(sheetName: string) {
-    SpreadsheetApp.getActiveSpreadsheet().insertSheet(sheetName);
+    SpreadsheetApp.getActive().insertSheet(sheetName);
   }
 
   kiemTraSheetTonTai(sheetName: string) {
-    const sheetApp = SpreadsheetApp.getActiveSpreadsheet();
+    const sheetApp = SpreadsheetApp.getActive();
     const sheet = sheetApp.getSheetByName(sheetName);
     return sheet !== null;
   }
 
   xoaSheet(sheetName: string) {
-    const sheetApp = SpreadsheetApp.getActiveSpreadsheet();
+    const sheetApp = SpreadsheetApp.getActive();
     const sheet = sheetApp.getSheetByName(sheetName);
     if (sheet) {
       sheetApp.deleteSheet(sheet);
@@ -149,7 +149,7 @@ export class SheetHelper implements SheetSpread {
   }
 
   xoaHang(sheetName: string, rowIndex: number) {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+    const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return;
     sheet.deleteRow(rowIndex);
   }

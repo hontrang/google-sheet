@@ -12,6 +12,17 @@ export class HttpHelper implements Http {
       return null;
     }
   }
+
+  sendGetRequest(url: string) {
+    try {
+      const response = UrlFetchApp.fetch(url);
+      return JSON.parse(response.getContentText());
+    } catch (e) {
+      console.log(`error: ${e}`);
+      return null;
+    }
+  }
+
   sendPostRequest(url: string, options?: any) {
     try {
       const effectiveOptions = options || HttpHelper.OPTIONS_POST;
@@ -22,15 +33,7 @@ export class HttpHelper implements Http {
       return null;
     }
   }
-  sendGetRequest(url: string) {
-    try {
-      const response = UrlFetchApp.fetch(url);
-      return JSON.parse(response.getContentText());
-    } catch (e) {
-      console.log(`error: ${e}`);
-      return null;
-    }
-  }
+
   async getToken(): Promise<string> {
     if (this.token !== undefined) return this.token;
     else {
