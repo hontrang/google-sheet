@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { test, expect } from '@playwright/test';
-import { ResponseDC, ResponseSimplize, ResponseSsi, ResponseVndirect, ResponseVPS } from '@src/types/types';
+import { IResponseDC, IResponseSimplize, IResponseSsi, IResponseVndirect, IResponseVPS } from '@src/types/generic';
 
 let TOKEN: string | undefined;
 test.describe('kiểm tra url vndirect chạy chính xác', () => {
@@ -10,7 +10,7 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
     const toDate = '2024-04-08';
     const URL = `https://api-finfo.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
     const response = await axios.get(URL);
-    const datas: [ResponseVndirect] = response.data.data;
+    const datas: [IResponseVndirect] = response.data.data;
     expect(datas[0].code).toEqual(tenMa);
     expect(response.status).toBe(200);
   });
@@ -18,7 +18,7 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
     const tenMa = 'HPG';
     const url = `https://api-finfo.vndirect.com.vn/v4/company_relations?q=code:${tenMa}~relationType:AUDITOR&size=100&sort=year:DESC`;
     const response = await axios.get(url);
-    const datas: [ResponseVndirect] = response.data.data;
+    const datas: [IResponseVndirect] = response.data.data;
     expect(datas[0].code).toEqual(tenMa);
     expect(response.status).toBe(200);
   });
@@ -27,7 +27,7 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
     const fiscalDate = '2023-09-30';
     const url = `https://api-finfo.vndirect.com.vn/v4/financial_statements?q=code:${tenMa}~reportType:QUARTER~modelType:1,89,3,91~fiscalDate:${fiscalDate}&sort=fiscalDate&size=2000`;
     const response = await axios.get(url);
-    const datas: [ResponseVndirect] = response.data.data;
+    const datas: [IResponseVndirect] = response.data.data;
     expect(datas[0].code).toEqual(tenMa);
     expect(response.status).toBe(200);
   });
@@ -36,16 +36,16 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
     const fromDate = '2023-09-30';
     const url = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
     const response = await axios.get(url);
-    const datas: [ResponseVndirect] = response.data.data;
+    const datas: [IResponseVndirect] = response.data.data;
     expect(datas[0].ratioCode).toEqual('MARKETCAP');
     expect(response.status).toBe(200);
   });
   test('kiểm tra thông tin phái sinh từ vndirect', async () => {
     const url = `https://api-finfo.vndirect.com.vn/v4/derivatives?q=underlyingType:INDEX~status:LISTED&size=10000`;
     const response = await axios.get(url);
-    const datas: ResponseVndirect[] = response.data.data
-      .filter((d: ResponseVndirect) => new Date(d.expiryDate ?? '').getTime() > Date.now())
-      .sort((a: ResponseVndirect, b: ResponseVndirect) => new Date(a.expiryDate ?? '').getTime() - new Date(b.expiryDate ?? '').getTime());
+    const datas: IResponseVndirect[] = response.data.data
+      .filter((d: IResponseVndirect) => new Date(d.expiryDate ?? '').getTime() > Date.now())
+      .sort((a: IResponseVndirect, b: IResponseVndirect) => new Date(a.expiryDate ?? '').getTime() - new Date(b.expiryDate ?? '').getTime());
     expect(datas[0].code).not.toBeNull();
     expect(response.status).toBe(200);
   });
@@ -56,7 +56,7 @@ test.describe('kiểm tra url simplize chạy chính xác', () => {
     const tenMa = 'HPG';
     const URL = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
     const response = await axios.post(URL, { tickers: [`${tenMa}`], page: 0, size: 10 });
-    const datas: [ResponseSimplize] = response.data.data;
+    const datas: [IResponseSimplize] = response.data.data;
     expect(datas[0].ticker).toEqual(tenMa);
     expect(response.status).toBe(200);
   });
@@ -65,7 +65,7 @@ test.describe('kiểm tra url simplize chạy chính xác', () => {
     const tenMa = 'HPG';
     const url = `https://api.simplize.vn/api/company/analysis-report/list?ticker=${tenMa}&isWl=false&page=0&size=10`;
     const response = await axios.get(url);
-    const datas: [ResponseSimplize] = response.data.data;
+    const datas: [IResponseSimplize] = response.data.data;
     expect(datas[0].ticker).toEqual(tenMa);
   });
 
@@ -73,7 +73,7 @@ test.describe('kiểm tra url simplize chạy chính xác', () => {
     const tenMa = 'HPG';
     const url = `https://api.simplize.vn/api/company/ownership/shareholder-fund-details/${tenMa}`;
     const response = await axios.get(url);
-    const datas: ResponseSimplize[] = response.data.data.shareholderDetails;
+    const datas: IResponseSimplize[] = response.data.data.shareholderDetails;
     expect(datas[0]).toHaveProperty(`investorFullName`);
   });
 
@@ -81,7 +81,7 @@ test.describe('kiểm tra url simplize chạy chính xác', () => {
     const tenMa = 'VNINDEX';
     const url = `https://api2.simplize.vn/api/historical/quote/${tenMa}?type=index`;
     const response = await axios.get(url);
-    const data: ResponseSimplize = response.data.data;
+    const data: IResponseSimplize = response.data.data;
     expect(data.ticker).toEqual('VNINDEX');
     expect(data.priceClose).toBeGreaterThan(0);
     expect(data.totalValue).toBeGreaterThan(0);
@@ -96,7 +96,7 @@ test.describe('kiểm tra url vps chạy chính xác', () => {
     const DANH_SACH_MA = [ma1, ma2];
     const URL = `https://bgapidatafeed.vps.com.vn/getliststockdata/${DANH_SACH_MA.join(',')}`;
     const response = await axios.get(URL);
-    const datas: [ResponseVPS, ResponseVPS] = response.data;
+    const datas: [IResponseVPS, IResponseVPS] = response.data;
     expect(datas[0].sym).toBe(ma1);
     expect(datas[1].sym).toBe(ma2);
     expect(response.status).toBe(200);
@@ -130,7 +130,7 @@ test.skip('kiểm tra url ssi chạy chính xác', () => {
     const url = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(url, { headers: { Authorization: token } });
-    const datas: [ResponseSsi] = response.data.data;
+    const datas: [IResponseSsi] = response.data.data;
     expect(datas[0].Market).toBe(market);
   });
 
@@ -302,7 +302,7 @@ test.describe('kiểm tra url dragon capital chạy chính xác', () => {
     };
     const response = await axios.request(config);
     const datas = response.data.returnValue;
-    const baoCao: ResponseDC = datas[5].files[0];
+    const baoCao: IResponseDC = datas[5].files[0];
     expect(response.status).toBe(200);
     expect(baoCao.activeFileName__c).toContain('Báo cáo');
     expect(baoCao.downloadUrl__c).toContain('dragoncapitalprod');

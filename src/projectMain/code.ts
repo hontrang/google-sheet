@@ -7,7 +7,7 @@ import { DateHelper } from '@utils/DateHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
 import { ZchartHelper } from '@utils/zChartUtil';
-import { ResponseSimplize, ResponseVietStock, ResponseVndirect } from '@src/types/types';
+import { IResponseSimplize, IResponseVietStock, IResponseVndirect } from '@src/types/generic';
 
 function getDataHose(): void {
   const sheetHelper = new SheetHelper();
@@ -87,7 +87,7 @@ function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa = 'FRT'): void {
   sheetHelper.ghiDuLieuVaoDayTheoVung([['chi tiết mã', '', '']], SheetHelper.sheetName.sheetDuLieu, 'P1:R1');
   const url = `https://api-finfo.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
   const object = httpHelper.sendGetRequest(url);
-  const datas: [ResponseVndirect] = object.data;
+  const datas: [IResponseVndirect] = object.data;
   for (const element of datas) {
     const ngay = element.date ?? '_';
     const gia = element.close ?? 0;
@@ -139,7 +139,7 @@ function layBaoCaoPhanTich(tenMa = 'FRT'): void {
   const object = httpHelper.sendGetRequest(url);
   const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   let index = 2;
-  const datas: [ResponseSimplize] = object.data;
+  const datas: [IResponseSimplize] = object.data;
   for (const element of datas) {
     const sourceName: string = element.source ?? '_';
     const title: string = element.title ?? '_';
@@ -162,7 +162,7 @@ function layThongTinCoDong(tenMa = 'FRT'): void {
   const url = `https://api.simplize.vn/api/company/ownership/shareholder-fund-details/${tenMa}`;
   const response = httpHelper.sendRequest(url);
   const danhSach = response.data.shareholderDetails.slice(0, 10);
-  const mangDuLieuChinh = danhSach.map(({ investorFullName, pctOfSharesOutHeld, changeValue, countryOfInvestor }: ResponseSimplize) => [investorFullName, `${pctOfSharesOutHeld}`, `${changeValue}`, countryOfInvestor]);
+  const mangDuLieuChinh = danhSach.map(({ investorFullName, pctOfSharesOutHeld, changeValue, countryOfInvestor }: IResponseSimplize) => [investorFullName, `${pctOfSharesOutHeld}`, `${changeValue}`, countryOfInvestor]);
 
   sheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.sheetName.sheetDuLieu, 2, 'AD');
 }
@@ -185,7 +185,7 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
   const url = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
   const response = httpHelper.sendRequest(url, OPTIONS_CO_TUC);
 
-  const datas: [ResponseSimplize] = response.data;
+  const datas: [IResponseSimplize] = response.data;
   for (const element of datas) {
     const content: string = element.content ?? '_';
     const date: string = element.date ?? '_';
@@ -215,7 +215,7 @@ function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
   const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B17');
   const URL = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
   const response = httpHelper.sendGetRequest(URL);
-  const datas: [ResponseVndirect] = response.data;
+  const datas: [IResponseVndirect] = response.data;
   for (const element of datas) {
     if (element.ratioCode === 'BETA') {
       const value = element.value;
@@ -235,7 +235,7 @@ function layDonViKiemToan(tenMa = 'FRT') {
   const response = httpHelper.sendGetRequest(URL);
   const datas = response.data;
   let index = 29;
-  datas.forEach(function (element: ResponseVndirect) {
+  datas.forEach(function (element: IResponseVndirect) {
     sheetHelper.ghiDuLieuVaoDayTheoVung([[element.relationNameVn, '', '', element.year]], SheetHelper.sheetName.sheetDuLieu, `AH${index}:AK${index}`);
     index++;
   });
@@ -251,7 +251,7 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
     sheetHelper.ghiDuLieuVaoO('Lỗi dữ liệu', SheetHelper.sheetName.sheetDuLieu, 'AH29');
   } else {
     let index = 29;
-    datas.forEach(function (element: ResponseVndirect) {
+    datas.forEach(function (element: IResponseVndirect) {
       // Tiền và tương đương tiền
       if (element.itemCode === 37000) {
         sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, '', element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
@@ -259,7 +259,7 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
       }
     });
     index = 32;
-    datas.forEach(function (element: ResponseVndirect) {
+    datas.forEach(function (element: IResponseVndirect) {
       // Tổng tài sản
       if (element.itemCode === 12700) {
         sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, '', element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
@@ -267,7 +267,7 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
       }
     });
     index = 35;
-    datas.forEach(function (element: ResponseVndirect) {
+    datas.forEach(function (element: IResponseVndirect) {
       // Nợ ngắn hạn
       if (element.itemCode === 13100) {
         sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, '', element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
@@ -355,7 +355,7 @@ function layThongTinTraiPhieu(tenMa = 'FRT') {
 
   const response = httpHelper.sendPostRequest(url, options);
   sheetHelper.xoaDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, `S`, 5, 40, 30);
-  response.RelatedBondInfos.forEach(function (element: ResponseVietStock) {
+  response.RelatedBondInfos.forEach(function (element: IResponseVietStock) {
     const tenTP = element.KeyCode ?? '_';
     const ngayPhatHanh = DateHelper.doiTuMillisSangNgay(Number(element.ReleaseDate?.replace('/Date(', '').replace(')/', '')), defaultFormat) ?? '_';
     const ngayDenHan = DateHelper.doiTuMillisSangNgay(Number(element.DueDate?.replace('/Date(', '').replace(')/', '')), defaultFormat) ?? '_';

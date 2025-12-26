@@ -13,7 +13,8 @@ export default tseslint.config(
     {
         languageOptions: {
             parserOptions: {
-                project: true
+                project: true,
+                projectFolderIgnoreList: ["**/node_modules/**", "**/dist/**"]
             }
         }
     },

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
-import { Http } from '@src/types/types';
+import { IHttp } from '@src/types/generic';
 
-export class HttpHelper implements Http {
+export class HttpHelper implements IHttp {
   sendRequest(url: string, option?: any) {
     try {
       const appliedOption = option || HttpHelper.OPTIONS_GET;

@@ -5,7 +5,7 @@ import { DateHelper } from '@utils/DateHelper';
 import { HttpHelper } from '@utils/HttpHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
-import { ResponseDC, ResponseSimplize, ResponseSsi, ResponseVndirect } from '@src/types/types';
+import { IResponseDC, IResponseSimplize, IResponseSsi, IResponseVndirect } from '@src/types/generic';
 
 function layChiSoVnIndex(): void {
 
@@ -18,7 +18,7 @@ function layChiSoVnIndex(): void {
   const url = `https://api2.simplize.vn/api/historical/quote/${tenMa}?type=index`;
 
   const response = httpHelper.sendGetRequest(url);
-  const duLieuNhanVe: ResponseSimplize = response.data;
+  const duLieuNhanVe: IResponseSimplize = response.data;
   const thanhKhoan: number = duLieuNhanVe.totalValue ?? 0;
   const tiLeThayDoi: number = duLieuNhanVe.pctChange ?? 0;
   if (duLieuNgayMoiNhat === ngayHienTai && thanhKhoan !== thanhKhoanMoiNhat) {
@@ -82,7 +82,7 @@ function layThongTinPB(danhSachMa: string[]): void {
     const URL = `${QUERY_API}?order=reportDate&where=itemCode:51012&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object = httpHelper.sendGetRequest(URL);
 
-    object.data.forEach((element: ResponseVndirect) => {
+    object.data.forEach((element: IResponseVndirect) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = sheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
@@ -100,7 +100,7 @@ function layThongTinPE(danhSachMa: string[]): void {
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
     const URL = `${QUERY_API}?order=reportDate&where=itemCode:51006&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object = httpHelper.sendGetRequest(URL);
-    object.data.forEach((element: ResponseVndirect) => {
+    object.data.forEach((element: IResponseVndirect) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = sheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
@@ -118,7 +118,7 @@ function layThongTinRoomNuocNgoai(danhSachMa: string[]): void {
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
     const URL = `${QUERY_API}/ownership_foreigns/latest?order=reportedDate&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object = httpHelper.sendGetRequest(URL);
-    object.data.forEach((element: ResponseVndirect) => {
+    object.data.forEach((element: IResponseVndirect) => {
       const totalRoom: number = element.totalRoom ?? 0;
       const currentRoom: number = element.currentRoom ?? 0;
       const tenMa: string = element.code ?? '_';
@@ -137,7 +137,7 @@ function layThongTinKhoiLuongTrungBinh10Ngay(danhSachMa: string[]): void {
   for (let i = 0; i < danhSachMa.length; i += SheetHelper.kichThuocMangPhu) {
     const url = `${QUERY_API}?order=reportDate&where=itemCode:51016&filter=code:${danhSachMa.slice(i, i + SheetHelper.kichThuocMangPhu).join(',')}`;
     const object = httpHelper.sendGetRequest(url);
-    object.data.forEach((element: ResponseVndirect) => {
+    object.data.forEach((element: IResponseVndirect) => {
       const value: number = element.value ?? 0;
       const tenMa: string = element.code ?? '_';
       const vitri = sheetHelper.layViTriCotThamChieu(tenMa, duLieuCotThamChieu, 2);
@@ -168,7 +168,7 @@ export function layKhoiNgoaiBanHangNgay(sheetName = SheetHelper.sheetName.sheetK
     if (object?.data.length > 0) {
       const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
       sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
-      object.data.map((item: ResponseVndirect) => {
+      object.data.map((item: IResponseVndirect) => {
         for (let i = 0; i < header.length; i++) {
           if (header[i] === item.code) {
             sheetHelper.ghiDuLieuVaoDay([[item.sellVol]], sheetName, hangCuoi + 1, i + 1);
@@ -194,7 +194,7 @@ function layKhoiNgoaiMuaHangNgay(sheetName = SheetHelper.sheetName.sheetKhoiNgoa
     if (object?.data.length > 0) {
       const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
       sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
-      object.data.map((item: ResponseVndirect) => {
+      object.data.map((item: IResponseVndirect) => {
         for (let i = 0; i < header.length; i++) {
           if (header[i] === item.code) {
             sheetHelper.ghiDuLieuVaoDay([[item.buyVol]], sheetName, hangCuoi + 1, i + 1);
@@ -220,7 +220,7 @@ function layKhoiLuongHangNgay(sheetName = SheetHelper.sheetName.sheetKhoiLuong, 
     if (object?.data.length > 0) {
       const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
       sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
-      object.data.map((item: ResponseVndirect) => {
+      object.data.map((item: IResponseVndirect) => {
         for (let i = 0; i < header.length; i++) {
           if (header[i] === item.code) {
             sheetHelper.ghiDuLieuVaoDay([[item.nmVolume]], sheetName, hangCuoi + 1, i + 1);
@@ -245,7 +245,7 @@ function layGiaHangNgay(sheetName = SheetHelper.sheetName.sheetGia, date = new S
     if (object?.data.length > 0) {
       const header = sheetHelper.layDuLieuTrongHang(sheetName, 1);
       sheetHelper.ghiDuLieuVaoDay([["'" + date]], sheetName, hangCuoi + 1, 1);
-      object.data.map((item: ResponseVndirect) => {
+      object.data.map((item: IResponseVndirect) => {
         for (let i = 0; i < header.length; i++) {
           if (header[i] === item.code) {
             sheetHelper.ghiDuLieuVaoDay([[item.close * 1000]], sheetName, hangCuoi + 1, i + 1);
@@ -296,7 +296,7 @@ function LAY_THONG_TIN_DANH_MUC_DC(URL: string) {
   const response = httpHelper.sendRequest(URL);
   const data = response.returnValue.top10Holding;
   const capNhatLuc = DateHelper.doiDinhDangNgayISO(response.returnValue.tradingDate, defaultFormat);
-  data.forEach((element: ResponseDC) => {
+  data.forEach((element: IResponseDC) => {
     const tenMa = element.assetId ?? '_';
     const nhomNganh = element.translation?.vi?.sectorLevel ?? '_';
     const tyLe = element.weight ?? 0;
@@ -318,7 +318,7 @@ function LAY_THONG_TIN_TAI_SAN_DC(URL: string) {
   const response = httpHelper.sendRequest(URL);
   const data = response.returnValue.allocationBySectors;
   const capNhatLuc = DateHelper.doiDinhDangNgayISO(response.returnValue.tradingDate, defaultFormat);
-  data.forEach((element: ResponseDC) => {
+  data.forEach((element: IResponseDC) => {
     const tenTaiSan = element.translation?.vi?.industryLevel2 ?? '_';
     const tyLe = element.fundWeight?.VF1 ?? element.fundWeight?.VF4 ?? '_';
     result.push([tenTaiSan, String(tyLe), capNhatLuc]);
@@ -390,7 +390,7 @@ function layBaoCaoDC() {
 
   const response = httpHelper.sendPostRequest(url, configs);
   const data = response.returnValue;
-  const danhSachBaoCao: ResponseDC[] = data[5].files;
+  const danhSachBaoCao: IResponseDC[] = data[5].files;
   danhSachBaoCao.forEach((baoCao) => {
     const tenBaoCao = baoCao.activeFileName__c ?? '_';
     const dlc = baoCao.downloadUrl__c ?? '_';
@@ -407,8 +407,8 @@ function layThongTinPhaiSinh() {
   const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   const url = `https://api-finfo.vndirect.com.vn/v4/derivatives?q=underlyingType:INDEX~status:LISTED&size=10000`;
   const response = httpHelper.sendGetRequest(url);
-  const datas: ResponseVndirect[] = response.data.filter((d: ResponseVndirect) => new Date(d.expiryDate ?? '').getTime() > Date.now())
-    .sort((a: ResponseVndirect, b: ResponseVndirect) =>
+  const datas: IResponseVndirect[] = response.data.filter((d: IResponseVndirect) => new Date(d.expiryDate ?? '').getTime() > Date.now())
+    .sort((a: IResponseVndirect, b: IResponseVndirect) =>
       new Date(a.expiryDate ?? '').getTime() - new Date(b.expiryDate ?? '').getTime()
     );
   datas.forEach((data) => {

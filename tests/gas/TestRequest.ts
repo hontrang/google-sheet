@@ -1,4 +1,4 @@
-import { ResponseDC, ResponseSimplize, ResponseVietStock } from "@src/types/types";
+import { IResponseDC, IResponseSimplize, IResponseVietStock } from "@src/types/generic";
 import { DateHelper } from "@utils/DateHelper";
 import { HttpHelper } from "@utils/HttpHelper";
 
@@ -17,7 +17,7 @@ function TestRequest() {
             })
         };
         const response = helper.sendRequest(URL, OPTIONS_CO_TUC);
-        const datas: [ResponseSimplize] = response.data;
+        const datas: [IResponseSimplize] = response.data;
         assert.equal(response.status, 200, 'sendRequest status 200')
         assert.notEqual(datas.length, 0, 'sendRequest có dữ liệu nhận về')
     });
@@ -25,7 +25,7 @@ function TestRequest() {
         const URL = 'https://api.simplize.vn/api/company/analysis-report/list?ticker=HPG&isWl=false&page=0&size=10';
         const httpHelper = new HttpHelper();
         const response = httpHelper.sendGetRequest(URL);
-        const datas: [ResponseSimplize] = response.data;
+        const datas: [IResponseSimplize] = response.data;
         assert.equal(response.status, 200, 'sendGetRequest status 200')
         assert.notEqual(datas.length, 0, 'sendGetRequest có dữ liệu nhận về')
     });
@@ -59,7 +59,7 @@ function TestRequest() {
         };
 
         const response = httpHelper.sendPostRequest(URL, configs);
-        const datas: [ResponseDC] = response.returnValue;
+        const datas: [IResponseDC] = response.returnValue;
         // assert.equal(response.status, 200, 'sendPostRequest status 200')
         assert.notEqual(datas.length, 0, 'sendPostRequest có dữ liệu nhận về')
     });

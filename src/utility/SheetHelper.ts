@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { SheetSpread } from '@src/types/types';
+import { ISheetSpread } from '@src/types/generic';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-extraneous-class
-export class SheetHelper implements SheetSpread {
+export class SheetHelper implements ISheetSpread {
   public static readonly sheetName = {
     sheetThamChieu: 'tham chiếu',
     sheetBangThongTin: 'bảng thông tin',
