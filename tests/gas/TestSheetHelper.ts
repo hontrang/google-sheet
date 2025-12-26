@@ -21,7 +21,6 @@ function TestSheet() {
     });
 
     QUnit.test('Test ghiDuLieuVaoO', function (assert) {
-        preCondition();
         const helper = new SheetHelper();
         const expected = 'a';
         const data: string[][] = [[expected]];
@@ -123,16 +122,6 @@ function TestSheet() {
         const expected = 4;
         const actual = helper.laySoHangTrongSheet('Sheet1');
         assert.equal(actual, expected, 'laySoHangTrongSheet');
-        postCondition();
     });
 
-}
-
-function preCondition() {
-    const helper = new SheetHelper();
-    helper.taoSheetMoi('Sheet1');
-}
-function postCondition() {
-    const helper = new SheetHelper();
-    helper.xoaSheet('Sheet1');
 }
