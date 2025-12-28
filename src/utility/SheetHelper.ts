@@ -84,14 +84,14 @@ export class SheetHelper implements ISheetSpread {
     }
   }
 
-  ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean {
+  ghiDuLieuVaoO(data: unknown, sheetName: string, cell: string): boolean {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) return false;
     sheet.getRange(cell).setValue(data);
     return true;
   }
 
-  ghiDuLieuVaoDay(data: any[][], sheetName: string, row: number, column: number): void {
+  ghiDuLieuVaoDay(data: unknown[][], sheetName: string, row: number, column: number): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
       console.log('Sheet không tồn tại');
@@ -101,7 +101,7 @@ export class SheetHelper implements ISheetSpread {
     sheet.getRange(row, column, data.length, data[0].length).setValues(data);
   }
 
-  ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {
+  ghiDuLieuVaoDayTheoVung(data: unknown[][], sheetName: string, range: string): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
       console.log('Sheet không tồn tại');
@@ -111,7 +111,7 @@ export class SheetHelper implements ISheetSpread {
     sheet.getRange(range).setValues(data);
   }
 
-  ghiDuLieuVaoDayTheoTen(data: any[][], sheetName: string, rowNumber: number, columnName: string): void {
+  ghiDuLieuVaoDayTheoTen(data: unknown[][], sheetName: string, rowNumber: number, columnName: string): void {
     const sheet = SpreadsheetApp.getActive().getSheetByName(sheetName);
     if (!sheet) {
       console.log('Sheet không tồn tại');

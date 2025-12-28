@@ -174,7 +174,6 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
   let index = 18;
   const OPTIONS_CO_TUC: URLFetchRequestOptions = {
     method: 'post',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     payload: JSON.stringify({
       tickers: [`${tenMa}`],
@@ -202,7 +201,6 @@ async function layTongSoLuongCoPhieuDangNiemYet(tenMa = 'FRT'): Promise<void> {
   const token = await httpHelper.getToken();
   const OPTION: URLFetchRequestOptions = {
     method: 'get',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
   };
   const object = httpHelper.sendRequest(url, OPTION);
@@ -233,7 +231,7 @@ function layDonViKiemToan(tenMa = 'FRT') {
   const httpHelper = new HttpHelper();
   const URL = `https://api-finfo.vndirect.com.vn/v4/company_relations?q=code:${tenMa}~relationType:AUDITOR&size=100&sort=year:DESC`;
   const response = httpHelper.sendGetRequest(URL);
-  const datas = response.data;
+  const datas = response?.data;
   let index = 29;
   datas.forEach(function (element: IResponseVndirect) {
     sheetHelper.ghiDuLieuVaoDayTheoVung([[element.relationNameVn, '', '', element.year]], SheetHelper.sheetName.sheetDuLieu, `AH${index}:AK${index}`);

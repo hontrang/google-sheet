@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
 export interface ISheetSpread {
   layDuLieuTrongO(sheetName: string, cell: string): string;
@@ -6,10 +5,10 @@ export interface ISheetSpread {
   laySoHangTrongSheet(sheetName: string): number;
   layViTriCotThamChieu(tenMa: string, duLieuCotThamChieu: string[], hangBatDau: number): number;
   layDuLieuTrongHang(sheetName: string, rowIndex: number): string[];
-  ghiDuLieuVaoDay(data: any[][], sheetName: string, rowIndex: number, columnIndex: number): void;
-  ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void;
-  ghiDuLieuVaoDayTheoTen(data: any[][], sheetName: string, rowNumber: number, columnName: string): void;
-  ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean;
+  ghiDuLieuVaoDay(data: unknown[][], sheetName: string, rowIndex: number, columnIndex: number): void;
+  ghiDuLieuVaoDayTheoVung(data: unknown[][], sheetName: string, range: string): void;
+  ghiDuLieuVaoDayTheoTen(data: unknown[][], sheetName: string, rowNumber: number, columnName: string): void;
+  ghiDuLieuVaoO(data: unknown, sheetName: string, cell: string): boolean;
   doiTenCotThanhChiSo(columnName: string): number;
   chen1HangVaoDauSheet(sheetName: string): boolean;
   xoaCot(sheetName: string, column: string, numOfCol: number): boolean;
@@ -17,10 +16,9 @@ export interface ISheetSpread {
 }
 
 export interface IHttp {
-  sendRequest(url: string, option?: URLFetchRequestOptions): any;
-  sendPostRequest(url: string, options?: URLFetchRequestOptions): any;
+  sendRequest(url: string, option?: URLFetchRequestOptions): object;
+  sendPostRequest(url: string, options?: URLFetchRequestOptions): object;
   sendGetRequest(url: string): Promise<IHttpResponse>;
-  getToken(): Promise<string>;
 }
 
 export interface IResponseVndirect {

@@ -128,7 +128,6 @@ test.skip('kiểm tra url ssi chạy chính xác', () => {
     const pageSize = 1000;
     const token = await getToken();
     const url = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(url, { headers: { Authorization: token } });
     const datas: [IResponseSsi] = response.data.data;
     expect(datas[0].Market).toBe(market);
@@ -141,7 +140,6 @@ test.skip('kiểm tra url ssi chạy chính xác', () => {
     const pageSize = 1000;
     const token = await getToken();
     const url = `https://fc-data.ssi.com.vn/api/v2/Market/SecuritiesDetails?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.symbol=${tenMa}`;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(url, { headers: { Authorization: token } });
     const data = response.data.data[0].RepeatedInfo;
     expect(data[0].Exchange).toBe(market);
@@ -154,7 +152,6 @@ test.skip('kiểm tra url ssi chạy chính xác', () => {
     const pageSize = 1000;
     const token = await getToken();
     const url = `https://fc-data.ssi.com.vn/api/v2/Market/IndexComponents?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.Exchange=${exchange}`;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(url, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
@@ -169,7 +166,6 @@ test.skip('kiểm tra url ssi chạy chính xác', () => {
     const ascending = true;
     const token = await getToken();
     const url = `https://fc-data.ssi.com.vn/api/v2/Market/DailyOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(url, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
@@ -184,7 +180,6 @@ test.skip('kiểm tra url ssi chạy chính xác', () => {
     const ascending = true;
     const token = await getToken();
     const url = `https://fc-data.ssi.com.vn/api/v2/Market/IntradayOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(url, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
@@ -196,7 +191,6 @@ test.skip('kiểm tra url ssi chạy chính xác', () => {
     const market = 'HOSE';
     const token = await getToken();
     const url = `https://fc-data.ssi.com.vn/api/v2/Market/DailyStockPrice?&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.market=${market}`;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const response = await axios.get(url, { headers: { Authorization: token } });
     const data = response.data;
     expect(data.status).toBe('Success');
@@ -276,7 +270,7 @@ test.describe('kiểm tra url vietstock chạy chính xác', () => {
 test.describe('kiểm tra url dragon capital chạy chính xác', () => {
   test('kiểm tra phản hồi báo cáo danh mục', async () => {
     const URL = `https://www.dragoncapital.com.vn/individual/vi/webruntime/api/apex/execute?language=vi&asGuest=true&htmlEncode=false`;
-    let option = JSON.stringify({
+    const option = JSON.stringify({
       namespace: '',
       classname: '@udd/01pJ2000000CgR7',
       method: 'getDocumentContentsV2',
@@ -290,7 +284,7 @@ test.describe('kiểm tra url dragon capital chạy chính xác', () => {
       },
       cacheable: false
     });
-    let config = {
+    const config = {
       method: 'post',
       maxBodyLength: Infinity,
       url: `${URL}`,

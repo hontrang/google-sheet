@@ -5,7 +5,7 @@ import { DateHelper } from '@utils/DateHelper';
 import { HttpHelper } from '@utils/HttpHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
-import { IResponseDC, IResponseSimplize, IResponseSsi, IResponseVndirect } from '@src/types/generic';
+import { IResponseDC, IResponseSimplize, IResponseVndirect } from '@src/types/generic';
 
 function layChiSoVnIndex(): void {
 
@@ -269,7 +269,6 @@ async function layDanhSachMa(): Promise<void> {
   const URL = `https://fc-data.ssi.com.vn/api/v2/Market/Securities?lookupRequest.market=${market}&lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}`;
   const OPTION: URLFetchRequestOptions = {
     method: 'get',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
   };
   const mangDuLieuChinh: Array<[string, string]> = [];
@@ -287,7 +286,6 @@ async function layDanhSachMa(): Promise<void> {
 /**
  * @customfunction
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function LAY_THONG_TIN_DANH_MUC_DC(URL: string) {
   const httpHelper = new HttpHelper();
   const sheetHelper = new SheetHelper();
@@ -309,7 +307,6 @@ function LAY_THONG_TIN_DANH_MUC_DC(URL: string) {
 /**
  * @customfunction
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function LAY_THONG_TIN_TAI_SAN_DC(URL: string) {
   const httpHelper = new HttpHelper();
   const sheetHelper = new SheetHelper();
@@ -329,7 +326,6 @@ function LAY_THONG_TIN_TAI_SAN_DC(URL: string) {
 /**
  * @customfunction
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function LAY_SU_KIEN() {
   const result: string[][] = [];
   const content = UrlFetchApp.fetch(`https://hontrang.github.io/google-sheet/`).getContentText();
@@ -420,7 +416,6 @@ function layThongTinPhaiSinh() {
 /**
  * @customfunction
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function layTinTucHSX() {
   const httpHelper = new HttpHelper();
   const sheetHelper = new SheetHelper();
