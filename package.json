@@ -61,6 +61,7 @@
     "upath": "2.0.1"
   },
   "dependencies": {
+    "@types/qunit": "^2.19.13",
     "google-sheet": "file:"
   }
 }

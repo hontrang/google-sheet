@@ -40,7 +40,7 @@ export default tseslint.config(
           selector: 'objectLiteralProperty',
           format: ['camelCase'],
           filter: {
-            regex: '^(Accept|Connection|Cookie|User-Agent|Content-Type|Accept-Language|__RequestVerificationToken|Authorization)$',
+            regex: '^(Accept|Connection|Cookie|User-Agent|Content-Type|Accept-Language|__RequestVerificationToken|Authorization|Symbol|ClosePrice)$',
             match: false
           }
         }

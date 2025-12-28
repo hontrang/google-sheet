@@ -6,7 +6,7 @@ import { HttpHelper } from '@utils/HttpHelper';
 import { DateHelper } from '@utils/DateHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
-import { ZchartHelper } from '@utils/ChartUtil';
+import { ChartHelper } from '@utils/ChartUtil';
 import { IResponseSimplize, IResponseVietStock, IResponseVndirect } from '@src/types/generic';
 
 function getDataHose(): void {
@@ -67,13 +67,12 @@ function layThongTinChiTietMa(): void {
   layTinTucSheetChiTietMa(tenMa);
   layBaoCaoTaiChinh(tenMa);
   layThongTinCoDong(tenMa);
-  // layTongSoLuongCoPhieuDangNiemYet(tenMa);
   layThongTinCoTuc(tenMa);
   layHeSoBetaVaFreeFloat(tenMa);
   layDonViKiemToan(tenMa);
   layChiTietBaoCaoTaiChinh(tenMa);
+  ChartHelper.updateChart();
   layThongTinTraiPhieu(tenMa);
-  ZchartHelper.updateChart();
   LogHelper.logTime(SheetHelper.sheetName.sheetChiTietMa, 'I1');
   Logger.log('Hàm layThongTinChiTietMa chạy thành công');
 }
@@ -191,20 +190,6 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
     sheetHelper.ghiDuLieuVaoDayTheoVung([[content, '', DateHelper.doiDinhDangNgay(date, 'dd/MM/yyyy', defaultFormat)]], SheetHelper.sheetName.sheetDuLieu, `AO${index}:AQ${index}`);
     index++;
   }
-}
-
-async function layTongSoLuongCoPhieuDangNiemYet(tenMa = 'FRT'): Promise<void> {
-  const sheetHelper = new SheetHelper();
-  const httpHelper = new HttpHelper();
-  const market = 'HOSE';
-  const url = `https://fc-data.ssi.com.vn/api/v2/Market/SecuritiesDetails?lookupRequest.market=${market}&lookupRequest.pageIndex=1&lookupRequest.pageSize=1000&lookupRequest.symbol=${tenMa}`;
-  const token = await httpHelper.getToken();
-  const OPTION: URLFetchRequestOptions = {
-    method: 'get',
-    headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
-  };
-  const object = httpHelper.sendRequest(url, OPTION);
-  sheetHelper.ghiDuLieuVaoDayTheoTen([[[object.data[0].RepeatedInfo[0].ListedShare]]], SheetHelper.sheetName.sheetChiTietMa, 18, 'H');
 }
 
 function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {

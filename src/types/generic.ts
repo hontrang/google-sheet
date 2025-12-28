@@ -103,7 +103,7 @@ export interface IDCFundWeight {
 }
 
 export interface IHttpResponse {
-  data?: any;
+  data?: unknown;
   status?: number;
   statusText?: string;
 }
