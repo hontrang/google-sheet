@@ -6,7 +6,7 @@ import { HttpHelper } from '@utils/HttpHelper';
 import { DateHelper } from '@utils/DateHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
-import { ZchartHelper } from '@utils/zChartUtil';
+import { ZchartHelper } from '@utils/ChartUtil';
 import { IResponseSimplize, IResponseVietStock, IResponseVndirect } from '@src/types/generic';
 
 function getDataHose(): void {
