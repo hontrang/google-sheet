@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Http, HttpResponse } from '@src/types/types';
+import { IHttp, IHttpResponse } from '@src/types/generic';
 import axios from 'axios';
 
-export class AxiosHelper implements Http {
+export class AxiosHelper implements IHttp {
   async sendRequest(url: string, option?: any) {
     const response = await axios.get(url, option);
-    return response as HttpResponse;
+    return response as IHttpResponse;
   }
   async sendPostRequest(url: string, options?: any) {
     try {
@@ -17,9 +17,9 @@ export class AxiosHelper implements Http {
       return null;
     }
   }
-  async sendGetRequest(url: string): Promise<HttpResponse> {
+  async sendGetRequest(url: string): Promise<IHttpResponse> {
     const response = await axios.get(url);
-    return response as HttpResponse;
+    return response as IHttpResponse;
   }
   async getToken(): Promise<string> {
     if (this.token !== undefined) return this.token;

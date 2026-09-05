@@ -6,13 +6,13 @@ import { HttpHelper } from '@utils/HttpHelper';
 import { DateHelper } from '@utils/DateHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
-import { ZchartHelper } from '@utils/zChartUtil';
-import { ResponseSimplize, ResponseVietStock, ResponseVndirect } from '@src/types/types';
+import { ChartHelper } from '@utils/ChartUtil';
+import { IResponseSimplize, IResponseVietStock, IResponseVndirect } from '@src/types/generic';
 
 function getDataHose(): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const DANH_SACH_MA: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A');
+  const DANH_SACH_MA: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A').slice(1);
   let indexSheetDuLieu = 2;
   let indexSheetThamChieu = 4;
   const url = `https://bgapidatafeed.vps.com.vn/getliststockdata/${DANH_SACH_MA.join(',')}`;
@@ -37,7 +37,7 @@ function getDataHose(): void {
 function layTinTucSheetBangThongTin(): void {
   const sheetHelper = new SheetHelper();
   const mangDuLieuChinh: Array<[string, string, string, string, string, string]> = [];
-  const danhSachMa: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetCauHinh, 'E');
+  const danhSachMa: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetCauHinh, 'E').slice(1);
   const baseUrl = 'https://cafef.vn';
   danhSachMa.forEach((tenMa: string) => {
     const url = `${baseUrl}/du-lieu/tin-doanh-nghiep/${tenMa}/event.chn`;
@@ -67,13 +67,12 @@ function layThongTinChiTietMa(): void {
   layTinTucSheetChiTietMa(tenMa);
   layBaoCaoTaiChinh(tenMa);
   layThongTinCoDong(tenMa);
-  // layTongSoLuongCoPhieuDangNiemYet(tenMa);
   layThongTinCoTuc(tenMa);
   layHeSoBetaVaFreeFloat(tenMa);
   layDonViKiemToan(tenMa);
   layChiTietBaoCaoTaiChinh(tenMa);
+  ChartHelper.updateChart();
   layThongTinTraiPhieu(tenMa);
-  ZchartHelper.updateChart();
   LogHelper.logTime(SheetHelper.sheetName.sheetChiTietMa, 'I1');
   Logger.log('Hàm layThongTinChiTietMa chạy thành công');
 }
@@ -87,7 +86,7 @@ function layGiaVaKhoiLuongTheoMaChungKhoan(tenMa = 'FRT'): void {
   sheetHelper.ghiDuLieuVaoDayTheoVung([['chi tiết mã', '', '']], SheetHelper.sheetName.sheetDuLieu, 'P1:R1');
   const url = `https://api-finfo.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
   const object = httpHelper.sendGetRequest(url);
-  const datas: [ResponseVndirect] = object.data;
+  const datas: [IResponseVndirect] = object.data;
   for (const element of datas) {
     const ngay = element.date ?? '_';
     const gia = element.close ?? 0;
@@ -139,7 +138,7 @@ function layBaoCaoPhanTich(tenMa = 'FRT'): void {
   const object = httpHelper.sendGetRequest(url);
   const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   let index = 2;
-  const datas: [ResponseSimplize] = object.data;
+  const datas: [IResponseSimplize] = object.data;
   for (const element of datas) {
     const sourceName: string = element.source ?? '_';
     const title: string = element.title ?? '_';
@@ -162,7 +161,7 @@ function layThongTinCoDong(tenMa = 'FRT'): void {
   const url = `https://api.simplize.vn/api/company/ownership/shareholder-fund-details/${tenMa}`;
   const response = httpHelper.sendRequest(url);
   const danhSach = response.data.shareholderDetails.slice(0, 10);
-  const mangDuLieuChinh = danhSach.map(({ investorFullName, pctOfSharesOutHeld, changeValue, countryOfInvestor }: ResponseSimplize) => [investorFullName, `${pctOfSharesOutHeld}`, `${changeValue}`, countryOfInvestor]);
+  const mangDuLieuChinh = danhSach.map(({ investorFullName, pctOfSharesOutHeld, changeValue, countryOfInvestor }: IResponseSimplize) => [investorFullName, `${pctOfSharesOutHeld}`, `${changeValue}`, countryOfInvestor]);
 
   sheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.sheetName.sheetDuLieu, 2, 'AD');
 }
@@ -174,7 +173,6 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
   let index = 18;
   const OPTIONS_CO_TUC: URLFetchRequestOptions = {
     method: 'post',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     payload: JSON.stringify({
       tickers: [`${tenMa}`],
@@ -185,7 +183,7 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
   const url = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
   const response = httpHelper.sendRequest(url, OPTIONS_CO_TUC);
 
-  const datas: [ResponseSimplize] = response.data;
+  const datas: [IResponseSimplize] = response.data;
   for (const element of datas) {
     const content: string = element.content ?? '_';
     const date: string = element.date ?? '_';
@@ -194,28 +192,13 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
   }
 }
 
-async function layTongSoLuongCoPhieuDangNiemYet(tenMa = 'FRT'): Promise<void> {
-  const sheetHelper = new SheetHelper();
-  const httpHelper = new HttpHelper();
-  const market = 'HOSE';
-  const url = `https://fc-data.ssi.com.vn/api/v2/Market/SecuritiesDetails?lookupRequest.market=${market}&lookupRequest.pageIndex=1&lookupRequest.pageSize=1000&lookupRequest.symbol=${tenMa}`;
-  const token = await httpHelper.getToken();
-  const OPTION: URLFetchRequestOptions = {
-    method: 'get',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: { Authorization: token, 'Content-Type': 'application/json', Accept: 'application/json' }
-  };
-  const object = httpHelper.sendRequest(url, OPTION);
-  sheetHelper.ghiDuLieuVaoDayTheoTen([[[object.data[0].RepeatedInfo[0].ListedShare]]], SheetHelper.sheetName.sheetChiTietMa, 18, 'H');
-}
-
 function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B17');
   const URL = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
   const response = httpHelper.sendGetRequest(URL);
-  const datas: [ResponseVndirect] = response.data;
+  const datas: [IResponseVndirect] = response.data;
   for (const element of datas) {
     if (element.ratioCode === 'BETA') {
       const value = element.value;
@@ -233,9 +216,9 @@ function layDonViKiemToan(tenMa = 'FRT') {
   const httpHelper = new HttpHelper();
   const URL = `https://api-finfo.vndirect.com.vn/v4/company_relations?q=code:${tenMa}~relationType:AUDITOR&size=100&sort=year:DESC`;
   const response = httpHelper.sendGetRequest(URL);
-  const datas = response.data;
+  const datas = response?.data;
   let index = 29;
-  datas.forEach(function (element: ResponseVndirect) {
+  datas.forEach(function (element: IResponseVndirect) {
     sheetHelper.ghiDuLieuVaoDayTheoVung([[element.relationNameVn, '', '', element.year]], SheetHelper.sheetName.sheetDuLieu, `AH${index}:AK${index}`);
     index++;
   });
@@ -251,7 +234,7 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
     sheetHelper.ghiDuLieuVaoO('Lỗi dữ liệu', SheetHelper.sheetName.sheetDuLieu, 'AH29');
   } else {
     let index = 29;
-    datas.forEach(function (element: ResponseVndirect) {
+    datas.forEach(function (element: IResponseVndirect) {
       // Tiền và tương đương tiền
       if (element.itemCode === 37000) {
         sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, '', element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
@@ -259,7 +242,7 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
       }
     });
     index = 32;
-    datas.forEach(function (element: ResponseVndirect) {
+    datas.forEach(function (element: IResponseVndirect) {
       // Tổng tài sản
       if (element.itemCode === 12700) {
         sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, '', element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
@@ -267,7 +250,7 @@ function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
       }
     });
     index = 35;
-    datas.forEach(function (element: ResponseVndirect) {
+    datas.forEach(function (element: IResponseVndirect) {
       // Nợ ngắn hạn
       if (element.itemCode === 13100) {
         sheetHelper.ghiDuLieuVaoDayTheoVung([[`${element.numericValue}`, '', element.fiscalDate]], SheetHelper.sheetName.sheetDuLieu, `AL${index}:AN${index}`);
@@ -355,7 +338,7 @@ function layThongTinTraiPhieu(tenMa = 'FRT') {
 
   const response = httpHelper.sendPostRequest(url, options);
   sheetHelper.xoaDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, `S`, 5, 40, 30);
-  response.RelatedBondInfos.forEach(function (element: ResponseVietStock) {
+  response.RelatedBondInfos.forEach(function (element: IResponseVietStock) {
     const tenTP = element.KeyCode ?? '_';
     const ngayPhatHanh = DateHelper.doiTuMillisSangNgay(Number(element.ReleaseDate?.replace('/Date(', '').replace(')/', '')), defaultFormat) ?? '_';
     const ngayDenHan = DateHelper.doiTuMillisSangNgay(Number(element.DueDate?.replace('/Date(', '').replace(')/', '')), defaultFormat) ?? '_';

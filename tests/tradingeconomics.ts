@@ -29,7 +29,7 @@ test('test', async () => {
     scrollsRemaining--;
   }
   const content = await page.content();
-  writeFile('./docs/index.html', content, (err) => {
+  writeFile('./publish/index.html', content, (err) => {
     if (err) {
       console.error('Error writing to file', err);
     } else {

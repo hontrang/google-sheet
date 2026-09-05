@@ -1,9 +1,9 @@
 import path from 'path';
 import * as ExcelJS from 'exceljs';
 import { Cell, Workbook, Worksheet } from 'exceljs';
-import { SheetSpread } from '@src/types/types';
+import { ISheetSpread } from '@src/types/generic';
 
-export class ExcelHelper implements SheetSpread {
+export class ExcelHelper implements ISheetSpread {
   readonly filePath = path.resolve(process.cwd(), process.env.xlsxInput ?? '');
   readonly outPath = path.resolve(process.cwd(), process.env.xlsxOutput ?? '');
   private workBook!: Workbook;

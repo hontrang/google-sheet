@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 import { SheetHelper } from '@src/utility/SheetHelper';
 
-export class ZchartHelper {
+export class ChartHelper {
   public static updateChart(): void {
     const sheetHelper = new SheetHelper();
     const tenMa = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetChiTietMa, 'B1');

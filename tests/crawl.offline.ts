@@ -2,7 +2,7 @@ import { test } from '@playwright/test';
 import { ExcelHelper } from '@src/offline/ExcelHelper';
 import { AxiosHelper } from '@src/offline/AxiosHelper';
 import { SheetHelper } from '@src/utility/SheetHelper';
-import { ResponseSsi } from '@src/types/types';
+import { IResponseSsi } from '@src/types/generic';
 import { LogHelper } from '@utils/LogHelper';
 
 const sheetHelper = new ExcelHelper();
@@ -45,7 +45,7 @@ async function layThongTin(tenMa: string, headers: string[], token: string): Pro
   sheetHelper.ghiDuLieuVaoO(tenMa, tenMa, 'B1');
   console.log(response.data.message);
   const datas = response.data.data;
-  datas.forEach(function (element: ResponseSsi, index: number) {
+  datas.forEach(function (element: IResponseSsi, index: number) {
     sheetHelper.ghiDuLieuVaoO(element.TradingDate, tenMa, `A${index + 1 + hangCuoiCungTrongSheet}`);
     sheetHelper.ghiDuLieuVaoO(`${element.Close}`, tenMa, `B${index + 1 + hangCuoiCungTrongSheet}`);
   });

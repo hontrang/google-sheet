@@ -1,30 +1,29 @@
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
-export interface SheetSpread {
+export interface ISheetSpread {
   layDuLieuTrongO(sheetName: string, cell: string): string;
   layDuLieuTrongCot(sheetName: string, column: string): string[];
   laySoHangTrongSheet(sheetName: string): number;
   layViTriCotThamChieu(tenMa: string, duLieuCotThamChieu: string[], hangBatDau: number): number;
   layDuLieuTrongHang(sheetName: string, rowIndex: number): string[];
-  ghiDuLieuVaoDay(data: any[][], sheetName: string, rowIndex: number, columnIndex: number): void;
-  ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void;
-  ghiDuLieuVaoDayTheoTen(data: any[][], sheetName: string, rowNumber: number, columnName: string): void;
-  ghiDuLieuVaoO(data: any, sheetName: string, cell: string): boolean;
+  ghiDuLieuVaoDay(data: unknown[][], sheetName: string, rowIndex: number, columnIndex: number): void;
+  ghiDuLieuVaoDayTheoVung(data: unknown[][], sheetName: string, range: string): void;
+  ghiDuLieuVaoDayTheoTen(data: unknown[][], sheetName: string, rowNumber: number, columnName: string): void;
+  ghiDuLieuVaoO(data: unknown, sheetName: string, cell: string): boolean;
   doiTenCotThanhChiSo(columnName: string): number;
   chen1HangVaoDauSheet(sheetName: string): boolean;
   xoaCot(sheetName: string, column: string, numOfCol: number): boolean;
   xoaDuLieuTrongCot(sheetName: string, column: string, numOfCol: number, startRow: number): boolean;
 }
 
-export interface Http {
-  sendRequest(url: string, option?: URLFetchRequestOptions): any;
-  sendPostRequest(url: string, options?: URLFetchRequestOptions): any;
-  sendGetRequest(url: string): Promise<HttpResponse>;
-  getToken(): Promise<string>;
+export interface IHttp {
+  sendRequest(url: string, option?: URLFetchRequestOptions): object;
+  sendPostRequest(url: string, options?: URLFetchRequestOptions): object;
+  sendGetRequest(url: string): Promise<IHttpResponse>;
 }
 
-export type ResponseVndirect = {
+export interface IResponseVndirect {
   code?: string;
-  type?: string;
+  interface?: string;
   tradingDate?: string;
   floor?: string;
   buyVal?: number;
@@ -52,7 +51,7 @@ export type ResponseVndirect = {
   expiryDate?: string;
 }
 
-export type ResponseSsi = {
+export interface IResponseSsi {
   Symbol?: string;
   ClosePrice?: number;
   Market?: string;
@@ -65,13 +64,13 @@ export type ResponseSsi = {
   TradingDate?: string;
 }
 
-export type ResponseDC = {
+export interface IResponseDC {
   id?: number;
   fund_id?: number;
   created?: string;
   modified?: string;
   assetId?: string;
-  translation?: DCTranslation;
+  translation?: IDCTranslation;
   sector_en?: string;
   exchange?: string;
   bourse_en?: string;
@@ -82,34 +81,34 @@ export type ResponseDC = {
   foreign_ownership?: number;
   name_vi?: string;
   weight?: number;
-  fundWeight?: DCFundWeight;
+  fundWeight?: IDCFundWeight;
   activeFileName__c?: string;
   downloadUrl__c?: string;
   displayDate__c?: string;
 }
 
-export type DCTranslation = {
-  vi?: DCSectorLevel & DCIndustryLevel2;
+export interface IDCTranslation {
+  vi?: IDCSectorLevel & IDCIndustryLevel2;
 }
-export type DCSectorLevel = {
+export interface IDCSectorLevel {
   sectorLevel?: string;
 }
-export type DCIndustryLevel2 = {
+export interface IDCIndustryLevel2 {
   industryLevel2?: string;
 }
 
-export type DCFundWeight = {
+export interface IDCFundWeight {
   VF1?: string;
   VF4?: string;
 }
 
-export type HttpResponse = {
-  data?: any;
+export interface IHttpResponse {
+  data?: unknown;
   status?: number;
   statusText?: string;
 }
 
-export type ResponseSimplize = {
+export interface IResponseSimplize {
   date?: string;
   priceClose?: number;
   priceOpen?: number;
@@ -143,15 +142,15 @@ export type ResponseSimplize = {
 
 export type RecommendSimplize = 'TRUNG LẬP' | 'MUA' | 'KHÁC';
 
-export type ResponseVPS = {
+export interface IResponseVPS {
   sym?: string;
   lastVolume?: number;
   lastPrice?: number;
 }
-export type ResponseTCBS = {
+export interface IResponseTCBS {
   ticker?: string;
 }
-export type ResponseVietStock = {
+export interface IResponseVietStock {
   KeyCode?: string;
   StockCode?: string;
   BondCode?: string;

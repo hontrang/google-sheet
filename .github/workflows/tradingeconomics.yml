@@ -26,7 +26,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs
+          publish_dir: publish
       - name: Discord Webhook Action
         uses: tsickert/discord-webhook@v7.0.0
         with:
