@@ -416,6 +416,13 @@ flowchart TB
 
 Lưu ý: `dist/.clasp.json` của `projectMain` (copy từ folder khai báo trong `.env`) ghi `parentId` là `1FMPxrstTZMGaxAr3XzKhub-4WRZBD1fxse7TIvNW83Y` — ID này không truy vấn được qua Drive API (trả về "not found") nên có thể là cấu hình cũ/lệch; ID sheet **chứng khoán** ở trên đã được người dùng xác nhận trực tiếp là sheet đang dùng thật.
 
+**Cách tự kiểm chứng lại mapping này**: chạy hàm `xacDinhSheetDangLienKet()` (có ở cả `src/projectMain/code.ts` và `src/projectDw/code.ts`) trực tiếp trong GAS editor rồi xem Execution log — nó in ra `scriptId`, tên sheet, sheet ID, URL và danh sách tab của container mà script đang bound vào, trả về `null` nếu script là standalone. Đây là cách chính xác nhất vì code **không hardcode sheet ID ở bất kỳ đâu** — mọi I/O đều đi qua `SpreadsheetApp.getActive()` (xem `SheetHelper`, `LogHelper`, `ChartUtil`), nên liên kết nằm hoàn toàn ở chỗ script được bound vào container nào.
+
+Hai cách khác, chỉ để tham khảo:
+
+- Apps Script API `GET https://script.googleapis.com/v1/projects/{scriptId}` trả về field `parentId` = Drive ID của file container. Cần scope `script.projects.readonly`; `.clasprc.json` trong folder `mainClasp` hiện chỉ có scope runtime của script (`spreadsheets`, `spreadsheets.currentonly`, `scriptapp`, `external_request`, `webapp.deploy`) nên phải `clasp login` lại mới gọi được.
+- Tra Drive theo `scriptId`: chỉ ra **tên project script** (main → "hose", dw → "data warehouse"), không phải tên container; query file con của sheet cũng không thấy script vì bound script bị ẩn khỏi Drive listing.
+
 Các tab trong sheet **chứng khoán** đối chiếu với `SheetHelper.sheetName` (`src/utility/SheetHelper.ts`):
 
 | Hằng số trong code | Giá trị | Tab quan sát được trong sheet |
