@@ -6,4 +6,7 @@ html-report/*
 .DS_Store
 **/playwright-report/*
 **/*/index.html
+# publish/ là output ĐƯỢC commit (nguồn cho GitHub Pages) nên phải trừ ra khỏi rule trên
+!publish/index.html
 .env
+test-results/
