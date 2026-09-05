@@ -388,3 +388,25 @@ function layThongTinPhaiSinh() {
   });
   sheetHelper.ghiDuLieuVaoDay(result, SheetHelper.sheetName.sheetDuLieu, 2, 74);
 }
+
+/**
+ * Xác định Google Sheet mà project GAS này đang bound vào — chính là sheet mà mọi
+ * `SpreadsheetApp.getActive()` trong code đọc/ghi. Chạy trực tiếp trong GAS editor
+ * rồi xem Execution log. Trả về `null` nếu script là standalone (không bound).
+ */
+function xacDinhSheetDangLienKet(): string | null {
+  const scriptId = ScriptApp.getScriptId();
+  const sheetApp = SpreadsheetApp.getActiveSpreadsheet();
+  if (!sheetApp) {
+    console.log(`scriptId: ${scriptId} | script standalone, không bound vào sheet nào`);
+    return null;
+  }
+  const danhSachTab = sheetApp
+    .getSheets()
+    .map((sheet) => sheet.getName())
+    .join(', ');
+  console.log(
+    [`scriptId : ${scriptId}`, `tên sheet: ${sheetApp.getName()}`, `sheet id : ${sheetApp.getId()}`, `url      : ${sheetApp.getUrl()}`, `các tab  : ${danhSachTab}`].join('\n')
+  );
+  return sheetApp.getId();
+}
