@@ -299,6 +299,20 @@ export async function ghiGiaTri(range, values, { id, xacNhan = false, raw = fals
   return data;
 }
 
+/** Xoá sạch nội dung một vùng (giữ nguyên định dạng). Cần `xacNhan: true`. */
+export async function xoaVung(range, { id, xacNhan = false } = {}) {
+  if (!xacNhan) throw new Error('xoaVung() cần { xacNhan: true } — đây là thao tác xoá trên sheet thật.');
+  const token = await layAccessToken();
+  const res = await fetch(`${API}/${giaiMaId(id)}/values/${encodeURIComponent(range)}:clear`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: '{}'
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(`Sheets API lỗi ${res.status}: ${data.error?.message}`);
+  return data;
+}
+
 function tenCot(n) {
   let s = '';
   for (let i = n; i >= 0; i = Math.floor(i / 26) - 1) s = String.fromCharCode(65 + (i % 26)) + s;
