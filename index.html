@@ -15,11 +15,11 @@
 <script>var TEAuth = (function () { var KEY = 'te-token', mem = null, pending = null; function now() { return Math.floor(Date.now() / 1000) } function fresh(c) { return c && c.token && now() < c.refresh - 60 } function cached() { if (fresh(mem)) return mem; try { var c = JSON.parse(localStorage.getItem(KEY) || 'null'); if (fresh(c)) return mem = c } catch (e) { } return null } function load() { if (!pending) pending = fetch('/token', { method: 'POST', credentials: 'same-origin', cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json() }).then(function (c) { mem = c; try { localStorage.setItem(KEY, JSON.stringify(c)) } catch (e) { } return c.token }).catch(function (e) { console.log('TEAuth: /token failed', e); return '' }).then(function (t) { pending = null; return t }); return pending } return { ready: function () { var c = cached(); return c ? Promise.resolve(c.token) : load() }, current: function () { var c = cached(); return c ? c.token : '' }, refresh: function () { mem = null; try { localStorage.removeItem(KEY) } catch (e) { } return load() } } })();</script>
 <script type="text/javascript">var DEBUG = false; if (window.location.host.indexOf('localhost') > -1) DEBUG = true; else if (window.location.href.indexOf('debug') > -1) DEBUG = true; if (!DEBUG) { if (!window.console) window.console = {}; var methods = ["log", "debug", "info"]; for (var i = 0; i < methods.length; i++) { console[methods[i]] = function () { }; } }</script>
 <script>window.googletag = window.googletag || { cmd: [] };</script>
-<link rel="icon" href="https://d3e5kp2e91w0k0.cloudfront.net/favicon.svg" type="image/svg+xml"><link rel="canonical" href="https://tradingeconomics.com/calendar"><meta name="apple-itunes-app" content="app-id=1142178921"><script async="" src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script><script async="" src="https://d2wzsg5ocyioop.cloudfront.net/prebid10.19.0.js"></script><meta http-equiv="origin-trial" content="AlK2UR5SkAlj8jjdEc9p3F3xuFYlF6LYjAML3EOqw1g26eCwWPjdmecULvBH5MVPoqKYrOfPhYVL71xAXI1IBQoAAAB8eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="Amm8/NmvvQfhwCib6I7ZsmUxiSCfOxWxHayJwyU1r3gRIItzr7bNQid6O8ZYaE1GSQTa69WwhPC9flq/oYkRBwsAAACCeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="A9nrunKdU5m96PSN1XsSGr3qOP0lvPFUB2AiAylCDlN5DTl17uDFkpQuHj1AFtgWLxpLaiBZuhrtb2WOu7ofHwEAAACKeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A93bovR+QVXNx2/38qDbmeYYf1wdte9EO37K9eMq3r+541qo0byhYU899BhPB7Cv9QqD7wIbR1B6OAc9kEfYCA4AAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A1S5fojrAunSDrFbD8OfGmFHdRFZymSM/1ss3G+NEttCLfHkXvlcF6LGLH8Mo5PakLO1sCASXU1/gQf6XGuTBgwAAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><script src="https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202610130101/pubads_impl.js?cb=122881631" async="" fetchpriority="high"></script><link href="https://securepubads.g.doubleclick.net/pagead/managed/dict/m202610150101/gpt" rel="compression-dictionary"><script async="" fetchpriority="high" src="https://fundingchoicesmessages.google.com/i/23288354674?ers=3"></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxUOQhbu_BC-uLZMcoiiPkXdRuRvkqqp8EGT5GgmmkZfimPOHAnWtJtdPUVEbcAMUvSuM6Ewj47FREio7gvKJby_eE9sUgX79ygr5Xyon_VnrJPLs2IPIdxxGLRekxpfrCuXIdbnVQ==?fccs=W1siQUtzUm9sOHBGcklmSktRc01jVkdabDJhTFg3dVl3MTlpT004Mk5aOTJsaFpfeXB0UFF2YnBTUEREc0ZMdGVYTlhaOWR3bHBwNVlkRzFmY21lRnM4VWZQY1VSVTV5MFRrUDNiUURlX3c0ZHZFX0QwT1ZRTWFobVJ3Z1hFbmlQWWNfU2JwLVhPdXBFUjlDQ0YxT1VidVlubzRHRDRSR2xvSGVRPT0iXSxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsWzE3OTIyNjAzMTksNDk5MDAwMDAwXSxudWxsLG51bGwsbnVsbCxbbnVsbCxbN11dLCJodHRwczovL3RyYWRpbmdlY29ub21pY3MuY29tL2NhbGVuZGFyIixudWxsLFtbOCwiSWhKMzVuMFJqYzQiXSxbOSwiZW4tVVMiXSxbMTgsIltbW251bGwsMzIyXV1dIl0sWzIzLCIxNzkyMjYwMzE4Il0sWzM1LCIxNzkyMjYwMzE3Il0sWzE5LCIyIl0sWzE3LCJbMF0iXSxbMjQsInRyYWRpbmdlY29ub21pY3MuY29tIl0sWzI5LCJmYWxzZSJdXV0"></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxW3GzsQp-kcpQXcZHdJAS0-ha-4IEnCNETp9TMx5LGL9-HDImu1o9nTIqWvBPp9OpAVwDbKMb7holFh4q0dyCk5x1XPP-vo3brCrY2EzyKr_xRZNnJjIyrAB5ZIoupO6BzB0Kt8Aw==?fccs=W1siQUtzUm9sOHBGcklmSktRc01jVkdabDJhTFg3dVl3MTlpT004Mk5aOTJsaFpfeXB0UFF2YnBTUEREc0ZMdGVYTlhaOWR3bHBwNVlkRzFmY21lRnM4VWZQY1VSVTV5MFRrUDNiUURlX3c0ZHZFX0QwT1ZRTWFobVJ3Z1hFbmlQWWNfU2JwLVhPdXBFUjlDQ0YxT1VidVlubzRHRDRSR2xvSGVRPT0iXSxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsWzE3OTIyNjAzMTksNzc3MDAwMDAwXSxudWxsLG51bGwsbnVsbCxbbnVsbCxbNyw5XSxudWxsLDIsbnVsbCwiZW4iXSwiaHR0cHM6Ly90cmFkaW5nZWNvbm9taWNzLmNvbS9jYWxlbmRhciIsbnVsbCxbWzgsIkloSjM1bjBSamM0Il0sWzksImVuLVVTIl0sWzE4LCJbW1tudWxsLDMyMl1dXSJdLFsyMywiMTc5MjI2MDMxOCJdLFszNSwiMTc5MjI2MDMxNyJdLFsxOSwiMiJdLFsxNywiWzBdIl0sWzI0LCJ0cmFkaW5nZWNvbm9taWNzLmNvbSJdLFsyOSwiZmFsc2UiXV1d"></script></head>
+<link rel="icon" href="https://d3e5kp2e91w0k0.cloudfront.net/favicon.svg" type="image/svg+xml"><link rel="canonical" href="https://tradingeconomics.com/calendar"><meta name="apple-itunes-app" content="app-id=1142178921"><script async="" src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script><script async="" src="https://d2wzsg5ocyioop.cloudfront.net/prebid10.19.0.js"></script><meta http-equiv="origin-trial" content="AlK2UR5SkAlj8jjdEc9p3F3xuFYlF6LYjAML3EOqw1g26eCwWPjdmecULvBH5MVPoqKYrOfPhYVL71xAXI1IBQoAAAB8eyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="Amm8/NmvvQfhwCib6I7ZsmUxiSCfOxWxHayJwyU1r3gRIItzr7bNQid6O8ZYaE1GSQTa69WwhPC9flq/oYkRBwsAAACCeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiV2ViVmlld1hSZXF1ZXN0ZWRXaXRoRGVwcmVjYXRpb24iLCJleHBpcnkiOjE3NTgwNjcxOTksImlzU3ViZG9tYWluIjp0cnVlfQ=="><meta http-equiv="origin-trial" content="A9nrunKdU5m96PSN1XsSGr3qOP0lvPFUB2AiAylCDlN5DTl17uDFkpQuHj1AFtgWLxpLaiBZuhrtb2WOu7ofHwEAAACKeyJvcmlnaW4iOiJodHRwczovL2RvdWJsZWNsaWNrLm5ldDo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A93bovR+QVXNx2/38qDbmeYYf1wdte9EO37K9eMq3r+541qo0byhYU899BhPB7Cv9QqD7wIbR1B6OAc9kEfYCA4AAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXN5bmRpY2F0aW9uLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><meta http-equiv="origin-trial" content="A1S5fojrAunSDrFbD8OfGmFHdRFZymSM/1ss3G+NEttCLfHkXvlcF6LGLH8Mo5PakLO1sCASXU1/gQf6XGuTBgwAAACQeyJvcmlnaW4iOiJodHRwczovL2dvb2dsZXRhZ3NlcnZpY2VzLmNvbTo0NDMiLCJmZWF0dXJlIjoiQUlQcm9tcHRBUElNdWx0aW1vZGFsSW5wdXQiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlLCJpc1RoaXJkUGFydHkiOnRydWV9"><script src="https://securepubads.g.doubleclick.net/pagead/managed/js/gpt/m202610120101/pubads_impl.js?cb=122881605" async="" fetchpriority="high"></script><link href="https://securepubads.g.doubleclick.net/pagead/managed/dict/m202610150101/gpt" rel="compression-dictionary"><script async="" fetchpriority="high" src="https://fundingchoicesmessages.google.com/i/23288354674?ers=3"></script><script async="" src="https://fundingchoicesmessages.google.com/f/AGSKWxUo560HUH4U7I8t2evkWUtwN2EiFQNLvTV6scobpnFqhHEgRL3HrQBYATk7Psro9zA0TerM4JLswUWNiyIu1bj-ilUBLpg5nFoRfGqioGQr4hdNRWclU9UwtUsomgSaxIK-Bst7dQ==?fccs=W1siQUtzUm9sX2hPbGVQU3Q1LWxLdU03NVJWVGFTSzFfX1lubjdfQm1lN0lDS3VGRWtGUFZaN3ZlQ084UmVCU3BJWUVEMTJOSFlkMlh1QURJbEtQak9yaDVwaUgzRHJVZHNlNkxLenQ1REE5NmhHV1dmZWhtOHRRa2YxRnpzaEpxWHY0bnRnYzduSXN1OVprbHBXSk43WXpscUR5V0ItUndoaGFBPT0iXSxudWxsLG51bGwsbnVsbCxudWxsLG51bGwsWzE3OTIzNDc4NDksNTM1MDAwMDAwXSxudWxsLG51bGwsbnVsbCxbbnVsbCxbN11dLCJodHRwczovL3RyYWRpbmdlY29ub21pY3MuY29tL2NhbGVuZGFyIixudWxsLFtbOCwiSWhKMzVuMFJqYzQiXSxbOSwiZW4tVVMiXSxbMTgsIltbW251bGwsNTExXV1dIl0sWzIzLCIxNzkyMzQ3ODQ2Il0sWzM1LCIxNzkyMzQ3ODQ2Il0sWzE5LCIyIl0sWzE3LCJbMF0iXSxbMjQsInRyYWRpbmdlY29ub21pY3MuY29tIl0sWzI5LCJmYWxzZSJdXV0"></script></head>
 <body>
     <script>(function(){var c=localStorage.getItem('IsDarkMode')==='true';if(c)document.body.classList.add('dark-theme');window.IsDarkMode=c;})();</script>
     <form method="post" action="/calendar" id="aspnetForm">
-<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="2qPc/zwrgRDKk+hnQKm9dt67Vpw2BS+58uIIv1KTEIMb83HxuQ6EP02LHUUy5GzfZAKjU/BlGvzDPUpfyJcioxAU4NA=">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="jjuPTu/orZYirLOpkpGUK8R7JXIX314t+COKo1B3VSYPTpAH7q+ak5ovjZwcOJCHwEciZwFeFdY4bCP8m8VvzMPPfek=">
 
 
 <script type="text/javascript">
@@ -35,7 +35,7 @@ var isPostBack = false;//]]>
         <div class="navbar-header navbar-header-search" id="searchMobileHeader">
             <div class="d-flex justify-content-between">
                 <a class="navbar-brand" style="width: 100%" role="form">
-                    <input type="text" placeholder="Search" id="thisIstheTinySearchBoxIdTag" autocomplete="off" class="nav-search-input-class navbar-search-2 ieconomics-761560-logic">
+                    <input type="text" placeholder="Search" id="thisIstheTinySearchBoxIdTag" autocomplete="off" class="nav-search-input-class navbar-search-2 ieconomics-337987-logic">
                 </a>
                 <ul id="thisIstheTinySearchResultsIdTag" class="dropdown-menu navbar-search-1">
                     <li>
@@ -101,7 +101,7 @@ var isPostBack = false;//]]>
                         <div class="search-li d-none d-lg-block">
                             <a noref="" id="thisIsTheSearchPlaceholderId" class="nav-searchbox-class stickydropdown d-block" title="Search">
                                 <div id="thisIsTheSearchBoxWrapperId" class="typeahead-searchbox-glyphicon-wrapper d-flex ">
-                                    <input type="text" placeholder="Search" aria-label="Search" id="thisIstheSearchBoxIdTag" autocomplete="off" class="d-none d-md-block nav-search-input-class ieconomics-922140-logic">
+                                    <input type="text" placeholder="Search" aria-label="Search" id="thisIstheSearchBoxIdTag" autocomplete="off" class="d-none d-md-block nav-search-input-class ieconomics-767281-logic">
                                 </div>
                             </a>
 
@@ -1035,9 +1035,9 @@ var isPostBack = false;//]]>
     <br>
     <div class="input-group">
         <span class="input-group-text d-none d-md-inline">From</span>
-        <input type="text" id="startDate" class="form-select" value="2026-10-17 10:03" style="background-image: none;">
+        <input type="text" id="startDate" class="form-select" value="2026-10-18 10:24" style="background-image: none;">
         <span class="input-group-text d-none d-md-inline">Until</span>
-        <input type="text" id="endDate" class="form-select" value="2026-10-31 18:03" style="background-image: none;">
+        <input type="text" id="endDate" class="form-select" value="2026-11-01 18:24" style="background-image: none;">
         <span class="input-group-btn">
             <button class="btn btn-success" onclick="setCustomDates(event);">Submit</button>
         </span>
@@ -1985,7 +1985,7 @@ var isPostBack = false;//]]>
                 </tr>
             </thead>
             <!-- copy of table head to show on scroll -->
-            <thead id="ctl00_ContentPlaceHolder1_ctl02_Repeater1_ctl01_th2" class="hidden-head" style="position: fixed; top: 50px; z-index: 1001; width: 1192px; display: none;" data-id="0">
+            <thead id="ctl00_ContentPlaceHolder1_ctl02_Repeater1_ctl01_th2" class="hidden-head" style="position: fixed; top: 0px; display: none; z-index: 1001; width: 1192px;" data-id="0">
                 <tr style="white-space: nowrap;">
                     <th colspan="3" style="text-align: left; width: 594.938px;">
                         Monday October 19 2026
@@ -14939,6 +14939,1340 @@ var isPostBack = false;//]]>
                 </td>
             </tr>
         
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/central-bank-balance-sheet" data-id="397789" data-country="united states" data-category="central bank balance sheet" data-event="fed balance sheet" data-symbol="UNITEDSTACENBANBALSH">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-05">
+                    <span class="event-202 calendar-date-1">
+                        
+                        09:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/central-bank-balance-sheet">Fed Balance Sheet</a> <span class="calendar-reference">NOV/04</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous"></span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="UNITEDSTACENBANBALSH" href="/united-states/central-bank-balance-sheet"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell"></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/reserve-balances" data-id="421581" data-country="united states" data-category="reserve balances" data-event="reserve balances with fed banks" data-symbol="USARESBAL">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-05">
+                    <span class="event-203 calendar-date-1">
+                        
+                        09:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/reserve-balances">Reserve Balances with Fed Banks</a> <span class="calendar-reference">20261104</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous"></span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USARESBAL" href="/united-states/reserve-balances"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell"></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                
+                </td>
+            </tr>
+        
+            </tbody><thead id="ctl00_ContentPlaceHolder1_ctl02_Repeater1_ctl205_th1" class="table-header" data-fixed_copy="14">
+                <tr style="white-space: nowrap">
+                    <th colspan="3" style="text-align: left;">
+                        Friday November 06 2026
+                    </th>
+                    <th style="text-align: center; font-weight: normal; min-width: 75px;">
+                        Actual</th>
+                    <th style="text-align: center; font-weight: normal; min-width: 75px;">
+                        Previous</th>
+                    <th style="text-align: center; font-weight: normal;">
+                        Consensus</th>
+                    <th style="text-align: center; font-weight: normal;">
+                        Forecast</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <!-- copy of table head to show on scroll -->
+            <thead id="ctl00_ContentPlaceHolder1_ctl02_Repeater1_ctl205_th2" class="hidden-head" style="position: fixed; top: 0px; display: none; z-index: 1001; width: 1192px;" data-id="14">
+                <tr style="white-space: nowrap;">
+                    <th colspan="3" style="text-align: left; width: 594.938px;">
+                        Friday November 06 2026
+                    </th>
+                    <th style="text-align: center; font-weight: normal; min-width: 75px; width: 114.391px;">
+                        Actual</th>
+                    <th style="text-align: center; font-weight: normal; min-width: 75px; width: 114.391px;">
+                        Previous</th>
+                    <th style="text-align: center; font-weight: normal; width: 138.875px;">
+                        Consensus</th>
+                    <th style="text-align: center; font-weight: normal; width: 113.422px;">
+                        Forecast</th>
+                    <th style="width: 76.2656px;"></th>
+                    <th style="width: 39.7188px;"></th>
+                </tr>
+            </thead>
+            <tbody><tr data-url="/united-states/non-farm-payrolls" data-id="397256" data-country="united states" data-category="non farm payrolls" data-event="non farm payrolls" data-symbol="NFP TCH">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-204 calendar-date-3">
+                        
+                        01:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/non-farm-payrolls">Non Farm Payrolls</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous">29K</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="NFP TCH" href="/united-states/non-farm-payrolls"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/non-farm-payrolls"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-397256.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/non-farm-payrolls" data-chart="/united-states/non-farm-payrolls" data-placement="right" aria-label="US Non Farm Payrolls" data-bs-original-title="US Non Farm Payrolls"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/unemployment-rate" data-id="397254" data-country="united states" data-category="unemployment rate" data-event="unemployment rate" data-symbol="USURTOT">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-205 calendar-date-3">
+                        
+                        01:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/unemployment-rate">Unemployment Rate</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous">4.2%</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USURTOT             " href="/united-states/unemployment-rate"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/unemployment-rate"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-397254.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/unemployment-rate" data-chart="/united-states/unemployment-rate" data-placement="right" aria-label="US Unemployment Rate" data-bs-original-title="US Unemployment Rate"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/average-hourly-earnings" data-id="397255" data-country="united states" data-category="average hourly earnings" data-event="average hourly earnings mom" data-symbol="UNITEDSTAAVEHOUEAR">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-206 calendar-date-2">
+                        
+                        01:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/average-hourly-earnings">Average Hourly Earnings MoM</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous">0.1%</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="UNITEDSTAAVEHOUEAR" href="/united-states/average-hourly-earnings"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/average-hourly-earnings"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-397255.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/average-hourly-earnings" data-chart="/united-states/average-hourly-earnings" data-placement="right" aria-label="US Average Hourly Earnings" data-bs-original-title="US Average Hourly Earnings"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/average-hourly-earnings-yoy" data-id="397257" data-country="united states" data-category="average hourly earnings yoy" data-event="average hourly earnings yoy" data-symbol="USAAHEY">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-207 calendar-date-2">
+                        
+                        01:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/average-hourly-earnings-yoy">Average Hourly Earnings YoY</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous">3%</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USAAHEY" href="/united-states/average-hourly-earnings-yoy"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/average-hourly-earnings-yoy"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-397257.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/average-hourly-earnings-yoy" data-chart="/united-states/average-hourly-earnings-yoy" data-placement="right" aria-label="US Average Hourly Earnings YoY" data-bs-original-title="US Average Hourly Earnings YoY"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/labor-force-participation-rate" data-id="397260" data-country="united states" data-category="labor force participation rate" data-event="participation rate" data-symbol="UNITEDSTALABFORPARRA">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-208 calendar-date-2">
+                        
+                        01:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/labor-force-participation-rate">Participation Rate</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous">61.8%</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="UNITEDSTALABFORPARRA" href="/united-states/labor-force-participation-rate"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/labor-force-participation-rate"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-397260.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/labor-force-participation-rate" data-chart="/united-states/labor-force-participation-rate" data-placement="right" aria-label="US Labor Force Participation Rate" data-bs-original-title="US Labor Force Participation Rate"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/average-weekly-hours" data-id="397261" data-country="united states" data-category="average weekly hours" data-event="average weekly hours" data-symbol="UNITEDSTAAVEWEEHOU">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-209 calendar-date-1">
+                        
+                        01:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/average-weekly-hours">Average Weekly Hours</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous">34.4</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="UNITEDSTAAVEWEEHOU" href="/united-states/average-weekly-hours"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/average-weekly-hours"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-397261.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/average-weekly-hours" data-chart="/united-states/average-weekly-hours" data-placement="right" aria-label="US Average Weekly Hours" data-bs-original-title="US Average Weekly Hours"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/government-payrolls" data-id="397259" data-country="united states" data-category="government payrolls" data-event="government payrolls" data-symbol="UNITEDSTAGOVPAY">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-210 calendar-date-1">
+                        
+                        01:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/government-payrolls">Government Payrolls</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-negative">
+                    <span id="previous">-17K</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="UNITEDSTAGOVPAY" href="/united-states/government-payrolls"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/government-payrolls"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-397259.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/government-payrolls" data-chart="/united-states/government-payrolls" data-placement="right" aria-label="US Government Payrolls" data-bs-original-title="US Government Payrolls"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/manufacturing-payrolls" data-id="397258" data-country="united states" data-category="manufacturing payrolls" data-event="manufacturing payrolls" data-symbol="UNITEDSTAMANPAY">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-211 calendar-date-1">
+                        
+                        01:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/manufacturing-payrolls">Manufacturing Payrolls</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous">9K</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="UNITEDSTAMANPAY" href="/united-states/manufacturing-payrolls"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/manufacturing-payrolls"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-397258.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/manufacturing-payrolls" data-chart="/united-states/manufacturing-payrolls" data-placement="right" aria-label="US Manufacturing Payrolls" data-bs-original-title="US Manufacturing Payrolls"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/nonfarm-payrolls-private" data-id="397253" data-country="united states" data-category="nonfarm payrolls private" data-event="nonfarm payrolls private" data-symbol="UNITEDSTANONPAY-PRI">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-212 calendar-date-1">
+                        
+                        01:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/nonfarm-payrolls-private">Nonfarm Payrolls Private</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous">46K</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="UNITEDSTANONPAY-PRI" href="/united-states/nonfarm-payrolls-private"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/nonfarm-payrolls-private"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-397253.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/nonfarm-payrolls-private" data-chart="/united-states/nonfarm-payrolls-private" data-placement="right" aria-label="US Nonfarm Payrolls Private" data-bs-original-title="US Nonfarm Payrolls Private"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/u6-unemployment-rate" data-id="397252" data-country="united states" data-category="u6 unemployment rate" data-event="u-6 unemployment rate" data-symbol="USAUUR">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-213 calendar-date-1">
+                        
+                        01:30 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/u6-unemployment-rate">U-6 Unemployment Rate</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous">7.6%</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USAUUR" href="/united-states/u6-unemployment-rate"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/u6-unemployment-rate"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-397252.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/u6-unemployment-rate" data-chart="/united-states/u6-unemployment-rate" data-placement="right" aria-label="US U6 Unemployment Rate" data-bs-original-title="US U6 Unemployment Rate"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/used-car-prices-mom" data-id="398729" data-country="united states" data-category="used car prices mom" data-event="used car prices mom" data-symbol="USAUCPM">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-214 calendar-date-1">
+                        
+                        02:00 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/used-car-prices-mom">Used Car Prices MoM</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-negative">
+                    <span id="previous">-1.1%</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USAUCPM" href="/united-states/used-car-prices-mom"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/used-car-prices-mom"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-398729.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/used-car-prices-mom" data-chart="/united-states/used-car-prices-mom" data-placement="right" aria-label="US Used Car Prices MoM" data-bs-original-title="US Used Car Prices MoM"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/used-car-prices-yoy" data-id="398068" data-country="united states" data-category="used car prices yoy" data-event="used car prices yoy" data-symbol="USAUCPY">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-215 calendar-date-1">
+                        
+                        02:00 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/used-car-prices-yoy">Used Car Prices YoY</a> <span class="calendar-reference">OCT</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-negative">
+                    <span id="previous">-0.6%</span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USAUCPY" href="/united-states/used-car-prices-yoy"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell" style="text-align: right"><a target="_blank" style="text-align: center" href="/united-states/used-car-prices-yoy"><div class="lazy" style="height: 20px; width: 40px;" data-src="https://d3fy651gv2fhd3.cloudfront.net/charts/calendar-398068.png?h=20&amp;w=40&amp;n=4&amp;y=0&amp;y2=0&amp;x=0&amp;title=false&amp;lbl=0&amp;bg=0&amp;v=V20230410&amp;url=/united-states/used-car-prices-yoy" data-chart="/united-states/used-car-prices-yoy" data-placement="right" aria-label="US Used Car Prices YoY" data-bs-original-title="US Used Car Prices YoY"></div></a></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                <div title="Create Alert" data-type="te-alert-hook" class="bi bi-bell-fill te-alert-bell"></div>
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/consumer-confidence" data-id="397307" data-country="united states" data-category="consumer confidence" data-event="michigan consumer sentiment prel" data-symbol="CONCCONF">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-216 calendar-date-3">
+                        
+                        03:00 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/consumer-confidence">Michigan Consumer Sentiment Prel</a> <span class="calendar-reference">NOV</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous"></span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="CONCCONF            " href="/united-states/consumer-confidence"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell"></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/michigan-5-year-inflation-expectations" data-id="397308" data-country="united states" data-category="michigan 5 year inflation expectations" data-event="michigan 5 year inflation expectations prel" data-symbol="USAM5YIE">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-217 calendar-date-1">
+                        
+                        03:00 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/michigan-5-year-inflation-expectations">Michigan 5 Year Inflation Expectations Prel</a> <span class="calendar-reference">NOV</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous"></span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USAM5YIE" href="/united-states/michigan-5-year-inflation-expectations"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell"></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/michigan-consumer-expectations" data-id="397311" data-country="united states" data-category="michigan consumer expectations" data-event="michigan consumer expectations prel" data-symbol="USAMCE">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-218 calendar-date-1">
+                        
+                        03:00 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/michigan-consumer-expectations">Michigan Consumer Expectations Prel</a> <span class="calendar-reference">NOV</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous"></span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USAMCE" href="/united-states/michigan-consumer-expectations"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell"></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/michigan-current-economic-conditions" data-id="397310" data-country="united states" data-category="michigan current economic conditions" data-event="michigan current conditions prel" data-symbol="USAMCEC">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-219 calendar-date-1">
+                        
+                        03:00 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/michigan-current-economic-conditions">Michigan Current Conditions Prel</a> <span class="calendar-reference">NOV</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous"></span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USAMCEC" href="/united-states/michigan-current-economic-conditions"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell"></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/michigan-inflation-expectations" data-id="397309" data-country="united states" data-category="michigan inflation expectations" data-event="michigan inflation expectations prel" data-symbol="USAMIE">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-220 calendar-date-1">
+                        
+                        03:00 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/michigan-inflation-expectations">Michigan Inflation Expectations Prel</a> <span class="calendar-reference">NOV</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous"></span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USAMIE" href="/united-states/michigan-inflation-expectations"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell"></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/crude-oil-rigs" data-id="397263" data-country="united states" data-category="crude oil rigs" data-event="baker hughes oil rig count" data-symbol="USOILRIGS">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-221 calendar-date-1">
+                        
+                        06:00 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/crude-oil-rigs">Baker Hughes Oil Rig Count</a> <span class="calendar-reference">NOV/06</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous"></span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USOILRIGS" href="/united-states/crude-oil-rigs"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell"></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                
+                </td>
+            </tr>
+        
+            
+            <!-- copy of table head to show on scroll -->
+            
+            <tr data-url="/united-states/total-rigs" data-id="397262" data-country="united states" data-category="total rigs" data-event="baker hughes total rigs count" data-symbol="USATOTRIG">
+                
+                <td style="white-space: nowrap;" class=" 2026-11-06">
+                    <span class="event-222 calendar-date-1">
+                        
+                        06:00 PM
+                    </span>
+                </td>
+                <td class="calendar-item" style="white-space: nowrap">
+                    <table style="padding: 0px;">
+                        <tbody><tr>
+                            <td style="padding-left: 5px;">
+                                <div title="United States" class="flag flag-us"></div>
+                            </td>
+                            <td title="United States" style="padding-left: 5px;" class="calendar-iso">US</td>
+                        </tr>
+                    </tbody></table>
+                </td>
+                <td style="max-width: 250px; overflow-x: hidden;">
+                    <a class="calendar-event" href="/united-states/total-rigs">Baker Hughes Total Rigs Count</a> <span class="calendar-reference">NOV/06</span>
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="actual"></span>
+                    
+                    
+                    
+                    
+                    
+                    
+
+                    
+                    
+                    
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <span id="previous"></span>
+                    <span id="revised" style="cursor: pointer; color: #333; font-size: 10px;" data-bs-toggle="tooltip" title="">
+                        
+                    </span>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    <a id="consensus" aria-label="USATOTRIG" href="/united-states/total-rigs"></a>
+                </td>
+                <td class="calendar-item calendar-item-positive">
+                    
+                </td>
+                
+                    <td class="d-md-none d-lg-table-cell"></td>   
+                
+                
+                <td class=" d-none d-md-table-cell d-lg-none"></td>  
+                
+
+                <td class="td-alert">
+                
+                </td>
+            </tr>
+        
             </tbody></table>
         
 </div>
@@ -17401,4 +18735,4 @@ Providing several request methods to query our databases, it is the best way to 
 </script>
 
 
-<iframe name="googlefcPresent" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="__tcfapiLocator" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcInactive" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcLoaded" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe marginwidth="0" marginheight="0" scrolling="no" frameborder="0" id="175dd84563610a8" width="0" height="0" src="about:blank" name="__pb_locator__" style="display: none; height: 0px; width: 0px; border: 0px;"></iframe></body><iframe id="goog_plcm_frame" src="https://cm.g.doubleclick.net/partnerpixels?gdpr=0&amp;url=https%3A%2F%2Ftradingeconomics.com%2Fcalendar" style="display: none;"></iframe></html>
+<iframe name="googlefcPresent" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="__tcfapiLocator" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcInactive" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe name="googlefcLoaded" src="about:blank" style="display: none; width: 0px; height: 0px; border: none; z-index: -1000; left: -1000px; top: -1000px;"></iframe><iframe marginwidth="0" marginheight="0" scrolling="no" frameborder="0" id="132ba14ab1bc758" width="0" height="0" src="about:blank" name="__pb_locator__" style="display: none; height: 0px; width: 0px; border: 0px;"></iframe></body><iframe id="goog_plcm_frame" src="https://cm.g.doubleclick.net/partnerpixels?gdpr=0&amp;url=https%3A%2F%2Ftradingeconomics.com%2Fcalendar" style="display: none;"></iframe></html>
