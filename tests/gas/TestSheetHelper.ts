@@ -34,7 +34,7 @@ function TestSheet() {
         const data: number[][] = [expected];
         helper.ghiDuLieuVaoDay(data, 'Sheet1', 2, 1);
         const actual = helper.layDuLieuTrongHang('Sheet1', 2);
-        assert.deepEqual(actual, expected, 'ghiDuLieuVaoDay');
+        assert.deepEqual<unknown[]>(actual, expected, 'ghiDuLieuVaoDay');
     });
     QUnit.test('Test ghiDuLieuVaoDayTheoVung', function (assert: Assert) {
         const helper = new SheetHelper();
@@ -42,7 +42,7 @@ function TestSheet() {
         const data: number[][] = [expected];
         helper.ghiDuLieuVaoDayTheoVung(data, 'Sheet1', 'A3:D3');
         const actual = helper.layDuLieuTrongHang('Sheet1', 3);
-        assert.deepEqual(actual, expected, 'ghiDuLieuVaoDayTheoVung');
+        assert.deepEqual<unknown[]>(actual, expected, 'ghiDuLieuVaoDayTheoVung');
     });
     QUnit.test('Test ghiDuLieuVaoDayTheoTen', function (assert: Assert) {
         const helper = new SheetHelper();
@@ -50,7 +50,7 @@ function TestSheet() {
         const data: number[][] = [expected];
         helper.ghiDuLieuVaoDayTheoTen(data, 'Sheet1', 4, 'A');
         const actual = helper.layDuLieuTrongHang('Sheet1', 4);
-        assert.deepEqual(actual, expected, 'ghiDuLieuVaoDayTheoTen');
+        assert.deepEqual<unknown[]>(actual, expected, 'ghiDuLieuVaoDayTheoTen');
     });
     QUnit.test('Test doiTenCotThanhChiSo', function (assert: Assert) {
         const helper = new SheetHelper();
@@ -103,7 +103,7 @@ function TestSheet() {
         const helper = new SheetHelper();
         const expected: number[] = [1, 2, 3, 4];
         const actual = helper.layDuLieuTrongHang('Sheet1', 2);
-        assert.deepEqual(actual, expected, 'layDuLieuTrongHang');
+        assert.deepEqual<unknown[]>(actual, expected, 'layDuLieuTrongHang');
     });
     QUnit.test('Test layViTriCotThamChieu', function (assert: Assert) {
         const helper = new SheetHelper();
@@ -115,7 +115,7 @@ function TestSheet() {
         const helper = new SheetHelper();
         const expected: unknown[] = ['a', 1, 5, 9];
         const actual = helper.layDuLieuTrongCot('Sheet1', 'A');
-        assert.deepEqual(actual, expected, 'layDuLieuTrongCot');
+        assert.deepEqual<unknown[]>(actual, expected, 'layDuLieuTrongCot');
     });
     QUnit.test('Test laySoHangTrongSheet', function (assert: Assert) {
         const helper = new SheetHelper();

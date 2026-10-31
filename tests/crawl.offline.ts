@@ -43,8 +43,9 @@ async function layThongTin(tenMa: string, headers: string[], token: string): Pro
   const response = await httpHelper.sendRequest(url, { headers: { Authorization: token } });
   sheetHelper.taoSheetMoi(tenMa);
   sheetHelper.ghiDuLieuVaoO(tenMa, tenMa, 'B1');
-  console.log(response.data.message);
-  const datas = response.data.data;
+  const body = response.data as { message: string; data: IResponseSsi[] };
+  console.log(body.message);
+  const datas = body.data;
   datas.forEach(function (element: IResponseSsi, index: number) {
     sheetHelper.ghiDuLieuVaoO(element.TradingDate, tenMa, `A${index + 1 + hangCuoiCungTrongSheet}`);
     sheetHelper.ghiDuLieuVaoO(`${element.Close}`, tenMa, `B${index + 1 + hangCuoiCungTrongSheet}`);

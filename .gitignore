@@ -10,3 +10,4 @@ html-report/*
 !publish/index.html
 .env
 test-results/
+.sheets-token.json

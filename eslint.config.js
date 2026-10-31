@@ -13,6 +13,9 @@ const objectLiteralPropertyNaming = {
 };
 
 export default tseslint.config(
+  // Tiện ích .mjs chạy bằng node trần, không nằm trong TS program của tsconfig.json
+  // nên typed linting không parse được. Loại khỏi phạm vi eslint.
+  { ignores: ['**/*.mjs'] },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   ...tseslint.configs.strict,
@@ -54,10 +57,10 @@ export default tseslint.config(
       '@typescript-eslint/naming-convention': [
         'error',
         objectLiteralPropertyNaming,
-        // Aliases of library globals keep the library's own casing
+        // Library globals and their aliases keep the library's own casing
         {
           selector: 'variable',
-          filter: { regex: '^QUnit$', match: true },
+          filter: { regex: '^(QUnit|QUnitGS2)$', match: true },
           format: null
         },
         // Local variables are camelCase even when `const`; UPPER_CASE is only for module-level constants

@@ -1,16 +1,11 @@
 import sh from 'shelljs';
 import upath from 'upath';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import glob from 'glob';
-
-const fileName: string = fileURLToPath(import.meta.url);
-const dirName: string = dirname(fileName);
 
 export function renderClasp(): void {
   // copy clasp
-  const sourcePath: string = upath.resolve(dirName, process.env.testClasp);
-  const destPath: string = upath.resolve(dirName, '../../dist');
+  const sourcePath: string = upath.resolve(__dirname, process.env.testClasp);
+  const destPath: string = upath.resolve(__dirname, '../../dist');
   console.log('Sao chép files trong folder clasp vào dist');
 
   // Lấy tất cả file trong thư mục nguồn, bao gồm cả file ẩn
