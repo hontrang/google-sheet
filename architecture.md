@@ -437,3 +437,5 @@ Các tab trong sheet **chứng khoán** đối chiếu với `SheetHelper.sheetN
 | `sheetHose` | `hose` | Nằm ở sheet **data warehouse**, không phải **chứng khoán** |
 
 Ngoài ra sheet **chứng khoán** còn có các khối dữ liệu chưa map trực tiếp vào `sheetName` (có thể là range/tên sheet khác hoặc đặt tên động): Sự kiện (lịch kinh tế vĩ mô), log Lệnh mua/bán, Cổ phiếu theo nhóm ngành (DCDS), Cổ tức, Biến động tiền mặt, danh sách tin tức, ghi chú "Các bước lựa chọn mã chứng khoán".
+
+Mô tả chi tiết từng tab của cả hai sheet (bố cục, công thức, hàm GAS ghi vào, tab nào dùng lại): [docs/google-sheets.md](docs/google-sheets.md) — mỗi tab một file trong `docs/chứng khoán/` và `docs/data warehouse/`.
