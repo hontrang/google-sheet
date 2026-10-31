@@ -11,3 +11,4 @@ html-report/*
 .env
 test-results/
 .sheets-token.json
+backup-dw/

@@ -313,7 +313,24 @@ export async function xoaVung(range, { id, xacNhan = false } = {}) {
   return data;
 }
 
-function tenCot(n) {
+/**
+ * Gửi một lô request `spreadsheets.batchUpdate` (thêm cột/dòng, định dạng, …). Cần `xacNhan: true`.
+ * @see https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request
+ */
+export async function capNhatLo(requests, { id, xacNhan = false } = {}) {
+  if (!xacNhan) throw new Error('capNhatLo() cần { xacNhan: true } — đây là thao tác sửa cấu trúc sheet thật.');
+  const token = await layAccessToken();
+  const res = await fetch(`${API}/${giaiMaId(id)}:batchUpdate`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requests })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(`Sheets API lỗi ${res.status}: ${data.error?.message}`);
+  return data;
+}
+
+export function tenCot(n) {
   let s = '';
   for (let i = n; i >= 0; i = Math.floor(i / 26) - 1) s = String.fromCharCode(65 + (i % 26)) + s;
   return s;
