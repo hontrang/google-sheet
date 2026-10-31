@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Tests
  * =====
@@ -9,6 +10,23 @@
  * needs to be deleted and recreated to pick up the contents of 
  * the new file before this file is parsed!
  */
+
+// Globals that only exist once everything shares one scope on GAS: the QUnitGS2 library
+// and the test functions from tests/gas/*.ts (modules here because of their imports).
+declare const QUnitGS2: {
+    QUnit: QUnit
+    init(): void
+    getHtml(): GoogleAppsScript.HTML.HtmlOutput
+    getResultsFromServer(): string
+}
+declare function TestSheet(): void
+declare function TestRequest(): void
+// QUnitGS2 reads the web app title from QUnit.config.title, which @types/qunit does not declare
+declare global {
+    interface Config {
+        title: string
+    }
+}
 
 // The title used at the top of the web app
 const MAIN_TEST_TITLE_ = 'QUnitGS2 Test'
@@ -31,7 +49,7 @@ const TESTS_ = [
 
 // QUnitGS2 is a wrapper for the main QUnit object, which can be accessed directly 
 // with "QUnit"
-var QUnit = QUnitGS2.QUnit
+const QUnit = QUnitGS2.QUnit
 
 /**
  * The doGet is the main function that displays the QUnit test web app once it
