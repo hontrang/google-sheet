@@ -1,6 +1,7 @@
 ---
 name: create-pr
 description: Create a pull request with Conventional Commits formatting, a templated body, and local verification. Use when the user asks to create a PR, open a PR, submit changes for review, or put code up for review.
+model: sonnet
 ---
 
 # Create Pull Request
