@@ -1,4 +1,5 @@
-import { IResponseDC, IResponseSimplize, IResponseVietStock } from "@src/types/generic";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { IResponseDC, IResponseSimplize } from "@src/types/generic";
 import { DateHelper } from "@utils/DateHelper";
 import { HttpHelper } from "@utils/HttpHelper";
 
@@ -7,7 +8,7 @@ function TestRequest() {
     QUnit.test('Test sendRequest', function (assert) {
         const helper = new HttpHelper();
         const URL = 'https://api.simplize.vn/api/company/separate-share/list-tickers';
-        const OPTIONS_CO_TUC: URLFetchRequestOptions = {
+        const OPTIONS_CO_TUC: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
             method: 'post',
             headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
             payload: JSON.stringify({

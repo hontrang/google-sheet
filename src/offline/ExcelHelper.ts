@@ -1,6 +1,6 @@
 import path from 'path';
 import * as ExcelJS from 'exceljs';
-import { Cell, Workbook, Worksheet } from 'exceljs';
+import { Cell, CellValue, Workbook, Worksheet } from 'exceljs';
 import { ISheetSpread } from '@src/types/generic';
 
 export class ExcelHelper implements ISheetSpread {
@@ -41,7 +41,9 @@ export class ExcelHelper implements ISheetSpread {
     this.workBook.eachSheet(function (sheet, id) {
       if (name === sheet.name) sheetID = id;
     });
-    return this.workBook.getWorksheet(sheetID)!;
+    const sheet = this.workBook.getWorksheet(sheetID);
+    if (!sheet) throw new Error(`Không tìm thấy sheet ${name}`);
+    return sheet;
   }
 
   taoSheetMoi(name = 'new'): void {
@@ -84,7 +86,7 @@ export class ExcelHelper implements ISheetSpread {
     return data;
   }
 
-  async ghiDuLieuVaoDay(data: any[], sheetName: string, rowIndex: number, columnIndex: number): Promise<void> {
+  async ghiDuLieuVaoDay(data: unknown[], sheetName: string, rowIndex: number, columnIndex: number): Promise<void> {
     this.workSheet = this.getSheetByName(sheetName);
     const row = this.workSheet.getRow(rowIndex);
     const adjustedData = new Array(columnIndex - 1).fill('').concat(data);
@@ -92,12 +94,12 @@ export class ExcelHelper implements ISheetSpread {
     console.log(`Da ghi du lieu ${data} vao hang ${rowIndex} cot: ${columnIndex}`);
     row.commit();
   }
-  async ghiDuLieuVaoCot(data: any[], sheetName: string, columnIndex: number): Promise<void> {
+  async ghiDuLieuVaoCot(data: CellValue[], sheetName: string, columnIndex: number): Promise<void> {
     this.workSheet = this.getSheetByName(sheetName);
     const column = this.workSheet.getColumn(columnIndex);
     column.values = data;
   }
-  ghiDuLieuVaoDayTheoVung(data: any[][], sheetName: string, range: string): void {
+  ghiDuLieuVaoDayTheoVung(data: CellValue[][], sheetName: string, range: string): void {
     this.workSheet = this.getSheetByName(sheetName);
     const [startCell, endCell] = range.split(':');
     const startCellCoord: Cell = this.workSheet.getCell(startCell);
@@ -119,12 +121,12 @@ export class ExcelHelper implements ISheetSpread {
       }
     }
   }
-  ghiDuLieuVaoDayTheoTen(data: any[][], sheetName: string, rowIndex: number, columnName: string): void {
+  ghiDuLieuVaoDayTheoTen(data: unknown[][], sheetName: string, rowIndex: number, columnName: string): void {
     const columnIndex = this.doiTenCotThanhChiSo(columnName);
     this.ghiDuLieuVaoDay(data, sheetName, rowIndex + 1, columnIndex);
   }
 
-  ghiDuLieuVaoO(data: any, sheetName: string, cellOrRow: string | number, col?: number): boolean {
+  ghiDuLieuVaoO(data: CellValue, sheetName: string, cellOrRow: string | number, col?: number): boolean {
     this.workSheet = this.getSheetByName(sheetName);
     if (typeof cellOrRow === 'string') {
       this.workSheet.getCell(cellOrRow).value = data;

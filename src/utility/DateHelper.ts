@@ -1,6 +1,7 @@
 import * as luxon from 'luxon';
 import { LocaleOptions } from 'luxon';
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class -- static-only by design: GAS needs one global `DateHelper` name
 export class DateHelper {
   public static layNamHienTaiAsString(): string {
     const date: Date = new Date();
