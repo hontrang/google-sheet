@@ -18,8 +18,27 @@ function mainCreateTriggers(): void {
   ScriptApp.newTrigger('getDataHose').forSpreadsheet(SpreadsheetApp.getActive()).onOpen().create();
   ScriptApp.newTrigger('vietstock').timeBased().everyMinutes(5).create();
   ScriptApp.newTrigger('derivative').timeBased().everyMinutes(5).create();
+  taoTriggerGhiLaiLoCuoiNam();
 
   Logger.log('Các trigger đã được tạo!');
+}
+
+/**
+ * Tạo (lại) trigger ghi lãi/lỗ vào sheet `vốn` lúc ~23h30 ngày 31/12 hằng năm.
+ * Chạy riêng được mà không đụng tới các trigger khác.
+ */
+function taoTriggerGhiLaiLoCuoiNam(): void {
+  for (const trigger of ScriptApp.getProjectTriggers()) {
+    if (trigger.getHandlerFunction() === 'ghiLaiLoCuoiNam') ScriptApp.deleteTrigger(trigger);
+  }
+  ScriptApp.newTrigger('ghiLaiLoCuoiNam').timeBased().onMonthDay(31).atHour(23).nearMinute(30).create();
+}
+
+/**
+ * Liệt kê các trigger đang đăng ký trên GAS (chạy qua `clasp run mainListTriggers` để kiểm tra).
+ */
+function mainListTriggers(): string[] {
+  return ScriptApp.getProjectTriggers().map((trigger) => `${trigger.getHandlerFunction()} | ${trigger.getEventType().toString()} | ${trigger.getUniqueId()}`);
 }
 
 /**

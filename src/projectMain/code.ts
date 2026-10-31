@@ -55,6 +55,31 @@ function layTinTucSheetBangThongTin(): void {
   sheetHelper.ghiDuLieuVaoDayTheoTen(mangDuLieuChinh, SheetHelper.sheetName.sheetBangThongTin, 35, 'A');
 }
 
+/**
+ * Copy giá trị `bảng thông tin!F6` (lãi/lỗ đã chốt + cổ tức) vào hàng mới cuối sheet `vốn`:
+ * cột B = số tiền, cột C = ngày hôm nay; công thức cột A (stt) và D (luỹ kế) được copy từ hàng trên.
+ */
+function ghiLaiLoVaoSheetVon(): void {
+  const sheetHelper = new SheetHelper();
+  const sheet = SpreadsheetApp.getActive().getSheetByName(SheetHelper.sheetName.sheetVon);
+  if (!sheet) return;
+  const laiLo = Number(sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetBangThongTin, 'F6'));
+  if (Number.isNaN(laiLo)) return;
+  const hangCuoi = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetVon, 'B').length;
+  const hangMoi = hangCuoi + 1;
+  sheet.getRange(`B${hangMoi}:C${hangMoi}`).setValues([[laiLo, new Date()]]);
+  sheet.getRange(`A${hangCuoi}`).copyTo(sheet.getRange(`A${hangMoi}`));
+  sheet.getRange(`D${hangCuoi}`).copyTo(sheet.getRange(`D${hangMoi}`));
+}
+
+/**
+ * Gọi bởi trigger hằng tháng ngày 31 (GAS không có trigger theo năm): chỉ ghi vào tháng 12.
+ */
+function ghiLaiLoCuoiNam(): void {
+  if (new Date().getMonth() !== 11) return;
+  ghiLaiLoVaoSheetVon();
+}
+
 function layThongTinChiTietMa(): void {
   const sheetHelper = new SheetHelper();
   sheetHelper.ghiDuLieuVaoO('...', SheetHelper.sheetName.sheetChiTietMa, 'I1');

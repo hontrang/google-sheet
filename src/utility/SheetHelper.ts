@@ -17,7 +17,8 @@ export class SheetHelper implements ISheetSpread {
     sheetKhoiNgoaiMua: 'KN Mua',
     sheetKhoiNgoaiBan: 'KN Bán',
     sheetTyGia: 'Tỷ Giá USD/VND',
-    sheetDC: 'DC'
+    sheetDC: 'DC',
+    sheetVon: 'vốn'
   };
 
   public static readonly kichThuocMangPhu = 10;
