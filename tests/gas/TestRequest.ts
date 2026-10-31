@@ -7,8 +7,8 @@ function TestRequest() {
     QUnit.module('Http helper');
     QUnit.test('Test sendRequest', function (assert) {
         const helper = new HttpHelper();
-        const URL = 'https://api.simplize.vn/api/company/separate-share/list-tickers';
-        const OPTIONS_CO_TUC: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
+        const url = 'https://api.simplize.vn/api/company/separate-share/list-tickers';
+        const optionsCoTuc: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
             method: 'post',
             headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
             payload: JSON.stringify({
@@ -17,22 +17,22 @@ function TestRequest() {
                 size: 10
             })
         };
-        const response = helper.sendRequest(URL, OPTIONS_CO_TUC);
+        const response = helper.sendRequest(url, optionsCoTuc);
         const datas: [IResponseSimplize] = response.data;
         assert.equal(response.status, 200, 'sendRequest status 200')
         assert.notEqual(datas.length, 0, 'sendRequest có dữ liệu nhận về')
     });
     QUnit.test('Test sendGetRequest', function (assert) {
-        const URL = 'https://api.simplize.vn/api/company/analysis-report/list?ticker=HPG&isWl=false&page=0&size=10';
+        const url = 'https://api.simplize.vn/api/company/analysis-report/list?ticker=HPG&isWl=false&page=0&size=10';
         const httpHelper = new HttpHelper();
-        const response = httpHelper.sendGetRequest(URL);
+        const response = httpHelper.sendGetRequest(url);
         const datas: [IResponseSimplize] = response.data;
         assert.equal(response.status, 200, 'sendGetRequest status 200')
         assert.notEqual(datas.length, 0, 'sendGetRequest có dữ liệu nhận về')
     });
     QUnit.test('Test sendPostRequest', function (assert) {
         const httpHelper = new HttpHelper();
-        const URL = `https://www.dragoncapital.com.vn/individual/vi/webruntime/api/apex/execute?language=vi&asGuest=true&htmlEncode=false`;
+        const url = `https://www.dragoncapital.com.vn/individual/vi/webruntime/api/apex/execute?language=vi&asGuest=true&htmlEncode=false`;
         const option = JSON.stringify({
             "namespace": "",
             "classname": "@udd/01pJ2000000CgR7",
@@ -59,7 +59,7 @@ function TestRequest() {
             "maxBodyLength": "Infinity",
         };
 
-        const response = httpHelper.sendPostRequest(URL, configs);
+        const response = httpHelper.sendPostRequest(url, configs);
         const datas: [IResponseDC] = response.returnValue;
         // assert.equal(response.status, 200, 'sendPostRequest status 200')
         assert.notEqual(datas.length, 0, 'sendPostRequest có dữ liệu nhận về')

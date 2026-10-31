@@ -26,8 +26,8 @@ export class AxiosHelper implements IHttp {
     else {
       const consumerID = 'replaced';
       const consumerSecret = 'replaced';
-      const URL = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
-      const response = await axios.post(URL, { consumerID: consumerID, consumerSecret: consumerSecret });
+      const url = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
+      const response = await axios.post(url, { consumerID: consumerID, consumerSecret: consumerSecret });
       this.token = 'Bearer ' + response.data.data.accessToken;
       return this.token;
     }

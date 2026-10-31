@@ -38,9 +38,9 @@ async function layThongTin(tenMa: string, headers: string[], token: string): Pro
     return;
   }
 
-  const URL = `https://fc-data.ssi.com.vn/api/v2/Market/DailyOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
+  const url = `https://fc-data.ssi.com.vn/api/v2/Market/DailyOhlc?lookupRequest.pageIndex=${pageIndex}&lookupRequest.pageSize=${pageSize}&lookupRequest.fromDate=${fromDate}&lookupRequest.toDate=${toDate}&lookupRequest.ascending=${ascending}&lookupRequest.Symbol=${tenMa}`;
   await LogHelper.sleepSync(1000);
-  const response = await httpHelper.sendRequest(URL, { headers: { Authorization: token } });
+  const response = await httpHelper.sendRequest(url, { headers: { Authorization: token } });
   sheetHelper.taoSheetMoi(tenMa);
   sheetHelper.ghiDuLieuVaoO(tenMa, tenMa, 'B1');
   const body = response.data as { message: string; data: IResponseSsi[] };
