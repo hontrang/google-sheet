@@ -2,14 +2,14 @@ import axios from 'axios';
 import { test, expect } from '@playwright/test';
 import { IResponseDC, IResponseSimplize, IResponseSsi, IResponseVndirect, IResponseVPS } from '@src/types/generic';
 
-let TOKEN: string | undefined;
+let token: string | undefined;
 test.describe('kiểm tra url vndirect chạy chính xác', () => {
   test('kiểm tra phản hồi giá chứng khoán từ api vndirect', async () => {
     const tenMa = 'HPG';
     const fromDate = '2024-04-08';
     const toDate = '2024-04-08';
-    const URL = `https://api-finfo.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
-    const response = await axios.get(URL);
+    const url = `https://api-finfo.vndirect.com.vn/v4/stock_prices?sort=date&q=code:${tenMa}~date:gte:${fromDate}~date:lte:${toDate}&size=1000`;
+    const response = await axios.get(url);
     const datas: [IResponseVndirect] = response.data.data;
     expect(datas[0].code).toEqual(tenMa);
     expect(response.status).toBe(200);
@@ -54,8 +54,8 @@ test.describe('kiểm tra url vndirect chạy chính xác', () => {
 test.describe('kiểm tra url simplize chạy chính xác', () => {
   test('kiểm tra phản hồi từ api lấy cổ tức', async () => {
     const tenMa = 'HPG';
-    const URL = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
-    const response = await axios.post(URL, { tickers: [`${tenMa}`], page: 0, size: 10 });
+    const url = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
+    const response = await axios.post(url, { tickers: [`${tenMa}`], page: 0, size: 10 });
     const datas: [IResponseSimplize] = response.data.data;
     expect(datas[0].ticker).toEqual(tenMa);
     expect(response.status).toBe(200);
@@ -93,9 +93,9 @@ test.describe('kiểm tra url vps chạy chính xác', () => {
   test('kiểm tra phản hồi từ api vps', async () => {
     const ma1 = 'HPG';
     const ma2 = 'STB';
-    const DANH_SACH_MA = [ma1, ma2];
-    const URL = `https://bgapidatafeed.vps.com.vn/getliststockdata/${DANH_SACH_MA.join(',')}`;
-    const response = await axios.get(URL);
+    const danhSachMa = [ma1, ma2];
+    const url = `https://bgapidatafeed.vps.com.vn/getliststockdata/${danhSachMa.join(',')}`;
+    const response = await axios.get(url);
     const datas: [IResponseVPS, IResponseVPS] = response.data;
     expect(datas[0].sym).toBe(ma1);
     expect(datas[1].sym).toBe(ma2);
@@ -198,14 +198,14 @@ test.skip('kiểm tra url ssi chạy chính xác', () => {
 });
 
 async function getToken(): Promise<string> {
-  if (TOKEN !== undefined) return TOKEN;
+  if (token !== undefined) return token;
   else {
     const consumerID = process.env.consumerID;
     const consumerSecret = process.env.consumerSecret;
     const url = `https://fc-data.ssi.com.vn/api/v2/Market/AccessToken`;
     const response = await axios.post(url, { consumerID: consumerID, consumerSecret: consumerSecret });
-    TOKEN = 'Bearer ' + response.data.data.accessToken;
-    return TOKEN;
+    token = 'Bearer ' + response.data.data.accessToken;
+    return token;
   }
 }
 
@@ -269,7 +269,7 @@ test.describe('kiểm tra url vietstock chạy chính xác', () => {
 
 test.describe('kiểm tra url dragon capital chạy chính xác', () => {
   test('kiểm tra phản hồi báo cáo danh mục', async () => {
-    const URL = `https://www.dragoncapital.com.vn/individual/vi/webruntime/api/apex/execute?language=vi&asGuest=true&htmlEncode=false`;
+    const url = `https://www.dragoncapital.com.vn/individual/vi/webruntime/api/apex/execute?language=vi&asGuest=true&htmlEncode=false`;
     const option = JSON.stringify({
       namespace: '',
       classname: '@udd/01pJ2000000CgR7',
@@ -287,7 +287,7 @@ test.describe('kiểm tra url dragon capital chạy chính xác', () => {
     const config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: `${URL}`,
+      url: `${url}`,
       headers: {
         'Content-Type': 'application/json',
         Cookie: 'CookieConsentPolicy=0:1; LSKey-c$CookieConsentPolicy=0:1'

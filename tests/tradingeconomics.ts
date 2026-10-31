@@ -12,9 +12,9 @@ test('test', async () => {
   await page.getByRole('button', { name: 'Countries' }).click();
   await page.getByText('Clear').click();
   await page.waitForTimeout(1000);
-  const USA = page.locator('#te-c-all li').filter({ hasText: 'United States' });
-  await USA.scrollIntoViewIfNeeded();
-  await USA.click();
+  const usa = page.locator('#te-c-all li').filter({ hasText: 'United States' });
+  await usa.scrollIntoViewIfNeeded();
+  await usa.click();
   await page.getByText('Save').click();
   let scrollsRemaining = 50;
   let isNotYetBottom = true;

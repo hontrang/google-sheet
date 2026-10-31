@@ -12,10 +12,10 @@ import { IResponseSimplize, IResponseVietStock, IResponseVndirect } from '@src/t
 function getDataHose(): void {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const DANH_SACH_MA: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A').slice(1);
+  const danhSachMa: string[] = sheetHelper.layDuLieuTrongCot(SheetHelper.sheetName.sheetDuLieu, 'A').slice(1);
   let indexSheetDuLieu = 2;
   let indexSheetThamChieu = 4;
-  const url = `https://bgapidatafeed.vps.com.vn/getliststockdata/${DANH_SACH_MA.join(',')}`;
+  const url = `https://bgapidatafeed.vps.com.vn/getliststockdata/${danhSachMa.join(',')}`;
   const response = httpHelper.sendGetRequest(url);
 
   const priceMap: Record<string, number> = {};
@@ -24,7 +24,7 @@ function getDataHose(): void {
   });
   sheetHelper.xoaDuLieuTrongCot(SheetHelper.sheetName.sheetThamChieu, 'A', 1, 4);
 
-  for (const element of DANH_SACH_MA) {
+  for (const element of danhSachMa) {
     const price = priceMap[element] || 0;
     sheetHelper.ghiDuLieuVaoDayTheoVung([[element]], SheetHelper.sheetName.sheetThamChieu, `A${indexSheetThamChieu}`);
     sheetHelper.ghiDuLieuVaoDayTheoVung([[price]], SheetHelper.sheetName.sheetDuLieu, `B${indexSheetDuLieu}`);
@@ -196,7 +196,7 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
   const httpHelper = new HttpHelper();
   const defaultFormat = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B6');
   let index = 18;
-  const OPTIONS_CO_TUC: URLFetchRequestOptions = {
+  const optionsCoTuc: URLFetchRequestOptions = {
     method: 'post',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     payload: JSON.stringify({
@@ -206,7 +206,7 @@ function layThongTinCoTuc(tenMa = 'FRT'): void {
     })
   };
   const url = `https://api.simplize.vn/api/company/separate-share/list-tickers`;
-  const response = httpHelper.sendRequest(url, OPTIONS_CO_TUC);
+  const response = httpHelper.sendRequest(url, optionsCoTuc);
 
   const datas: [IResponseSimplize] = response.data;
   for (const element of datas) {
@@ -221,8 +221,8 @@ function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
   const fromDate: string = sheetHelper.layDuLieuTrongO(SheetHelper.sheetName.sheetCauHinh, 'B17');
-  const URL = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
-  const response = httpHelper.sendGetRequest(URL);
+  const url = `https://api-finfo.vndirect.com.vn/v4/ratios/latest?filter=ratioCode:MARKETCAP,NMVOLUME_AVG_CR_10D,PRICE_HIGHEST_CR_52W,PRICE_LOWEST_CR_52W,OUTSTANDING_SHARES,FREEFLOAT,BETA,PRICE_TO_EARNINGS,PRICE_TO_BOOK,DIVIDEND_YIELD,BVPS_CR,&where=code:${tenMa}~reportDate:gt:${fromDate}&order=reportDate&fields=ratioCode,value`;
+  const response = httpHelper.sendGetRequest(url);
   const datas: [IResponseVndirect] = response.data;
   for (const element of datas) {
     if (element.ratioCode === 'BETA') {
@@ -239,8 +239,8 @@ function layHeSoBetaVaFreeFloat(tenMa = 'FRT') {
 function layDonViKiemToan(tenMa = 'FRT') {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const URL = `https://api-finfo.vndirect.com.vn/v4/company_relations?q=code:${tenMa}~relationType:AUDITOR&size=100&sort=year:DESC`;
-  const response = httpHelper.sendGetRequest(URL);
+  const url = `https://api-finfo.vndirect.com.vn/v4/company_relations?q=code:${tenMa}~relationType:AUDITOR&size=100&sort=year:DESC`;
+  const response = httpHelper.sendGetRequest(url);
   const datas = response?.data;
   let index = 29;
   datas.forEach(function (element: IResponseVndirect) {
@@ -251,9 +251,9 @@ function layDonViKiemToan(tenMa = 'FRT') {
 function layChiTietBaoCaoTaiChinh(tenMa = 'FRT') {
   const sheetHelper = new SheetHelper();
   const httpHelper = new HttpHelper();
-  const URL = `https://api-finfo.vndirect.com.vn/v4/financial_statements?q=code:${tenMa}~reportType:QUARTER~modelType:1,89,3,91~fiscalDate:${DateHelper.layKiTaiChinhTheoQuy()}&sort=fiscalDate&size=2000`;
+  const url = `https://api-finfo.vndirect.com.vn/v4/financial_statements?q=code:${tenMa}~reportType:QUARTER~modelType:1,89,3,91~fiscalDate:${DateHelper.layKiTaiChinhTheoQuy()}&sort=fiscalDate&size=2000`;
 
-  const response = httpHelper.sendGetRequest(URL);
+  const response = httpHelper.sendGetRequest(url);
   const datas = response.data;
   if (datas.length <= 0) {
     sheetHelper.ghiDuLieuVaoO('Lỗi dữ liệu', SheetHelper.sheetName.sheetDuLieu, 'AH29');
