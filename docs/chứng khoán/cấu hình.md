@@ -26,7 +26,7 @@ Bảng tham số cho cả công thức lẫn code GAS: link sang data warehouse,
 | `B9` | tài khoản | số tài khoản chứng khoán | — |
 | `B10` | Ngày tham chiếu | `='tham chiếu'!I1` | `dữ liệu!D1` |
 | `B11:C14` | Số hàng | `COUNTA(IMPORTRANGE(B1, "<tab>!A:A"))` cho Giá, KL, KN Mua, KN Bán | 4 tab ẩn [Giá](Giá.md), [Khối Lượng](Khối%20Lượng.md), [KN Mua](KN%20Mua.md), [KN Bán](KN%20Bán.md) |
-| `B15`, `B16` | Sự kiện | `*FOMC*`, `*Fed Interest Rate*` (wildcard) | `bảng thông tin!F7:G8` |
+| `B15`, `B16` | Sự kiện | `*FOMC*`, `*Fed Interest Rate*` (wildcard) | **không còn dùng** — từ 2026-11-08 `bảng thông tin!F7:G8` do `capNhatSuKienFed()` ghi từ lịch FOMC + FRED, tab Sự kiện đã xoá |
 | `B17` / `B18` | Từ ngày / Đến ngày | `TODAY() − 365` / `TODAY() + 1`, định dạng `B6` | `layGiaVaKhoiLuongTheoMaChungKhoan()`, `layHeSoBetaVaFreeFloat()` |
 | `B19` | vietstock token | `__RequestVerificationToken` | ghi bởi [`vietstock()`](../../src/projectMain/code.ts#L263) |
 | `B20` | derivative | kết quả thô `GetBondRelated` | ghi bởi [`derivative()`](../../src/projectMain/code.ts#L274) |

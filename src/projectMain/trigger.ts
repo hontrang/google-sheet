@@ -19,6 +19,7 @@ function mainCreateTriggers(): void {
   ScriptApp.newTrigger('vietstock').timeBased().everyMinutes(5).create();
   ScriptApp.newTrigger('derivative').timeBased().everyMinutes(5).create();
   taoTriggerGhiLaiLoCuoiNam();
+  taoTriggerCapNhatSuKienFed();
 
   Logger.log('Các trigger đã được tạo!');
 }
@@ -32,6 +33,17 @@ function taoTriggerGhiLaiLoCuoiNam(): void {
     if (trigger.getHandlerFunction() === 'ghiLaiLoCuoiNam') ScriptApp.deleteTrigger(trigger);
   }
   ScriptApp.newTrigger('ghiLaiLoCuoiNam').timeBased().onMonthDay(31).atHour(23).nearMinute(30).create();
+}
+
+/**
+ * Tạo (lại) trigger cập nhật lịch FOMC + lãi suất Fed vào `bảng thông tin!G8` lúc ~7:00 hằng ngày.
+ * Chạy riêng được mà không đụng tới các trigger khác.
+ */
+function taoTriggerCapNhatSuKienFed(): void {
+  for (const trigger of ScriptApp.getProjectTriggers()) {
+    if (trigger.getHandlerFunction() === 'capNhatSuKienFed') ScriptApp.deleteTrigger(trigger);
+  }
+  ScriptApp.newTrigger('capNhatSuKienFed').timeBased().everyDays(1).atHour(7).nearMinute(0).create();
 }
 
 /**

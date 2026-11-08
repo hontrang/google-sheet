@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import * as Cheerio from 'cheerio';
 import URLFetchRequestOptions = GoogleAppsScript.URL_Fetch.URLFetchRequestOptions;
 import { DateHelper } from '@utils/DateHelper';
 import { HttpHelper } from '@utils/HttpHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
+import { FredHelper } from '@utils/FredHelper';
 import { IResponseDC, IResponseSimplize, IResponseVndirect } from '@src/types/generic';
 
 function layChiSoVnIndex(): void {
@@ -299,36 +299,6 @@ function LAY_THONG_TIN_TAI_SAN_DC(url: string) {
   return result;
 }
 
-/**
- * @customfunction
- */
-function LAY_SU_KIEN() {
-  const result: string[][] = [];
-  const content = UrlFetchApp.fetch(`https://hontrang.github.io/google-sheet/`).getContentText();
-  const $ = Cheerio.load(content);
-  let date: string;
-  $('table#calendar>thead.table-header,table#calendar>tbody').each(function () {
-    if ($(this).attr('class') !== undefined) {
-      date = $(this).find('tr>th:nth-child(1)').text().trim();
-    } else {
-      $(this)
-        .children('tr')
-        .each(function () {
-          const timeValue = $(this).find('td:nth-child(1)').text().trim() || '00:00 AM';
-          const thoigian = DateHelper.doiDinhDangNgay(`${date} ${timeValue}`, 'EEEE MMMM dd yyyy hh:mm a', 'EEEE yyyy/MM/dd hh:mm a', { locale: 'vi-VN' });
-          const currency = $(this).find('td:nth-child(2) td.calendar-iso').text().trim();
-          const name = $(this).find('td:nth-child(3)').text().trim();
-          const actual = $(this).find('td:nth-child(4)').text().trim();
-          const previous = $(this).find('td:nth-child(5)').text().trim();
-          const consensus = $(this).find('td:nth-child(6)').text().trim();
-          const forecast = $(this).find('td:nth-child(7)').text().trim();
-          result.push([thoigian, currency, name, actual, previous, consensus, forecast]);
-        });
-    }
-  });
-  return result;
-}
-
 function layBaoCaoDC() {
   const httpHelper = new HttpHelper();
   const sheetHelper = new SheetHelper();
@@ -409,4 +379,15 @@ function xacDinhSheetDangLienKet(): string | null {
     [`scriptId : ${scriptId}`, `tên sheet: ${sheetApp.getName()}`, `sheet id : ${sheetApp.getId()}`, `url      : ${sheetApp.getUrl()}`, `các tab  : ${danhSachTab}`].join('\n')
   );
   return sheetApp.getId();
+}
+
+/**
+ * Lưu FRED API key vào Script Properties `FRED_API_KEY` của project này (FredHelper đọc từ đó).
+ * Truyền key làm tham số — không ghi key vào code: `clasp run caiDatFredApiKey --params '["<key>"]'`.
+ * Trả về FRED_API_KEY đã lưu được hay chưa và biên độ lãi suất mục tiêu đọc thử bằng key đó.
+ */
+function caiDatFredApiKey(apiKey: string): string {
+  FredHelper.luuApiKey(apiKey);
+  const laiSuat = new FredHelper().layLaiSuatMucTieuFed();
+  return `Đã lưu ${FredHelper.tenThuocTinhApiKey}. Lãi suất mục tiêu Fed: ${laiSuat ? `${laiSuat.canDuoi}%–${laiSuat.canTren}% (${laiSuat.ngay})` : 'không đọc được'}`;
 }

@@ -20,7 +20,6 @@ Mỗi tab của hai Google Sheet có một file mô tả riêng, đặt tên đ�
 | [ghi chú](chứng%20khoán/ghi%20chú.md) | Checklist chọn mã, máy tính margin, ghi chú tự do |
 | [debug](chứng%20khoán/debug.md) | Nhật ký lỗi cũ của script |
 | [Kiểm toán xấu](chứng%20khoán/Kiểm%20toán%20xấu.md) | Danh sách đen công ty kiểm toán |
-| [Sự kiện](chứng%20khoán/Sự%20kiện.md) *(ẩn)* | Lịch sự kiện vĩ mô (import từ DW) |
 | [2025](chứng%20khoán/2025.md), [2024](chứng%20khoán/2024.md), [2023](chứng%20khoán/2023.md), [2022](chứng%20khoán/2022.md) *(ẩn)* | Nhật ký lệnh các năm trước |
 | [Giá](chứng%20khoán/Giá.md), [Khối Lượng](chứng%20khoán/Khối%20Lượng.md), [KN Mua](chứng%20khoán/KN%20Mua.md), [KN Bán](chứng%20khoán/KN%20Bán.md) *(ẩn)* | Cửa sổ 11–21 phiên cuối của các ma trận bên DW |
 
@@ -38,7 +37,6 @@ Mỗi tab của hai Google Sheet có một file mô tả riêng, đặt tên đ�
 | [KN Bán](data%20warehouse/KN%20Bán.md) | Ma trận khối ngoại bán từ 2018 |
 | [DC](data%20warehouse/DC.md) | Danh mục và báo cáo quỹ Dragon Capital |
 | [cấu hình](data%20warehouse/cấu%20hình.md) | Tham số DW, dấu thời gian cập nhật |
-| [Sự kiện](data%20warehouse/Sự%20kiện.md) | Lịch sự kiện vĩ mô (`LAY_SU_KIEN()`) |
 | [TRUY VAN](data%20warehouse/TRUY%20VAN.md) | Tab nháp phân tích tay |
 | [debug](data%20warehouse/debug.md) | Nhật ký lỗi cũ của script |
 
@@ -52,7 +50,6 @@ flowchart LR
         MTX["Giá / Khối Lượng /<br/>KN Mua / KN Bán"]
         DWDL[dữ liệu]
         DWDC[DC]
-        DWSK[Sự kiện]
     end
     subgraph CK["chứng khoán"]
         CKMTX["Giá / KL / KN (ẩn)"]
@@ -62,12 +59,12 @@ flowchart LR
         BTT[bảng thông tin]
         LENH[lệnh]
     end
-    API -->|projectDw triggers| HOSE & MTX & DWDL & DWDC & DWSK
+    API -->|projectDw triggers| HOSE & MTX & DWDL & DWDC
     MTX -->|IMPORTRANGE| CKMTX --> CKDL
     DWDL -->|IMPORTRANGE| CKDL
     HOSE -->|IMPORTRANGE| CKDL
     API -->|projectMain| CKDL
     CKDL --> TC & CTM & BTT
     LENH --> CKDL & BTT
-    DWDC & DWSK -->|IMPORTRANGE| BTT
+    DWDC -->|IMPORTRANGE| BTT
 ```

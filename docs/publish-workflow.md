@@ -4,6 +4,8 @@
 
 > Trước đây thư mục này tên là `docs/`, gây hiểu nhầm là tài liệu. Đã đổi thành `publish/` cho sát nghĩa.
 
+> **Workflow đã tắt từ 2026-11-08** (`gh workflow disable tradingeconomics.yml`, trạng thái `disabled_manually`). Nơi duy nhất đọc trang Pages là `LAY_SU_KIEN()` của data warehouse — hàm này, trigger của nó và tab Sự kiện ở cả hai sheet đã bị xoá; `bảng thông tin!F7:G8` giờ lấy từ lịch FOMC + FRED ([fed-api.md](fed-api.md)). Trang GitHub Pages để nguyên (bản 2026-10-25). Bật lại: `gh workflow enable tradingeconomics.yml`. Phần dưới mô tả workflow như khi còn chạy.
+
 ## 1. Toàn cảnh
 
 ```mermaid
@@ -82,7 +84,16 @@ on:
   workflow_dispatch:
 ```
 
-**Cron nhiều khả năng đang bị GitHub tắt.** Deploy cuối trên `gh-pages` là 2025-12-06, commit cuối trên `main` là 2025-12-07. GitHub tự động vô hiệu hoá scheduled workflow sau 60 ngày repo không có hoạt động, và phải vào tab Actions bật lại thủ công. Đây là lý do trang Pages có thể đã đứng yên rất lâu.
+**`ubuntu-latest` = Ubuntu 26.04, Playwright 1.57 không hỗ trợ (đang gây lỗi).** Từ 2026-10-31 workflow chạy đều mỗi ngày nhưng **thất bại ở step 4** (`npx playwright install --with-deps`):
+
+```
+Failed to install browsers
+Error: ERROR: Playwright does not support chromium on ubuntu26.04-x64
+```
+
+Các step scrape, deploy, Discord bị bỏ qua, nên Pages đứng ở bản 2026-10-25 (`last-modified: Sun, 25 Oct 2026`). Sửa nhanh: ghim runner `runs-on: ubuntu-24.04`; lâu dài: nâng `@playwright/test` / `playwright` lên bản hỗ trợ Ubuntu 26.04. Workflow không báo lỗi về đâu (Discord chỉ gửi khi thành công), nên lỗi chỉ thấy được ở tab Actions.
+
+**Cron có thể bị GitHub tắt khi repo im lặng lâu.** GitHub tự động vô hiệu hoá scheduled workflow sau 60 ngày repo không có hoạt động, và phải vào tab Actions bật lại thủ công. Đã từng xảy ra: deploy trên `gh-pages` đứng ở 2025-12-06. Hiện (2026-11) cron đang chạy bình thường.
 
 **`.gitignore` từng nuốt mất `index.html`.** Rule `**/*/index.html` (dòng 8) khớp cả `publish/index.html`. Hiện đã có dòng `!publish/index.html` để trừ ra. Nếu sau này đặt file `index.html` vào chính thư mục `docs/` này thì cũng sẽ bị nuốt, cần thêm ngoại lệ tương tự.
 
@@ -92,6 +103,7 @@ on:
 
 ## 7. Liên quan
 
+- [fed-api.md](fed-api.md) — nguồn thay thế (lịch FOMC + FRED) cho `bảng thông tin!F7:G8` sau khi bỏ luồng này.
 - [`architecture.md`](../architecture.md) §2.1 — vị trí `publish/` trong cây thư mục.
 - [`architecture.md`](../architecture.md) §5 — sơ đồ Testing & CI.
 - [`CLAUDE.md`](../CLAUDE.md) — mục CI.

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { FredHelper } from '@utils/FredHelper';
 /**
  * Tests
  * =====
@@ -21,6 +22,7 @@ declare const QUnitGS2: {
 }
 declare function TestSheet(): void
 declare function TestRequest(): void
+declare function TestFed(): void
 // QUnitGS2 reads the web app title from QUnit.config.title, which @types/qunit does not declare
 declare global {
     interface Config {
@@ -40,6 +42,7 @@ const MAIN_TEST_TITLE_ = 'QUnitGS2 Test'
 const TESTS_ = [
     TestSheet,
     TestRequest,
+    TestFed,
 ]
 
 // Setup
@@ -94,4 +97,14 @@ function doGet() {
 
 function getResultsFromServer() {
     return QUnitGS2.getResultsFromServer()
+}
+
+/**
+ * Lưu FRED API key vào Script Properties `FRED_API_KEY` của project test (TestFed đọc từ đó).
+ * Truyền key làm tham số — không ghi key vào code: `clasp run caiDatFredApiKey --params '["<key>"]'`.
+ */
+function caiDatFredApiKey(apiKey: string): string {
+    FredHelper.luuApiKey(apiKey)
+    const laiSuat = new FredHelper().layLaiSuatMucTieuFed()
+    return `Đã lưu ${FredHelper.tenThuocTinhApiKey}. Lãi suất mục tiêu Fed: ${laiSuat ? `${laiSuat.canDuoi}%–${laiSuat.canTren}% (${laiSuat.ngay})` : 'không đọc được'}`
 }
