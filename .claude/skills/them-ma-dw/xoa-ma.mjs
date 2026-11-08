@@ -21,7 +21,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SPREADSHEET, layDanhSachTab, layNhieuVung, capNhatLo, tenCot } from '../../../src/offline/sheetsApi.mjs';
+import { SPREADSHEET, layDanhSachTab, layNhieuVung, capNhatLo, yeuCauXoa, tenCot } from '../../../src/offline/sheetsApi.mjs';
 import { MA_TRAN, ID, docMa, docDongTieuDe } from './chung.mjs';
 
 const GOC_REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
@@ -134,9 +134,7 @@ async function main() {
   }
 
   // Trong mỗi tab xoá từ phải sang trái để index của các cột còn lại không đổi
-  const requests = [...viTri]
-    .sort((a, b) => a.tab.localeCompare(b.tab) || b.cot - a.cot)
-    .map(({ tab, cot }) => ({ deleteDimension: { range: { sheetId: luoi[tab].gid, dimension: 'COLUMNS', startIndex: cot, endIndex: cot + 1 } } }));
+  const requests = [...viTri].sort((a, b) => a.tab.localeCompare(b.tab) || b.cot - a.cot).map(({ tab, cot }) => yeuCauXoa(luoi[tab].gid, 'cot', cot));
   await capNhatLo(requests, { id: ID, xacNhan: true });
   console.log(`Đã xoá ${requests.length} cột. Kiểm tra lại:`);
 

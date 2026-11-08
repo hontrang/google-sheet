@@ -11,7 +11,7 @@
  * lấy danh sách mã từ Khối Lượng nhưng ghi vào Giá — vì vậy mã phải có ở cả 4 tab.
  */
 
-import { SPREADSHEET, layDanhSachTab, ghiGiaTri, capNhatLo, tenCot } from '../../../src/offline/sheetsApi.mjs';
+import { SPREADSHEET, layDanhSachTab, ghiNhieuVung, capNhatLo, yeuCauNoiThem, tenCot } from '../../../src/offline/sheetsApi.mjs';
 import { MA_TRAN, ID, COT_IMPORT_CUOI, VI_TRI_IMPORT_CUOI, docMa, traMaVndirect, viTriCuoi, docDongTieuDe } from './chung.mjs';
 
 async function main() {
@@ -47,7 +47,7 @@ async function main() {
     const cotCuoi = cotDau + canThem.length - 1;
     canThem.forEach((ma, i) => cotDau + i > VI_TRI_IMPORT_CUOI && ngoaiImport.add(ma));
     const thieu = cotCuoi + 1 - luoi[tab].cot;
-    if (thieu > 0) themCot.push({ appendDimension: { sheetId: luoi[tab].gid, dimension: 'COLUMNS', length: thieu } });
+    if (thieu > 0) themCot.push(yeuCauNoiThem(luoi[tab].gid, 'cot', thieu));
     ghi.push([`'${tab}'!${tenCot(cotDau)}1:${tenCot(cotCuoi)}1`, [canThem]]);
     console.log(
       `  + ${tab}: ghi ${canThem.join(', ')} vào ${tenCot(cotDau)}1${cotCuoi > cotDau ? `:${tenCot(cotCuoi)}1` : ''}${thieu > 0 ? ` (thêm ${thieu} cột, lưới đang có ${luoi[tab].cot} cột)` : ''}`
@@ -64,7 +64,7 @@ async function main() {
   if (!apply) return console.log('\nChưa ghi gì. Chạy lại với --apply để thực hiện.');
 
   if (themCot.length) await capNhatLo(themCot, { id: ID, xacNhan: true });
-  for (const [range, values] of ghi) await ghiGiaTri(range, values, { id: ID, xacNhan: true });
+  await ghiNhieuVung(ghi, { id: ID, xacNhan: true });
   console.log(`\nĐã ghi ${ghi.length} tab${themCot.length ? `, thêm cột ở ${themCot.length} tab` : ''}. Kiểm tra lại:`);
 
   const sau = await docDongTieuDe();

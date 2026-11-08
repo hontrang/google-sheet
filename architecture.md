@@ -100,7 +100,9 @@ google-sheet/
 │   │   └── generic.ts             # IHttp, ISheetSpread, IResponse* (Vndirect, VietStock, Simplize, Ssi, DC…)
 │   ├── offline/                   # bản thay thế chạy local/Node khi `mode=offline`
 │   │   ├── AxiosHelper.ts         # IHttp bằng axios + token SSI
-│   │   └── ExcelHelper.ts         # ISheetSpread đọc/ghi file .xlsx (exceljs)
+│   │   ├── ExcelHelper.ts         # ISheetSpread đọc/ghi file .xlsx (exceljs)
+│   │   ├── sheetsApi.mjs          # CLI/library Sheets API v4 — đọc/ghi sheet thật từ Node, xem docs/google-sheets-api.md
+│   │   └── driveApi.mjs           # CLI/library Drive API v3 — tìm/tải/upload/chia sẻ file, xem docs/google-drive.md
 │   ├── projectMain/               # → GAS "Dashboard"        (npm run build:main)
 │   │   ├── code.ts                # scraping chi tiết mã, tin tức, BCTC, cổ tức, chart
 │   │   └── trigger.ts             # mainCreateTriggers / mainDeleteTrigger
