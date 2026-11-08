@@ -17,6 +17,7 @@
  * ---- Dùng như CLI ----
  *   node src/offline/sheetsApi.mjs tabs [--id main|dw|<spreadsheetId>]
  *   node src/offline/sheetsApi.mjs values "'bảng thông tin'!G34:J68"
+ *   node src/offline/sheetsApi.mjs raw "'Giá'!A1:E5"            # số thật thay vì chuỗi đã format
  *   node src/offline/sheetsApi.mjs formulas "'tham chiếu'!V1:V10"
  *   node src/offline/sheetsApi.mjs grid "'bảng thông tin'!G34:J68"
  *   node src/offline/sheetsApi.mjs pivots "bảng thông tin"
@@ -25,6 +26,8 @@
  * ---- Dùng như library ----
  *   import { layGiaTri, layCongThuc, layPivot } from './src/offline/sheetsApi.mjs';
  *   const rows = await layCongThuc("'bảng thông tin'!G34:J68");
+ *
+ * Mọi hàm ghi/xoá/sửa cấu trúc cần `{ xacNhan: true }`. Hướng dẫn đầy đủ: docs/google-sheets-api.md.
  */
 
 import fs from 'node:fs';
@@ -96,11 +99,12 @@ export function docOauthClient() {
  * In ra URL để mở trên trình duyệt, dựng server localhost bắt code, lưu refresh
  * token vào `.sheets-token.json`. Không ghi đè `.clasprc.json` của clasp.
  */
-export async function dangNhap({ ghiDuoc = false, cong = 4571, choDoiMs = 300_000 } = {}) {
+export async function dangNhap({ ghiDuoc = false, scopes, cong = 4571, choDoiMs = 300_000 } = {}) {
   const http = await import('node:http');
   const { clientId, clientSecret, nguon } = docOauthClient();
   const redirectUri = `http://localhost:${cong}`;
-  const scope = ghiDuoc ? 'https://www.googleapis.com/auth/spreadsheets' : 'https://www.googleapis.com/auth/spreadsheets.readonly';
+  // `scopes` cho phép module khác (vd. driveApi.mjs) xin thêm quyền trên cùng 1 token
+  const scope = scopes?.join(' ') ?? (ghiDuoc ? 'https://www.googleapis.com/auth/spreadsheets' : 'https://www.googleapis.com/auth/spreadsheets.readonly');
   const url =
     'https://accounts.google.com/o/oauth2/v2/auth?' +
     new URLSearchParams({ client_id: clientId, redirect_uri: redirectUri, response_type: 'code', scope, access_type: 'offline', prompt: 'consent' });
@@ -134,14 +138,17 @@ export async function dangNhap({ ghiDuoc = false, cong = 4571, choDoiMs = 300_00
   const data = await res.json();
   if (!res.ok) throw new Error(`Đổi code lấy token thất bại (HTTP ${res.status}): ${data.error_description ?? data.error}`);
   fs.writeFileSync(FILE_TOKEN, JSON.stringify({ refresh_token: data.refresh_token, scope: data.scope, clientId, clientSecret }, null, 2), { mode: 0o600 });
-  tokenCache = { token: data.access_token, hetHan: Date.now() + (data.expires_in ?? 3600) * 1000 };
+  tokenCache = { token: data.access_token, scope: data.scope ?? '', hetHan: Date.now() + (data.expires_in ?? 3600) * 1000 };
   console.log(`\nĐã lưu refresh token vào ${FILE_TOKEN} (chmod 600, đã có trong .gitignore).`);
   return data.access_token;
 }
 
-/** Đổi refresh token lấy access token. Cache trong RAM theo vòng đời tiến trình. */
-export async function layAccessToken() {
-  if (tokenCache && tokenCache.hetHan > Date.now() + 60_000) return tokenCache.token;
+/**
+ * Đổi refresh token lấy access token. Cache trong RAM theo vòng đời tiến trình.
+ * `canScope` là regex scope bắt buộc phải có — mặc định là spreadsheets, driveApi.mjs truyền `auth/drive`.
+ */
+export async function layAccessToken({ canScope = /auth\/spreadsheets/, lenhLogin = 'node src/offline/sheetsApi.mjs login' } = {}) {
+  if (tokenCache && tokenCache.hetHan > Date.now() + 60_000 && canScope.test(tokenCache.scope)) return tokenCache.token;
 
   let refreshToken, clientId, clientSecret, nguon;
   if (fs.existsSync(FILE_TOKEN)) {
@@ -153,7 +160,7 @@ export async function layAccessToken() {
     ({ clientId, clientSecret } = creds.oauth2ClientSettings ?? {});
     nguon = timClasprc();
   }
-  if (!refreshToken || !clientId) throw new Error(`${nguon} thiếu refresh_token hoặc client. Chạy: node src/offline/sheetsApi.mjs login`);
+  if (!refreshToken || !clientId) throw new Error(`${nguon} thiếu refresh_token hoặc client. Chạy: ${lenhLogin}`);
 
   const res = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
@@ -164,10 +171,10 @@ export async function layAccessToken() {
   if (!res.ok) {
     throw new Error(`Refresh token thất bại (HTTP ${res.status}): ${data.error ?? ''} ${data.error_description ?? ''}\nCó thể token đã bị thu hồi — chạy lại \`clasp login\`.`);
   }
-  if (!/auth\/spreadsheets/.test(data.scope ?? '')) {
-    throw new Error(`Token không có scope spreadsheets. Scope hiện có:\n  ${(data.scope ?? '(rỗng)').split(' ').join('\n  ')}\nChạy: node src/offline/sheetsApi.mjs login`);
+  if (!canScope.test(data.scope ?? '')) {
+    throw new Error(`Token không có scope ${canScope.source.replaceAll('\\/', '/')}. Scope hiện có:\n  ${(data.scope ?? '(rỗng)').split(' ').join('\n  ')}\nChạy: ${lenhLogin}`);
   }
-  tokenCache = { token: data.access_token, hetHan: Date.now() + (data.expires_in ?? 3600) * 1000 };
+  tokenCache = { token: data.access_token, scope: data.scope ?? '', hetHan: Date.now() + (data.expires_in ?? 3600) * 1000 };
   return tokenCache.token;
 }
 
@@ -175,22 +182,50 @@ function giaiMaId(id) {
   return SPREADSHEET[id] ?? id ?? SPREADSHEET.main;
 }
 
-async function goi(duongDan, { id, ...qs } = {}) {
-  const token = await layAccessToken();
+function canXacNhan(tenHam, xacNhan, moTa) {
+  if (!xacNhan) throw new Error(`${tenHam}() cần { xacNhan: true } — ${moTa}`);
+}
+
+const SO_LAN_THU = 5;
+const ngu = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Gọi Sheets API. `qs` là query string (mảng → lặp key), `body` object → JSON.
+ *
+ * Tự thử lại với backoff khi gặp 429 (quota 60 request/phút/người dùng — request bị từ chối
+ * nên gửi lại luôn an toàn). Lỗi 5xx chỉ thử lại khi `anToan` (GET, ghi đè giá trị, xoá vùng):
+ * append hay batchUpdate cấu trúc có thể đã chạy xong phía server, gửi lại sẽ chèn/xoá 2 lần.
+ */
+async function goi(duongDan, { id, method = 'GET', qs = {}, body, anToan = method === 'GET' } = {}) {
   const url = new URL(`${API}/${giaiMaId(id)}${duongDan}`);
   for (const [k, v] of Object.entries(qs)) {
     if (v === undefined) continue;
     for (const x of Array.isArray(v) ? v : [v]) url.searchParams.append(k, x);
   }
-  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-  const data = await res.json();
-  if (!res.ok) throw new Error(`Sheets API lỗi ${res.status}: ${data.error?.message ?? JSON.stringify(data).slice(0, 300)}`);
-  return data;
+  for (let lan = 1; ; lan++) {
+    const token = await layAccessToken();
+    const res = await fetch(url, {
+      method,
+      headers: { Authorization: `Bearer ${token}`, ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}) },
+      body: body !== undefined ? JSON.stringify(body) : undefined
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) return data;
+    const thuLai = res.status === 429 || (anToan && res.status >= 500);
+    if (!thuLai || lan >= SO_LAN_THU) {
+      throw new Error(`Sheets API lỗi ${res.status}: ${data.error?.message ?? JSON.stringify(data).slice(0, 300)}`);
+    }
+    const choMs = 2 ** lan * 1000 + Math.random() * 1000;
+    console.error(`Sheets API ${res.status}, thử lại lần ${lan + 1}/${SO_LAN_THU} sau ${Math.round(choMs / 1000)}s…`);
+    await ngu(choMs);
+  }
 }
+
+/* ------------------------------- Đọc ------------------------------- */
 
 /** Danh sách tab: tên, gid, kích thước, số pivot table. */
 export async function layDanhSachTab(id) {
-  const data = await goi('', { id, fields: 'properties.title,sheets(properties(sheetId,title,index,hidden,gridProperties))' });
+  const data = await goi('', { id, qs: { fields: 'properties.title,sheets(properties(sheetId,title,index,hidden,gridProperties))' } });
   return {
     tenFile: data.properties?.title,
     tabs: data.sheets.map((s) => ({
@@ -203,21 +238,43 @@ export async function layDanhSachTab(id) {
   };
 }
 
-/** Giá trị hiển thị của một vùng. */
-export async function layGiaTri(range, id) {
-  const data = await goi(`/values/${encodeURIComponent(range)}`, { id, valueRenderOption: 'FORMATTED_VALUE' });
+const gidCache = new Map();
+
+/** gid (sheetId) của một tab theo tên — cần cho mọi request batchUpdate. Cache theo tiến trình. */
+export async function layGid(tenTab, id) {
+  const khoa = `${giaiMaId(id)}/${tenTab}`;
+  if (!gidCache.has(khoa)) {
+    const { tabs } = await layDanhSachTab(id);
+    for (const t of tabs) gidCache.set(`${giaiMaId(id)}/${t.ten}`, t.gid);
+  }
+  const gid = gidCache.get(khoa);
+  if (gid === undefined) throw new Error(`Không có tab "${tenTab}" trong ${giaiMaId(id)}.`);
+  return gid;
+}
+
+/**
+ * Giá trị của một vùng. Mặc định là chuỗi hiển thị (`"1.234,5"`, `"08/11/2026"`).
+ * `render: 'UNFORMATTED_VALUE'` để lấy số thật; khi đó ngày là số serial,
+ * `ngayGio: 'FORMATTED_STRING'` để ngày vẫn ra chuỗi.
+ */
+export async function layGiaTri(range, id, { render = 'FORMATTED_VALUE', ngayGio } = {}) {
+  const data = await goi(`/values/${encodeURIComponent(range)}`, { id, qs: { valueRenderOption: render, dateTimeRenderOption: ngayGio } });
   return data.values ?? [];
+}
+
+/** Giá trị thô: số là number, ngày là chuỗi đã format (tiện tính toán). */
+export function layGiaTriTho(range, id) {
+  return layGiaTri(range, id, { render: 'UNFORMATTED_VALUE', ngayGio: 'FORMATTED_STRING' });
 }
 
 /** Công thức nguyên văn của một vùng (ô không có công thức trả về giá trị thô). */
-export async function layCongThuc(range, id) {
-  const data = await goi(`/values/${encodeURIComponent(range)}`, { id, valueRenderOption: 'FORMULA' });
-  return data.values ?? [];
+export function layCongThuc(range, id) {
+  return layGiaTri(range, id, { render: 'FORMULA' });
 }
 
-/** Nhiều vùng trong 1 request. */
-export async function layNhieuVung(ranges, { id, render = 'FORMULA' } = {}) {
-  const data = await goi('/values:batchGet', { id, ranges, valueRenderOption: render });
+/** Nhiều vùng trong 1 request. `render`: FORMULA | FORMATTED_VALUE | UNFORMATTED_VALUE. */
+export async function layNhieuVung(ranges, { id, render = 'FORMULA', ngayGio } = {}) {
+  const data = await goi('/values:batchGet', { id, qs: { ranges, valueRenderOption: render, dateTimeRenderOption: ngayGio } });
   return Object.fromEntries(data.valueRanges.map((v) => [v.range, v.values ?? []]));
 }
 
@@ -228,9 +285,11 @@ export async function layNhieuVung(ranges, { id, render = 'FORMULA' } = {}) {
 export async function layChiTietO(range, id) {
   const data = await goi('', {
     id,
-    ranges: range,
-    includeGridData: true,
-    fields: 'sheets(properties.title,data(startRow,startColumn,rowData(values(userEnteredValue,effectiveValue,formattedValue))))'
+    qs: {
+      ranges: range,
+      includeGridData: true,
+      fields: 'sheets(properties.title,data(startRow,startColumn,rowData(values(userEnteredValue,effectiveValue,formattedValue))))'
+    }
   });
   const khoi = data.sheets?.[0]?.data?.[0];
   if (!khoi) return [];
@@ -254,9 +313,7 @@ export async function layChiTietO(range, id) {
 export async function layPivot(tenTab, id) {
   const data = await goi('', {
     id,
-    ranges: tenTab,
-    includeGridData: true,
-    fields: 'sheets(properties.title,data(startRow,startColumn,rowData(values(pivotTable))))'
+    qs: { ranges: tenTab, includeGridData: true, fields: 'sheets(properties.title,data(startRow,startColumn,rowData(values(pivotTable))))' }
   });
   const khoi = data.sheets?.[0]?.data?.[0];
   const ket = [];
@@ -283,57 +340,129 @@ export async function quetLoi(range, id) {
   return chiTiet.flat().filter((o) => o.loaiLoi);
 }
 
-/** Ghi giá trị. Cần truyền `xacNhan: true` để tránh ghi nhầm. */
-export async function ghiGiaTri(range, values, { id, xacNhan = false, raw = false } = {}) {
-  if (!xacNhan) throw new Error('ghiGiaTri() cần { xacNhan: true } — đây là thao tác ghi đè lên sheet thật.');
-  const token = await layAccessToken();
-  const url = new URL(`${API}/${giaiMaId(id)}/values/${encodeURIComponent(range)}`);
-  url.searchParams.set('valueInputOption', raw ? 'RAW' : 'USER_ENTERED');
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ values })
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(`Sheets API lỗi ${res.status}: ${data.error?.message}`);
-  return data;
-}
+/* ------------------------------- Ghi giá trị ------------------------------- */
 
-/** Xoá sạch nội dung một vùng (giữ nguyên định dạng). Cần `xacNhan: true`. */
-export async function xoaVung(range, { id, xacNhan = false } = {}) {
-  if (!xacNhan) throw new Error('xoaVung() cần { xacNhan: true } — đây là thao tác xoá trên sheet thật.');
-  const token = await layAccessToken();
-  const res = await fetch(`${API}/${giaiMaId(id)}/values/${encodeURIComponent(range)}:clear`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: '{}'
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(`Sheets API lỗi ${res.status}: ${data.error?.message}`);
-  return data;
+const kieuNhap = (raw) => (raw ? 'RAW' : 'USER_ENTERED');
+
+/** Ghi giá trị. Cần truyền `xacNhan: true` để tránh ghi nhầm. */
+export function ghiGiaTri(range, values, { id, xacNhan = false, raw = false } = {}) {
+  canXacNhan('ghiGiaTri', xacNhan, 'đây là thao tác ghi đè lên sheet thật.');
+  return goi(`/values/${encodeURIComponent(range)}`, { id, method: 'PUT', anToan: true, qs: { valueInputOption: kieuNhap(raw) }, body: { values } });
 }
 
 /**
- * Gửi một lô request `spreadsheets.batchUpdate` (thêm cột/dòng, định dạng, …). Cần `xacNhan: true`.
- * @see https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request
+ * Ghi nhiều vùng trong 1 request. `duLieu`: `{ "'Giá'!B1": [[…]], … }` hoặc mảng `[range, values]`.
+ * Cần `xacNhan: true`.
  */
-export async function capNhatLo(requests, { id, xacNhan = false } = {}) {
-  if (!xacNhan) throw new Error('capNhatLo() cần { xacNhan: true } — đây là thao tác sửa cấu trúc sheet thật.');
-  const token = await layAccessToken();
-  const res = await fetch(`${API}/${giaiMaId(id)}:batchUpdate`, {
+export function ghiNhieuVung(duLieu, { id, xacNhan = false, raw = false } = {}) {
+  canXacNhan('ghiNhieuVung', xacNhan, 'đây là thao tác ghi đè lên sheet thật.');
+  const cap = Array.isArray(duLieu) ? duLieu : Object.entries(duLieu);
+  return goi('/values:batchUpdate', {
+    id,
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ requests })
+    anToan: true,
+    body: { valueInputOption: kieuNhap(raw), data: cap.map(([range, values]) => ({ range, values })) }
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(`Sheets API lỗi ${res.status}: ${data.error?.message}`);
-  return data;
 }
 
+/**
+ * Nối dòng vào sau bảng dữ liệu tìm thấy trong `range` (vd. `'debug'!A:B`). Mặc định chèn
+ * dòng mới (INSERT_ROWS) để không đè lên ô bên dưới. Trả về `updates.updatedRange`.
+ * Không tự thử lại khi lỗi 5xx — gửi lại có thể nối 2 lần. Cần `xacNhan: true`.
+ */
+export function themDong(range, values, { id, xacNhan = false, raw = false, chenDong = true } = {}) {
+  canXacNhan('themDong', xacNhan, 'đây là thao tác ghi lên sheet thật.');
+  return goi(`/values/${encodeURIComponent(range)}:append`, {
+    id,
+    method: 'POST',
+    qs: { valueInputOption: kieuNhap(raw), insertDataOption: chenDong ? 'INSERT_ROWS' : 'OVERWRITE' },
+    body: { values }
+  });
+}
+
+/** Xoá sạch nội dung một vùng (giữ nguyên định dạng). Cần `xacNhan: true`. */
+export function xoaVung(range, { id, xacNhan = false } = {}) {
+  canXacNhan('xoaVung', xacNhan, 'đây là thao tác xoá trên sheet thật.');
+  return goi(`/values/${encodeURIComponent(range)}:clear`, { id, method: 'POST', anToan: true, body: {} });
+}
+
+/** Xoá nội dung nhiều vùng trong 1 request. Cần `xacNhan: true`. */
+export function xoaNhieuVung(ranges, { id, xacNhan = false } = {}) {
+  canXacNhan('xoaNhieuVung', xacNhan, 'đây là thao tác xoá trên sheet thật.');
+  return goi('/values:batchClear', { id, method: 'POST', anToan: true, body: { ranges } });
+}
+
+/* ------------------------------- Cấu trúc (batchUpdate) ------------------------------- */
+
+/**
+ * Gửi một lô request `spreadsheets.batchUpdate` (thêm cột/dòng, định dạng, …). Cần `xacNhan: true`.
+ * Cả lô chạy nguyên tử: một request lỗi thì không request nào được áp dụng.
+ * @see https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request
+ */
+export function capNhatLo(requests, { id, xacNhan = false } = {}) {
+  canXacNhan('capNhatLo', xacNhan, 'đây là thao tác sửa cấu trúc sheet thật.');
+  return goi(':batchUpdate', { id, method: 'POST', body: { requests } });
+}
+
+const CHIEU = { cot: 'COLUMNS', dong: 'ROWS' };
+
+function chieu(kieu) {
+  if (!CHIEU[kieu]) throw new Error(`kieu phải là 'cot' hoặc 'dong', nhận được: ${kieu}`);
+  return CHIEU[kieu];
+}
+
+/*
+ * Các hàm `yeuCau*` chỉ dựng object request (không gọi API) để gom nhiều thao tác vào một
+ * capNhatLo() nguyên tử. `batDau` là index 0-based như API: cột B = 1 (dùng viTriCot('B')),
+ * dòng 5 = 4. Xoá nhiều vùng trong cùng tab thì xếp từ phải/dưới lên để index không lệch.
+ */
+
+/** Chèn `soLuong` dòng/cột trống tại `batDau`; `keThuaTruoc` để lấy định dạng của dòng/cột ngay trước. */
+export function yeuCauChen(gid, kieu, batDau, soLuong = 1, { keThuaTruoc = batDau > 0 } = {}) {
+  return { insertDimension: { range: { sheetId: gid, dimension: chieu(kieu), startIndex: batDau, endIndex: batDau + soLuong }, inheritFromBefore: keThuaTruoc } };
+}
+
+/** Xoá `soLuong` dòng/cột từ `batDau` (mất luôn dữ liệu trong đó). */
+export function yeuCauXoa(gid, kieu, batDau, soLuong = 1) {
+  return { deleteDimension: { range: { sheetId: gid, dimension: chieu(kieu), startIndex: batDau, endIndex: batDau + soLuong } } };
+}
+
+/** Nới lưới thêm `soLuong` dòng/cột ở cuối tab. */
+export function yeuCauNoiThem(gid, kieu, soLuong) {
+  return { appendDimension: { sheetId: gid, dimension: chieu(kieu), length: soLuong } };
+}
+
+/** Chèn dòng/cột trống vào tab. Cần `xacNhan: true`. */
+export async function chenDongCot(tenTab, kieu, batDau, soLuong = 1, { id, xacNhan = false, keThuaTruoc } = {}) {
+  canXacNhan('chenDongCot', xacNhan, 'đây là thao tác sửa cấu trúc sheet thật.');
+  return capNhatLo([yeuCauChen(await layGid(tenTab, id), kieu, batDau, soLuong, { keThuaTruoc })], { id, xacNhan });
+}
+
+/** Xoá dòng/cột khỏi tab — mất luôn dữ liệu trong đó. Cần `xacNhan: true`. */
+export async function xoaDongCot(tenTab, kieu, batDau, soLuong = 1, { id, xacNhan = false } = {}) {
+  canXacNhan('xoaDongCot', xacNhan, 'đây là thao tác xoá dòng/cột trên sheet thật.');
+  return capNhatLo([yeuCauXoa(await layGid(tenTab, id), kieu, batDau, soLuong)], { id, xacNhan });
+}
+
+/** Nới lưới thêm dòng/cột ở cuối tab. Cần `xacNhan: true`. */
+export async function noiThemDongCot(tenTab, kieu, soLuong, { id, xacNhan = false } = {}) {
+  canXacNhan('noiThemDongCot', xacNhan, 'đây là thao tác sửa cấu trúc sheet thật.');
+  return capNhatLo([yeuCauNoiThem(await layGid(tenTab, id), kieu, soLuong)], { id, xacNhan });
+}
+
+/* ------------------------------- Tiện ích A1 ------------------------------- */
+
+/** Index 0-based → tên cột (0 → A, 25 → Z, 26 → AA). */
 export function tenCot(n) {
   let s = '';
   for (let i = n; i >= 0; i = Math.floor(i / 26) - 1) s = String.fromCharCode(65 + (i % 26)) + s;
   return s;
+}
+
+/** Tên cột → index 0-based (A → 0, AA → 26, OR → 407). Ngược với tenCot(). */
+export function viTriCot(ten) {
+  if (!/^[A-Z]+$/i.test(ten)) throw new Error(`Tên cột không hợp lệ: ${ten}`);
+  return [...ten.toUpperCase()].reduce((n, c) => n * 26 + c.charCodeAt(0) - 64, 0) - 1;
 }
 
 /* ------------------------------- CLI ------------------------------- */
@@ -358,8 +487,10 @@ async function main() {
       break;
     }
     case 'values':
+    case 'raw':
     case 'formulas': {
-      const rows = lenh === 'values' ? await layGiaTri(arg, id) : await layCongThuc(arg, id);
+      const doc = { values: layGiaTri, raw: layGiaTriTho, formulas: layCongThuc }[lenh];
+      const rows = await doc(arg, id);
       rows.forEach((r, i) => console.log(String(i).padStart(3), JSON.stringify(r)));
       break;
     }

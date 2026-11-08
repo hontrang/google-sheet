@@ -100,7 +100,9 @@ google-sheet/
 │   │   └── generic.ts             # IHttp, ISheetSpread, IResponse* (Vndirect, VietStock, Simplize, Ssi, DC…)
 │   ├── offline/                   # bản thay thế chạy local/Node khi `mode=offline`
 │   │   ├── AxiosHelper.ts         # IHttp bằng axios + token SSI
-│   │   └── ExcelHelper.ts         # ISheetSpread đọc/ghi file .xlsx (exceljs)
+│   │   ├── ExcelHelper.ts         # ISheetSpread đọc/ghi file .xlsx (exceljs)
+│   │   ├── sheetsApi.mjs          # CLI/library Sheets API v4 — đọc/ghi sheet thật từ Node, xem docs/google-sheets-api.md
+│   │   └── driveApi.mjs           # CLI/library Drive API v3 — tìm/tải/upload/chia sẻ file, xem docs/google-drive.md
 │   ├── projectMain/               # → GAS "Dashboard"        (npm run build:main)
 │   │   ├── code.ts                # scraping chi tiết mã, tin tức, BCTC, cổ tức, chart
 │   │   └── trigger.ts             # mainCreateTriggers / mainDeleteTrigger
@@ -436,6 +438,6 @@ Các tab trong sheet **chứng khoán** đối chiếu với `SheetHelper.sheetN
 | `sheetKhoiNgoaiBan` | `KN Bán` | Ma trận khối ngoại bán theo mã |
 | `sheetHose` | `hose` | Nằm ở sheet **data warehouse**, không phải **chứng khoán** |
 
-Ngoài ra sheet **chứng khoán** còn có các khối dữ liệu chưa map trực tiếp vào `sheetName` (có thể là range/tên sheet khác hoặc đặt tên động): Sự kiện (lịch kinh tế vĩ mô), log Lệnh mua/bán, Cổ phiếu theo nhóm ngành (DCDS), Cổ tức, Biến động tiền mặt, danh sách tin tức, ghi chú "Các bước lựa chọn mã chứng khoán".
+Ngoài ra sheet **chứng khoán** còn có các khối dữ liệu chưa map trực tiếp vào `sheetName` (có thể là range/tên sheet khác hoặc đặt tên động): log Lệnh mua/bán, Cổ phiếu theo nhóm ngành (DCDS), Cổ tức, Biến động tiền mặt, danh sách tin tức, ghi chú "Các bước lựa chọn mã chứng khoán".
 
 Mô tả chi tiết từng tab của cả hai sheet (bố cục, công thức, hàm GAS ghi vào, tab nào dùng lại): [docs/google-sheets.md](docs/google-sheets.md) — mỗi tab một file trong `docs/chứng khoán/` và `docs/data warehouse/`.

@@ -18,7 +18,7 @@ Tham số của data warehouse: ngày tham chiếu, khoảng ngày, định dạ
 | `A3:G3` | Chi tiết mã | Từ ngày (cố định) / Đến ngày `TODAY()+1` / Cập nhật lúc | không còn dùng |
 | `A4:G4` | Giá tuần gần nhất | Từ `TODAY()−20` (`C4`) / Đến `TODAY()+1` / **Cập nhật lúc** (`G4`) | `G4` ghi bởi `layGiaKhoiLuongKhoiNgoaiMuaBanHangNgay()`; `C4`, `G4` được `chứng khoán/tham chiếu` import |
 | `B6` | format date | `yyyy-MM-dd` | custom function DC, `layThongTinPhaiSinh()` |
-| `B9` | Sự kiện | `*FOMC*` | không còn dùng (bảng thông tin dùng từ khoá ở file chứng khoán) |
+| `B9` | Sự kiện | `*FOMC*` | không còn dùng (tab Sự kiện và `LAY_SU_KIEN()` đã xoá 2026-11-08) |
 | `B10` / `B11` | DCDS / DCDE | URL API `getLatestFundPortfolioData` cho từng quỹ | [DC](DC.md)`!A2`, `F2`, `I2`, `N2` |
 | `B12` | Báo cáo DCDS | URL API báo cáo (code dùng URL viết cứng, không đọc ô này) | tham khảo |
 | `B13` | docs chung khoan | URL file **chứng khoán** | `B1` |

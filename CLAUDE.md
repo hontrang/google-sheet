@@ -64,6 +64,8 @@ Build scripts run with `bun`. Path aliases (`tsconfig.json`): `@utils/* → src/
 
 The `mode` env var (`offline`/online) selects the path. `src/utility/SheetHelper.ts` wraps all sheet I/O; sheet names live in `SheetHelper.sheetName`.
 
+Separately, two plain-`node` `.mjs` tools in `src/offline/` call Google APIs directly against the live files (never deployed to GAS): `sheetsApi.mjs` (Sheets API v4 — cells, formulas, pivots) and `driveApi.mjs` (Drive API v3 — search, download/export, upload, move, trash, share). They share one OAuth token in `.sheets-token.json`; `driveApi.mjs login` grants drive + spreadsheets scopes, while `sheetsApi.mjs login` overwrites it without drive. Write/delete/share functions require `{ xacNhan: true }`. `sheetsApi.mjs` retries 429 always but 5xx only for idempotent calls (never `themDong`/batchUpdate). Guides: [docs/google-sheets-api.md](docs/google-sheets-api.md), [docs/google-drive.md](docs/google-drive.md).
+
 ## Tests
 
 Playwright is used purely as a test runner (no browser). Projects defined in `playwright.config.ts`:

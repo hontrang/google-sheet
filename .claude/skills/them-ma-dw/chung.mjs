@@ -1,13 +1,10 @@
 /** Phần dùng chung của them-ma.mjs và xoa-ma.mjs. */
 
-import { layNhieuVung } from '../../../src/offline/sheetsApi.mjs';
+import { layNhieuVung, viTriCot } from '../../../src/offline/sheetsApi.mjs';
 
 // Tên tab, khớp SheetHelper.sheetName (src/utility/SheetHelper.ts)
 export const MA_TRAN = ['Giá', 'Khối Lượng', 'KN Mua', 'KN Bán'];
 export const ID = 'dw';
-
-/** Tên cột (A, Z, AA, OR…) → index 0-based. Ngược với tenCot() của sheetsApi.mjs. */
-export const viTriCot = (ten) => [...ten].reduce((n, c) => n * 26 + c.charCodeAt(0) - 64, 0) - 1;
 
 /**
  * File chứng khoán import 4 tab này bằng vùng cố định `A1:OR…` (tab Giá/Khối Lượng/KN Mua/KN Bán

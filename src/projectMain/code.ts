@@ -6,6 +6,8 @@ import { HttpHelper } from '@utils/HttpHelper';
 import { DateHelper } from '@utils/DateHelper';
 import { LogHelper } from '@utils/LogHelper';
 import { SheetHelper } from '@utils/SheetHelper';
+import { FredHelper } from '@utils/FredHelper';
+import { FomcHelper } from '@utils/FomcHelper';
 import { ChartHelper } from '@utils/ChartUtil';
 import { IResponseSimplize, IResponseVietStock, IResponseVndirect } from '@src/types/generic';
 
@@ -407,4 +409,57 @@ function xacDinhSheetDangLienKet(): string | null {
     [`scriptId : ${scriptId}`, `tên sheet: ${sheetApp.getName()}`, `sheet id : ${sheetApp.getId()}`, `url      : ${sheetApp.getUrl()}`, `các tab  : ${danhSachTab}`].join('\n')
   );
   return sheetApp.getId();
+}
+
+/**
+ * Lưu FRED API key vào Script Properties `FRED_API_KEY` của project này (FredHelper đọc từ đó).
+ * Truyền key làm tham số — không ghi key vào code: `clasp run caiDatFredApiKey --params '["<key>"]'`.
+ * Trả về FRED_API_KEY đã lưu được hay chưa và biên độ lãi suất mục tiêu đọc thử bằng key đó.
+ */
+function caiDatFredApiKey(apiKey: string): string {
+  FredHelper.luuApiKey(apiKey);
+  const laiSuat = new FredHelper().layLaiSuatMucTieuFed();
+  return `Đã lưu ${FredHelper.tenThuocTinhApiKey}. Lãi suất mục tiêu Fed: ${laiSuat ? `${laiSuat.canDuoi}%–${laiSuat.canTren}% (${laiSuat.ngay})` : 'không đọc được'}`;
+}
+
+/**
+ * Ghi khối FOMC / lãi suất Fed vào `bảng thông tin!F7:G8` (nhãn ở dòng 7, nội dung ở dòng 8):
+ *   - F8: ngày họp FOMC sắp tới (lịch trên federalreserve.gov);
+ *   - G8: thời điểm công bố lãi suất sắp tới (14:00 giờ New York ngày cuối cuộc họp, đổi sang giờ VN)
+ *         kèm biên độ lãi suất mục tiêu hiện tại (FRED) để tham chiếu.
+ * Thay cho công thức XLOOKUP trên tab Sự kiện cũ (cào tradingeconomics, đã xoá) — công thức cũ lưu ở
+ * docs/chứng khoán/bảng thông tin.md. Trigger hằng ngày 7:00 (taoTriggerCapNhatSuKienFed).
+ * Một nguồn lỗi thì vẫn ghi phần còn lại kèm chú thích lỗi.
+ */
+function capNhatSuKienFed(): string[] {
+  const fomc = new FomcHelper();
+  const ngay = (iso: string) => iso.split('-').reverse().join('/');
+  let oHop: string;
+  let oCongBo: string;
+  try {
+    const tiepTheo = fomc.layCuocHopTiepTheo();
+    if (tiepTheo) {
+      const [dau, cuoi] = [ngay(tiepTheo.ngayBatDau), ngay(tiepTheo.ngayKetThuc)];
+      const khoang = dau.slice(3) === cuoi.slice(3) ? `${dau.slice(0, 2)}–${cuoi}` : `${dau.slice(0, 5)}–${cuoi}`;
+      oHop = `${khoang}${tiepTheo.coDuBaoKinhTe ? ' (có SEP)' : ''}${tiepTheo.ghiChu ? ' ' + tiepTheo.ghiChu : ''}`;
+      oCongBo = fomc.gioCongBoQuyetDinh(tiepTheo, 'HH:mm dd/MM/yyyy');
+    } else {
+      oHop = oCongBo = 'chưa có lịch';
+    }
+  } catch (e) {
+    oHop = oCongBo = `lỗi tải lịch FOMC (${String(e)})`;
+  }
+  try {
+    const laiSuat = new FredHelper().layLaiSuatMucTieuFed();
+    oCongBo += laiSuat ? ` - hiện tại ${laiSuat.canDuoi.toFixed(2)}%–${laiSuat.canTren.toFixed(2)}% (FRED ${ngay(laiSuat.ngay)})` : ' - FRED không có số liệu';
+  } catch (e) {
+    oCongBo += ` - lỗi FRED (${String(e)})`;
+  }
+  const noiDung = [oHop, oCongBo];
+  new SheetHelper().ghiDuLieuVaoDayTheoVung(
+    [['Họp FOMC sắp tới', 'Công bố lãi suất sắp tới (giờ VN)'], noiDung],
+    SheetHelper.sheetName.sheetBangThongTin,
+    'F7:G8'
+  );
+  return noiDung;
 }

@@ -137,7 +137,7 @@ export interface IResponseSimplize {
   pctOfSharesOutHeld?: number;
   changeValue?: number;
   countryOfInvestor?: string;
-  totalValue?: number
+  totalValue?: number;
 }
 
 export type RecommendSimplize = 'TRUNG LẬP' | 'MUA' | 'KHÁC';
@@ -162,4 +162,43 @@ export interface IResponseVietStock {
   InterestRateType?: string;
   InterestPeriod?: string;
   TotalRecord?: number;
+}
+
+/** Một cuộc họp FOMC trên federalreserve.gov/monetarypolicy/fomccalendars.htm */
+export interface IFomcMeeting {
+  nam: number;
+  /** Ngày đầu / ngày cuối của cuộc họp, `yyyy-MM-dd`. Ngày cuối là ngày công bố quyết định (14:00 giờ New York). */
+  ngayBatDau: string;
+  ngayKetThuc: string;
+  /** Có công bố Summary of Economic Projections (dấu `*` trên trang Fed). */
+  coDuBaoKinhTe: boolean;
+  /** Ghi chú kèm theo, ví dụ `(unscheduled)`, `(notation vote)`; rỗng nếu không có. */
+  ghiChu: string;
+  linkStatement?: string;
+  linkHopBao?: string;
+  linkBienBan?: string;
+}
+
+/** Một quan sát của FRED API (`fred/series/observations`); `value` = "." khi không có số liệu. */
+export interface IResponseFredObservation {
+  date: string;
+  value: string;
+}
+
+export interface IResponseFredObservations {
+  observations?: IResponseFredObservation[];
+  error_code?: number;
+  error_message?: string;
+}
+
+export interface IFredObservation {
+  ngay: string;
+  giaTri: number;
+}
+
+/** Biên độ lãi suất mục tiêu Fed Funds (FRED: DFEDTARL / DFEDTARU), đơn vị %. */
+export interface ILaiSuatMucTieuFed {
+  canDuoi: number;
+  canTren: number;
+  ngay: string;
 }
